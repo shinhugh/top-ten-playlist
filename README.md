@@ -33,11 +33,15 @@ This service is hosted on an AWS EC2 instance. The link is here: *Coming soon!*
 
 The Spring framework is used to simplify and build this system. Instead of
 deploying a dedicated machine for each endpoint and installing an actual reverse
-proxy, everything is done via code for a single server. A controller is written
+proxy, everything is done via code on a single server. A controller is written
 for each endpoint, and Spring's built-in mechanisms handle the routing to the
 correct controllers. This is more than enough for the expected amount of traffic
 (essentially none) for this project. Needless to say, load balancers are not
 necessary.
+
+For the database, MySQL is used, but this can easily be changed. For
+simplicity's sake, the two databases are merged into one. There is no functional
+difference, as each model exists in each own table.
 
 ## Flows
 
