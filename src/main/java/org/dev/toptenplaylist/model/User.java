@@ -1,65 +1,35 @@
 package org.dev.toptenplaylist.model;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+public class User {
+    private final UserAccount userAccount;
+    private final UserProfile userProfile;
 
-public class User implements Identifiable {
-    private UUID id;
-    private String email;
-    private String password;
-    private Set<Role> roles;
-    private String displayName;
-
-    public User() { }
-
-    public User(User user) {
-        id = user.id;
-        email = user.email;
-        password = user.password;
-        roles = new HashSet<>(user.roles);
-        displayName = user.displayName;
+    public User(UserAccount userAccount, UserProfile userProfile) {
+        this.userAccount = userAccount;
+        this.userProfile = userProfile;
     }
 
-    @Override
-    public UUID getId() {
-        return id;
+    public String getLoginName() {
+        return userAccount.getName();
     }
 
-    @Override
-    public void setId(UUID id) {
-        this.id = id;
+    public void setLoginName(String loginName) {
+        userAccount.setName(loginName);
     }
 
-    public String getEmail() {
-        return email;
+    public String getPasswordHash() {
+        return userAccount.getPasswordHash();
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPasswordHash(String passwordHash) {
+        userAccount.setPasswordHash(passwordHash);
     }
 
-    public String getPassword() {
-        return password;
+    public String getPublicName() {
+        return userProfile.getName();
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setPublicName(String publicName) {
+        userProfile.setName(publicName);
     }
 }

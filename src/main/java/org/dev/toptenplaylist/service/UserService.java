@@ -1,15 +1,14 @@
 package org.dev.toptenplaylist.service;
 
 import org.dev.toptenplaylist.model.User;
+import org.dev.toptenplaylist.model.UserAccount;
 
 import java.util.Set;
 import java.util.UUID;
 
 public interface UserService {
-    public Set<User> readAll(boolean hidePassword);
-    public User readById(UUID id, boolean hidePassword);
-    public User readByEmail(String email, boolean hidePassword);
+    public User readByName(String name);
     public UUID create(User user);
-    public void update(UUID id, User user);
-    public void delete(UUID id);
+    public void update(User user);
+    public void deleteByName(String name);
 }
