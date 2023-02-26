@@ -2,9 +2,11 @@
 
 A web API and website for creating and sharing a playlist of your top 10 songs.
 
+*This project is a work-in-progress.*
+
 ## Models
 
-![Models](https://github.com/shinhugh/top-ten-playlist/blob/main/readme_assets/models.png)
+![Models](/readme_assets/models.png)
 
 ## Flows
 
@@ -14,12 +16,12 @@ etc.) are not shown here.
 
 ### Create song list
 
-![Flow: Create song list](https://github.com/shinhugh/top-ten-playlist/blob/main/readme_assets/flow_create_song_list.png)
+![Flow: Create song list](/readme_assets/flow_create_song_list.png)
 
 ### View song list
 
-![Flow: View song list](https://github.com/shinhugh/top-ten-playlist/blob/main/readme_assets/flow_view_song_list.png)
+![Flow: View song list](/readme_assets/flow_view_song_list.png)
 
 ## Architecture
 
-![Architecture](https://github.com/shinhugh/top-ten-playlist/blob/main/readme_assets/architecture.png)
+![Architecture](/readme_assets/architecture.png)
