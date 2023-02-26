@@ -1,7 +1,6 @@
 package org.dev.toptenplaylist.controller;
 
 import org.dev.toptenplaylist.model.User;
-import org.dev.toptenplaylist.model.UserAccount;
 import org.dev.toptenplaylist.service.UserService;
 import org.springframework.web.bind.annotation.*;
 

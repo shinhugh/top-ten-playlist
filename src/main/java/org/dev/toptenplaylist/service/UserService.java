@@ -1,9 +1,7 @@
 package org.dev.toptenplaylist.service;
 
 import org.dev.toptenplaylist.model.User;
-import org.dev.toptenplaylist.model.UserAccount;
 
-import java.util.Set;
 import java.util.UUID;
 
 public interface UserService {
