@@ -37,12 +37,12 @@ public class UserManager implements UserService {
             userAccountRepository.readByName(user.getLoginName());
             throw new IllegalArgumentException();
         }
-        catch (NoSuchElementException ex) { }
+        catch (NoSuchElementException ignored) { }
         try {
             userProfileRepository.readByName(user.getPublicName());
             throw new IllegalArgumentException();
         }
-        catch (NoSuchElementException ex) { }
+        catch (NoSuchElementException ignored) { }
         UserAccount userAccount = new UserAccount();
         userAccount.setName(user.getLoginName());
         userAccount.setPasswordHash(passwordEncoder.encode(user.getPassword()));
