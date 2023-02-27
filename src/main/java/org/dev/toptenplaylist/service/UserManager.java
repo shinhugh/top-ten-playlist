@@ -5,6 +5,9 @@ import org.dev.toptenplaylist.model.UserAccount;
 import org.dev.toptenplaylist.model.UserProfile;
 import org.dev.toptenplaylist.repository.UserAccountRepository;
 import org.dev.toptenplaylist.repository.UserProfileRepository;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ public class UserManager implements UserService {
 
     @Override
     public User readByLoginName(String loginName) {
+        verifyAccess(loginName);
         UserAccount userAccount = userAccountRepository.readByName(loginName);
         UserProfile userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
         return new User(userAccount, userProfile);
@@ -55,6 +59,7 @@ public class UserManager implements UserService {
 
     @Override
     public void updateByLoginName(String loginName, User user) {
+        verifyAccess(loginName);
         // TODO: Handle update described as a changelist
         UserAccount userAccount = userAccountRepository.readByName(loginName);
         userAccount.setName(user.getLoginName());
@@ -67,7 +72,15 @@ public class UserManager implements UserService {
 
     @Override
     public void deleteByLoginName(String loginName) {
+        verifyAccess(loginName);
         userProfileRepository.deleteByUserAccountId(userAccountRepository.readByName(loginName).getId());
         userAccountRepository.deleteByName(loginName);
+    }
+
+    private void verifyAccess(String loginName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.getName().equals(loginName)) {
+            throw new AccessDeniedException(null);
+        }
     }
 }
