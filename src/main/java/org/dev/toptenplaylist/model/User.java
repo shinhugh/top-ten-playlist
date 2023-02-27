@@ -1,35 +1,38 @@
 package org.dev.toptenplaylist.model;
 
 public class User {
-    private final UserAccount userAccount;
-    private final UserProfile userProfile;
+    private String loginName;
+    private String password;
+    private String publicName;
+
+    public User() { }
 
     public User(UserAccount userAccount, UserProfile userProfile) {
-        this.userAccount = userAccount;
-        this.userProfile = userProfile;
+        loginName = userAccount.getName();
+        publicName = userProfile.getName();
     }
 
     public String getLoginName() {
-        return userAccount.getName();
+        return loginName;
     }
 
     public void setLoginName(String loginName) {
-        userAccount.setName(loginName);
+        this.loginName = loginName;
     }
 
-    public String getPasswordHash() {
-        return userAccount.getPasswordHash();
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        userAccount.setPasswordHash(passwordHash);
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPublicName() {
-        return userProfile.getName();
+        return publicName;
     }
 
     public void setPublicName(String publicName) {
-        userProfile.setName(publicName);
+        this.publicName = publicName;
     }
 }

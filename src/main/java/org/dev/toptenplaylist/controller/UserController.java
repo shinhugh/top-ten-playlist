@@ -16,31 +16,23 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public Set<User> read() {
-        // TODO
-        return null;
-    }
-
     @PostMapping
-    public UUID create(@RequestBody User user) {
-        // TODO
-        return null;
+    public void create(@RequestBody User user) {
+        userService.create(user);
     }
 
-    @GetMapping("/{id}")
-    public User read(@PathVariable UUID id) {
-        // TODO
-        return null;
+    @GetMapping("/{loginName}")
+    public User read(@PathVariable String loginName) {
+        return userService.readByLoginName(loginName);
     }
 
-    @PutMapping("/{id}")
-    public void update(@PathVariable UUID id, @RequestBody User user) {
-        // TODO
+    @PutMapping("/{loginName}")
+    public void update(@PathVariable String loginName, @RequestBody User user) {
+        userService.updateByLoginName(loginName, user);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        // TODO
+    @DeleteMapping("/{loginName}")
+    public void delete(@PathVariable String loginName) {
+        userService.deleteByLoginName(loginName);
     }
 }

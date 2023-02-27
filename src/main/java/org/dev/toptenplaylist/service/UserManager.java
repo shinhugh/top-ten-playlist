@@ -1,12 +1,15 @@
 package org.dev.toptenplaylist.service;
 
 import org.dev.toptenplaylist.model.User;
+import org.dev.toptenplaylist.model.UserAccount;
+import org.dev.toptenplaylist.model.UserProfile;
 import org.dev.toptenplaylist.repository.UserAccountRepository;
 import org.dev.toptenplaylist.repository.UserProfileRepository;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -22,24 +25,49 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public User readByName(String name) {
-        // TODO
-        return null;
+    public User readByLoginName(String loginName) {
+        UserAccount userAccount = userAccountRepository.readByName(loginName);
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
+        return new User(userAccount, userProfile);
     }
 
     @Override
-    public UUID create(User user) {
-        // TODO
-        return null;
+    public void create(User user) {
+        try {
+            userAccountRepository.readByName(user.getLoginName());
+            throw new IllegalArgumentException();
+        }
+        catch (NoSuchElementException ex) { }
+        try {
+            userProfileRepository.readByName(user.getPublicName());
+            throw new IllegalArgumentException();
+        }
+        catch (NoSuchElementException ex) { }
+        UserAccount userAccount = new UserAccount();
+        userAccount.setName(user.getLoginName());
+        userAccount.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        UUID userAccountId = userAccountRepository.set(userAccount);
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUserAccountId(userAccountId);
+        userProfile.setName(user.getPublicName());
+        userProfileRepository.set(userProfile);
     }
 
     @Override
-    public void update(User user) {
-        // TODO
+    public void updateByLoginName(String loginName, User user) {
+        // TODO: Handle update described as a changelist
+        UserAccount userAccount = userAccountRepository.readByName(loginName);
+        userAccount.setName(user.getLoginName());
+        userAccount.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        userAccountRepository.set(userAccount);
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
+        userProfile.setName(user.getPublicName());
+        userProfileRepository.set(userProfile);
     }
 
     @Override
-    public void deleteByName(String name) {
-        // TODO
+    public void deleteByLoginName(String loginName) {
+        userProfileRepository.deleteByUserAccountId(userAccountRepository.readByName(loginName).getId());
+        userAccountRepository.deleteByName(loginName);
     }
 }

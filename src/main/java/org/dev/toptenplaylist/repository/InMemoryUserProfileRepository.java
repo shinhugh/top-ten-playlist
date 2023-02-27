@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-// TODO: Replace with JPA-backed implementation of UserRepository
+// TODO: Replace with JPA-backed implementation of UserProfileRepository
 @Repository
 public class InMemoryUserProfileRepository implements UserProfileRepository {
     private final HashMap<UUID, UserProfile> idToUserProfileMap = new HashMap<>();
@@ -51,7 +51,7 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
     }
 
     @Override
-    public void set(UserProfile userProfile) {
+    public UUID set(UserProfile userProfile) {
         UUID id = userProfile.getId();
         UUID userAccountId = userProfile.getUserAccountId();
         String name = userProfile.getName();
@@ -78,6 +78,7 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
         idToUserProfileMap.put(id, new UserProfile(userProfile)); // TODO: Does Map.put() store reference?
         userAccountIdToIdMap.put(userAccountId, id);
         nameToIdMap.put(name, id);
+        return id;
     }
 
     @Override

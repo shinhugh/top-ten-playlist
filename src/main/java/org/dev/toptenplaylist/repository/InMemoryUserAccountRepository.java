@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-// TODO: Replace with JPA-backed implementation of UserRepository
+// TODO: Replace with JPA-backed implementation of UserAccountRepository
 @Repository
 public class InMemoryUserAccountRepository implements UserAccountRepository {
     private final HashMap<UUID, UserAccount> idToUserAccountMap = new HashMap<>();
@@ -46,7 +46,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
     }
 
     @Override
-    public void set(UserAccount userAccount) {
+    public UUID set(UserAccount userAccount) {
         UUID id = userAccount.getId();
         String name = userAccount.getName();
         if (name == null) {
@@ -67,6 +67,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
         }
         idToUserAccountMap.put(id, new UserAccount(userAccount)); // TODO: Does Map.put() store reference?
         nameToIdMap.put(name, id);
+        return id;
     }
 
     @Override
