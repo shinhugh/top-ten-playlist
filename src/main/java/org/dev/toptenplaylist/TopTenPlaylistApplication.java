@@ -23,10 +23,6 @@ public class TopTenPlaylistApplication {
                 .disable()
                 .anonymous()
                 .disable()
-                .formLogin()
-                .and()
-                .logout()
-                .and()
                 .build();
     }
 }

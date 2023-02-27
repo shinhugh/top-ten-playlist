@@ -78,6 +78,7 @@ public class UserManager implements UserService {
     }
 
     private void verifyAccess(String loginName) {
+        // TODO: Achieve this without using SecurityContextHolder?
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.getName().equals(loginName)) {
             throw new AccessDeniedException(null);
