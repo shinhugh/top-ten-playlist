@@ -1,16 +1,17 @@
 package org.dev.toptenplaylist.service;
 
 import org.dev.toptenplaylist.model.UserCredentials;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationManager implements AuthenticationService {
-    private final org.springframework.security.authentication.AuthenticationManager authenticationManager;
+public class AuthManager implements AuthService {
+    private final AuthenticationManager authenticationManager;
 
-    public AuthenticationManager(org.springframework.security.authentication.AuthenticationManager authenticationManager) {
+    public AuthManager(AuthenticationManager authenticationManager) {
         this.authenticationManager =  authenticationManager;
     }
 
