@@ -1,0 +1,17 @@
+Login:
+curl http://localhost:8080/api/auth -v -H "Content-Type: application/json" -d '{"name":"test","password":"test"}'
+
+Logout:
+curl http://localhost:8080/api/auth -v -X DELETE
+
+Create user account:
+curl http://localhost:8080/api/user -v -H "Content-Type: application/json" -d '{"loginName":"test","password":"test","publicName":"Test"}'
+
+Read user account:
+curl http://localhost:8080/api/user/test -v
+
+Update user account:
+curl http://localhost:8080/api/user/test -v -X PUT -H "Content-Type: application/json" -d '{"loginName":"test","password":"test","publicName":"Test"}'
+
+Delete user account:
+curl http://localhost:8080/api/user/test -v -X DELETE
