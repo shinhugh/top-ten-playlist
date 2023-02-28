@@ -1,2 +1,4 @@
 - Change type of Session.expiration from Date to something more modern
 - Trying to login on valid session should fail and maintain existing session
+- Is it okay for copy constructor to shallow copy (UUID, Date, etc)
+- Remove redundant code that comes from forgetting that things are references

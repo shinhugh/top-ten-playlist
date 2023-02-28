@@ -8,6 +8,14 @@ public class Session {
     private UUID userAccountId;
     private Date expiration;
 
+    public Session() { }
+
+    public Session(Session session) {
+        token = session.token;
+        userAccountId = session.userAccountId;
+        expiration = session.expiration;
+    }
+
     public String getToken() {
         return token;
     }

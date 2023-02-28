@@ -1,5 +1,7 @@
 package org.dev.toptenplaylist.repository;
 
+import org.dev.toptenplaylist.model.IllegalArgumentException;
+import org.dev.toptenplaylist.model.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
 import org.springframework.stereotype.Repository;
 
@@ -19,14 +21,53 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public Session readByToken(String token) {
-        // TODO
-        return null;
+        Node<Session> sessionNode = tokenToSessionNodeMap.get(token);
+        if (sessionNode == null) {
+            throw new NoSuchElementException();
+        }
+        return sessionNode.getContent();
     }
 
     @Override
-    public String set(Session session) {
-        // TODO
-        return null;
+    public void set(Session session) {
+        Session newSession = new Session(session);
+        String token = newSession.getToken();
+        UUID userAccountId = newSession.getUserAccountId();
+        Date expiration = newSession.getExpiration();
+        if (token == null || userAccountId == null || expiration == null) {
+            throw new IllegalArgumentException();
+        }
+        if (tokenToSessionNodeMap.containsKey(token)) {
+            deleteSessionNode(tokenToSessionNodeMap.get(token));
+        }
+        Node<Session> sessionNode = new Node<>(newSession);
+        Node<Session> oneOlderNode = newestSessionNode;
+        Node<Session> oneNewerNode = null;
+        while (oneOlderNode != null && oneOlderNode.getContent().getExpiration().compareTo(newSession.getExpiration()) > 0) {
+            oneNewerNode = oneOlderNode;
+            oneOlderNode = oneOlderNode.getPreviousNode();
+        }
+        sessionNode.setPreviousNode(oneOlderNode);
+        sessionNode.setNextNode(oneNewerNode);
+        if (oneOlderNode != null) {
+            oneOlderNode.setNextNode(sessionNode);
+        }
+        else {
+            oldestSessionNode = sessionNode;
+        }
+        if (oneNewerNode != null) {
+            oneNewerNode.setPreviousNode(sessionNode);
+        }
+        else {
+            newestSessionNode = sessionNode;
+        }
+        tokenToSessionNodeMap.put(token, sessionNode);
+        Set<String> tokens =  userAccountIdToTokensMap.get(userAccountId);
+        if (tokens == null) {
+            tokens = new HashSet<>();
+            userAccountIdToTokensMap.put(userAccountId, tokens);
+        }
+        tokens.add(token);
     }
 
     @Override
@@ -42,6 +83,36 @@ public class InMemorySessionRepository implements SessionRepository {
     @Override
     public void deleteByLessThanOrEqualToExpiration(Date expiration) {
         // TODO
+    }
+
+    private void deleteSessionNode(Node<Session> sessionNode) {
+        Session session = sessionNode.getContent();
+        String token = session.getToken();
+        UUID userAccountId = session.getUserAccountId();
+        Date expiration = session.getExpiration();
+        if (!tokenToSessionNodeMap.containsKey(token)) {
+            throw new NoSuchElementException();
+        }
+        Node<Session> previousNode = sessionNode.getPreviousNode();
+        Node<Session> nextNode = sessionNode.getNextNode();
+        if (previousNode != null) {
+            previousNode.setNextNode(nextNode);
+        }
+        if (nextNode != null) {
+            nextNode.setPreviousNode(previousNode);
+        }
+        if (oldestSessionNode == sessionNode) {
+            oldestSessionNode = sessionNode.getNextNode();
+        }
+        if (newestSessionNode == sessionNode) {
+            newestSessionNode = sessionNode.getPreviousNode();
+        }
+        Set<String> tokens = userAccountIdToTokensMap.get(userAccountId);
+        tokens.remove(token);
+        if (tokens.isEmpty()) {
+            userAccountIdToTokensMap.remove(userAccountId);
+        }
+        tokenToSessionNodeMap.remove(token);
     }
 
     private static class Node<T> {

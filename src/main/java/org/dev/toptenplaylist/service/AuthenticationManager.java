@@ -36,16 +36,18 @@ public class AuthenticationManager implements AuthenticationService {
         if (!userAccount.getPasswordHash().equals(passwordHash)) {
             throw new AccessDeniedException();
         }
+        String token = generateToken();
         Session session = new Session();
-        session.setToken(generateToken());
+        session.setToken(token);
         session.setUserAccountId(userAccount.getId());
         session.setExpiration((new Date())); // TODO: Add interval to current time
         try {
-            return sessionRepository.set(session);
+            sessionRepository.set(session);
         }
-        catch (IllegalArgumentException | ElementAlreadyExistsException ex) {
+        catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
+        return token;
     }
 
     @Override
