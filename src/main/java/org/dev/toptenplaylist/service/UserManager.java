@@ -19,23 +19,20 @@ public class UserManager implements UserService {
     private final SessionRepository sessionRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserProfileRepository userProfileRepository;
-    private final IdentificationService identificationService;
     private final SecureHashService secureHashService;
 
-    public UserManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, UserProfileRepository userProfileRepository, IdentificationService identificationService, SecureHashService secureHashService) {
+    public UserManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, UserProfileRepository userProfileRepository, SecureHashService secureHashService) {
         this.sessionRepository =  sessionRepository;
         this.userAccountRepository = userAccountRepository;
         this.userProfileRepository = userProfileRepository;
-        this.identificationService = identificationService;
         this.secureHashService = secureHashService;
     }
 
     @Override
-    public User readByLoginName(String sessionToken, String loginName) {
-        if (sessionToken == null) {
+    public User readByLoginName(UUID activeUserAccountId, String loginName) {
+        if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
         if (loginName == null) {
             throw new IllegalArgumentException();
         }
@@ -49,7 +46,7 @@ public class UserManager implements UserService {
         catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
-        if (!activeUserAccount.getId().equals(userAccount.getId())) {
+        if (!activeUserAccountId.equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
         UserProfile userProfile;
@@ -109,11 +106,10 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void updateByLoginName(String sessionToken, String loginName, User user) {
-        if (sessionToken == null) {
+    public void updateByLoginName(UUID activeUserAccountId, String loginName, User user) {
+        if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
         if (loginName == null) {
             throw new IllegalArgumentException();
         }
@@ -127,7 +123,7 @@ public class UserManager implements UserService {
         catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
-        if (!activeUserAccount.getId().equals(userAccount.getId())) {
+        if (!activeUserAccountId.equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
         if (user == null) {
@@ -181,11 +177,10 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void deleteByLoginName(String sessionToken, String loginName) {
-        if (sessionToken == null) {
+    public void deleteByLoginName(UUID activeUserAccountId, String loginName) {
+        if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
         if (loginName == null) {
             throw new IllegalArgumentException();
         }
@@ -199,7 +194,7 @@ public class UserManager implements UserService {
         catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
-        if (!activeUserAccount.getId().equals(userAccount.getId())) {
+        if (!activeUserAccountId.equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
         try {

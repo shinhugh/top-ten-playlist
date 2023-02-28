@@ -1,9 +1,9 @@
 package org.dev.toptenplaylist.service;
 
-import org.dev.toptenplaylist.model.SessionCookie;
-import org.dev.toptenplaylist.model.UserCredentials;
+import org.dev.toptenplaylist.model.AuthenticationResult;
+import org.dev.toptenplaylist.model.LoginCredentials;
 
 public interface AuthenticationService {
-    public SessionCookie login(String sessionToken, UserCredentials userCredentials);
-    public void logout(String sessionToken);
+    public AuthenticationResult login(String sessionToken, LoginCredentials loginCredentials);
+    public AuthenticationResult logout(String sessionToken);
 }

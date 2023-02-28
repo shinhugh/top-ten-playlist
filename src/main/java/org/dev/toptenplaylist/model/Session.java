@@ -10,6 +10,12 @@ public class Session {
 
     public Session() { }
 
+    public Session(String token, UUID userAccountId, Date expiration) {
+        this.token = token;
+        this.userAccountId = userAccountId;
+        this.expiration = expiration;
+    }
+
     public Session(Session session) {
         token = session.token;
         userAccountId = session.userAccountId;

@@ -3,10 +3,10 @@ package org.dev.toptenplaylist.service;
 import org.dev.toptenplaylist.exception.AccessDeniedException;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
+import org.dev.toptenplaylist.model.AuthenticationResult;
+import org.dev.toptenplaylist.model.LoginCredentials;
 import org.dev.toptenplaylist.model.Session;
-import org.dev.toptenplaylist.model.SessionCookie;
 import org.dev.toptenplaylist.model.UserAccount;
-import org.dev.toptenplaylist.model.UserCredentials;
 import org.dev.toptenplaylist.repository.SessionRepository;
 import org.dev.toptenplaylist.repository.UserAccountRepository;
 import org.springframework.stereotype.Service;
@@ -18,64 +18,73 @@ import java.util.UUID;
 public class AuthenticationManager implements AuthenticationService {
     private final SessionRepository sessionRepository;
     private final UserAccountRepository userAccountRepository;
-    private final IdentificationService identificationService;
     private final SecureHashService secureHashService;
     private final int sessionMaxDuration = 7200;
 
-    public AuthenticationManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, IdentificationService identificationService, SecureHashService secureHashService) {
+    public AuthenticationManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, SecureHashService secureHashService) {
         this.sessionRepository = sessionRepository;
         this.userAccountRepository =  userAccountRepository;
-        this.identificationService = identificationService;
         this.secureHashService = secureHashService;
     }
 
     @Override
-    public SessionCookie login(String sessionToken, UserCredentials userCredentials) {
-        try {
-            identificationService.identifyCurrentUser(sessionToken);
-            Session existingSession;
+    public AuthenticationResult login(String sessionToken, LoginCredentials loginCredentials) {
+        AuthenticationResult result = new AuthenticationResult(false, null, 0, null);
+        if (sessionToken != null) {
+            Session requestSession = null;
             try {
-                existingSession = sessionRepository.readByToken(sessionToken);
+                requestSession = sessionRepository.readByToken(sessionToken);
             }
-            catch (NoSuchElementException | IllegalArgumentException ex) {
+            catch (NoSuchElementException ex) {
+                result.setShouldSetCookie(true);
+            }
+            catch (IllegalArgumentException ex) {
                 throw new RuntimeException();
             }
-            int maxAge = (int) ((existingSession.getExpiration().getTime() - System.currentTimeMillis()) / 1000);
-            return new SessionCookie(sessionToken, maxAge);
+            if (requestSession != null) {
+                if (System.currentTimeMillis() < requestSession.getExpiration().getTime()) {
+                    return result;
+                }
+                else {
+                    result.setShouldSetCookie(true);
+                }
+            }
         }
-        catch (AccessDeniedException ignored) { }
-        if (userCredentials == null || userCredentials.getName() == null || userCredentials.getPassword() == null) {
-            throw new IllegalArgumentException();
+        if (loginCredentials == null || loginCredentials.getName() == null || loginCredentials.getPassword() == null) {
+            result.setException(new IllegalArgumentException());
+            return result;
         }
         UserAccount userAccount;
         try {
-            userAccount = userAccountRepository.readByName(userCredentials.getName());
+            userAccount = userAccountRepository.readByName(loginCredentials.getName());
         }
-        catch (NoSuchElementException | IllegalArgumentException ex) {
-            throw new AccessDeniedException();
+        catch (NoSuchElementException ex) {
+            result.setException(new AccessDeniedException());
+            return result;
         }
-        String passwordHash = secureHashService.hash(userCredentials.getPassword());
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        String passwordHash = secureHashService.hash(loginCredentials.getPassword());
         if (!userAccount.getPasswordHash().equals(passwordHash)) {
-            throw new AccessDeniedException();
+            result.setException(new AccessDeniedException());
+            return result;
         }
         String token = generateToken();
-        Session session = new Session();
-        session.setToken(token);
-        session.setUserAccountId(userAccount.getId());
-        session.setExpiration((new Date(System.currentTimeMillis() + sessionMaxDuration * 1000)));
+        Session session = new Session(token, userAccount.getId(), (new Date(System.currentTimeMillis() + sessionMaxDuration * 1000)));
         try {
             sessionRepository.set(session);
         }
         catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
-        return new SessionCookie(token, sessionMaxDuration - 1);
+        return new AuthenticationResult(true, token, sessionMaxDuration - 1, null);
     }
 
     @Override
-    public void logout(String sessionToken) {
+    public AuthenticationResult logout(String sessionToken) {
         if (sessionToken == null) {
-            return;
+            return new AuthenticationResult(false, null, 0, null);
         }
         try {
             sessionRepository.deleteByToken(sessionToken);
@@ -84,6 +93,7 @@ public class AuthenticationManager implements AuthenticationService {
         catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
+        return new AuthenticationResult(true, null, 0, null);
     }
 
     private String generateToken() {

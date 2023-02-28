@@ -1,6 +1,6 @@
 package org.dev.toptenplaylist.model;
 
-public class UserCredentials {
+public class LoginCredentials {
     private String name;
     private String password;
 
