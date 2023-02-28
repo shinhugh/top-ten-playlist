@@ -53,17 +53,9 @@ public class AuthenticationManager implements AuthenticationService {
     @Override
     public void logout(String sessionToken) {
         try {
-            identificationService.identifyCurrentUser(sessionToken);
-        }
-        catch (AccessDeniedException ex) {
-            throw new NoSuchElementException();
-        }
-        try {
             sessionRepository.deleteByToken(sessionToken);
         }
-        catch (NoSuchElementException ex) {
-            throw new RuntimeException();
-        }
+        catch (NoSuchElementException ignored) { }
     }
 
     private String generateToken() {
