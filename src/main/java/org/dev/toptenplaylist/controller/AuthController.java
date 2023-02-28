@@ -14,10 +14,8 @@ public class AuthController {
     }
 
     @PostMapping
-    public void login(@CookieValue("session") String sessionToken, @RequestBody UserCredentials userCredentials) {
-        // TODO: Is sessionToken null if cookie doesn't exist?
-        System.out.println("@@ DEBUG: sessionToken: " + (sessionToken == null ? "null" : sessionToken)); // DEBUG
-        String token = authenticationService.login(sessionToken, userCredentials);
+    public void login(@RequestBody UserCredentials userCredentials) {
+        String token = authenticationService.login(userCredentials);
         // TODO: Set client cookie
     }
 

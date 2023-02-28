@@ -1,7 +1,7 @@
 package org.dev.toptenplaylist.service;
 
-import org.dev.toptenplaylist.model.*;
 import org.dev.toptenplaylist.model.IllegalArgumentException;
+import org.dev.toptenplaylist.model.*;
 import org.dev.toptenplaylist.repository.SessionRepository;
 import org.dev.toptenplaylist.repository.UserAccountRepository;
 import org.dev.toptenplaylist.repository.UserProfileRepository;
@@ -84,7 +84,6 @@ public class UserManager implements UserService {
     @Override
     public void updateByLoginName(String sessionToken, String loginName, User user) {
         UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
-
         UserAccount userAccount;
         try {
             userAccount = userAccountRepository.readByName(loginName);
@@ -95,7 +94,6 @@ public class UserManager implements UserService {
         if (!activeUserAccount.getId().equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
-
         UserProfile userProfile;
         try {
             userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
@@ -103,7 +101,6 @@ public class UserManager implements UserService {
         catch (NoSuchElementException ex) {
             throw new RuntimeException();
         }
-
         if (user.getLoginName() != null) {
             try {
                 userAccountRepository.readByName(user.getLoginName());
@@ -123,7 +120,6 @@ public class UserManager implements UserService {
             catch (NoSuchElementException ignored) { }
             userProfile.setName(user.getPublicName());
         }
-
         try {
             userAccountRepository.set(userAccount);
             userProfileRepository.set(userProfile);

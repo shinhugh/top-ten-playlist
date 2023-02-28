@@ -24,12 +24,7 @@ public class AuthenticationManager implements AuthenticationService {
     }
 
     @Override
-    public String login(String sessionToken, UserCredentials userCredentials) {
-        try {
-            identificationService.identifyCurrentUser(sessionToken);
-            throw new ElementAlreadyExistsException();
-        }
-        catch (AccessDeniedException ignored) { }
+    public String login(UserCredentials userCredentials) {
         UserAccount userAccount;
         try {
             userAccount = userAccountRepository.readByName(userCredentials.getName());
