@@ -58,15 +58,12 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
 
     @Override
     public UUID set(UserAccount userAccount) {
-        if (userAccount == null) {
+        if (userAccount == null || userAccount.getName() == null) {
             throw new IllegalArgumentException();
         }
         UserAccount newUserAccount = new UserAccount(userAccount);
         UUID id = newUserAccount.getId();
         String name = newUserAccount.getName();
-        if (name == null) {
-            throw new IllegalArgumentException();
-        }
         if (id == null) {
             id = generateId();
             newUserAccount.setId(id);

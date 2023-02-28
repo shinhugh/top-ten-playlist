@@ -58,16 +58,13 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
 
     @Override
     public UUID set(UserProfile userProfile) {
-        if (userProfile == null) {
+        if (userProfile == null || userProfile.getUserAccountId() == null || userProfile.getName() == null) {
             throw new IllegalArgumentException();
         }
         UserProfile newUserProfile = new UserProfile(userProfile);
         UUID id = newUserProfile.getId();
         UUID userAccountId = newUserProfile.getUserAccountId();
         String name = newUserProfile.getName();
-        if (userAccountId == null || name == null) {
-            throw new IllegalArgumentException();
-        }
         if (id == null) {
             id = generateId();
             newUserProfile.setId(id);

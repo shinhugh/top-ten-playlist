@@ -37,7 +37,7 @@ public class AuthenticationManager implements AuthenticationService {
             try {
                 existingSession = sessionRepository.readByToken(sessionToken);
             }
-            catch (NoSuchElementException ex) {
+            catch (NoSuchElementException | IllegalArgumentException ex) {
                 throw new RuntimeException();
             }
             int maxAge = (int) ((existingSession.getExpiration().getTime() - System.currentTimeMillis()) / 1000);
@@ -51,7 +51,7 @@ public class AuthenticationManager implements AuthenticationService {
         try {
             userAccount = userAccountRepository.readByName(userCredentials.getName());
         }
-        catch (NoSuchElementException ex) {
+        catch (NoSuchElementException | IllegalArgumentException ex) {
             throw new AccessDeniedException();
         }
         String passwordHash = secureHashService.hash(userCredentials.getPassword());
@@ -81,6 +81,9 @@ public class AuthenticationManager implements AuthenticationService {
             sessionRepository.deleteByToken(sessionToken);
         }
         catch (NoSuchElementException ignored) { }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
     }
 
     private String generateToken() {
@@ -91,6 +94,9 @@ public class AuthenticationManager implements AuthenticationService {
             }
             catch (NoSuchElementException ex) {
                 break;
+            }
+            catch (IllegalArgumentException ex) {
+                throw new RuntimeException();
             }
             token = UUID.randomUUID().toString();
         }

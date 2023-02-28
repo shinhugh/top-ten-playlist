@@ -46,6 +46,9 @@ public class UserManager implements UserService {
         catch (NoSuchElementException ex) {
             throw new AccessDeniedException();
         }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
         if (!activeUserAccount.getId().equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
@@ -53,7 +56,7 @@ public class UserManager implements UserService {
         try {
             userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
         }
-        catch (NoSuchElementException ex) {
+        catch (NoSuchElementException | IllegalArgumentException ex) {
             throw new RuntimeException();
         }
         return new User(userAccount, userProfile);
@@ -65,12 +68,22 @@ public class UserManager implements UserService {
             throw new IllegalArgumentException();
         }
         try {
-            userAccountRepository.readByName(user.getLoginName());
+            try {
+                userAccountRepository.readByName(user.getLoginName());
+            }
+            catch (IllegalArgumentException ex) {
+                throw new RuntimeException();
+            }
             throw new ElementAlreadyExistsException();
         }
         catch (NoSuchElementException ignored) { }
         try {
-            userProfileRepository.readByName(user.getPublicName());
+            try {
+                userProfileRepository.readByName(user.getPublicName());
+            }
+            catch (IllegalArgumentException ex) {
+                throw new RuntimeException();
+            }
             throw new ElementAlreadyExistsException();
         }
         catch (NoSuchElementException ignored) { }
@@ -111,6 +124,9 @@ public class UserManager implements UserService {
         catch (NoSuchElementException ex) {
             throw new AccessDeniedException();
         }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
         if (!activeUserAccount.getId().equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
@@ -121,12 +137,17 @@ public class UserManager implements UserService {
         try {
             userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
         }
-        catch (NoSuchElementException ex) {
+        catch (NoSuchElementException | IllegalArgumentException ex) {
             throw new RuntimeException();
         }
         if (user.getLoginName() != null) {
             try {
-                userAccountRepository.readByName(user.getLoginName());
+                try {
+                    userAccountRepository.readByName(user.getLoginName());
+                }
+                catch (IllegalArgumentException ex) {
+                    throw new RuntimeException();
+                }
                 throw new ElementAlreadyExistsException();
             }
             catch (NoSuchElementException ignored) { }
@@ -137,7 +158,12 @@ public class UserManager implements UserService {
         }
         if (user.getPublicName() != null) {
             try {
-                userProfileRepository.readByName(user.getPublicName());
+                try {
+                    userProfileRepository.readByName(user.getPublicName());
+                }
+                catch (IllegalArgumentException ex) {
+                    throw new RuntimeException();
+                }
                 throw new ElementAlreadyExistsException();
             }
             catch (NoSuchElementException ignored) { }
@@ -168,6 +194,9 @@ public class UserManager implements UserService {
         catch (NoSuchElementException ex) {
             throw new AccessDeniedException();
         }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
         if (!activeUserAccount.getId().equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
@@ -175,9 +204,14 @@ public class UserManager implements UserService {
             userProfileRepository.deleteByUserAccountId(userAccount.getId());
             userAccountRepository.deleteByName(loginName);
         }
-        catch (NoSuchElementException ex) {
+        catch (NoSuchElementException | IllegalArgumentException ex) {
             throw new RuntimeException();
         }
-        sessionRepository.deleteByUserAccountId(userAccount.getId());
+        try {
+            sessionRepository.deleteByUserAccountId(userAccount.getId());
+        }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
     }
 }

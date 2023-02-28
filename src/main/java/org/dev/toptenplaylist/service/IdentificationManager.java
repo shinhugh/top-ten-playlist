@@ -1,6 +1,7 @@
 package org.dev.toptenplaylist.service;
 
 import org.dev.toptenplaylist.exception.AccessDeniedException;
+import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
 import org.dev.toptenplaylist.model.UserAccount;
@@ -32,12 +33,15 @@ public class IdentificationManager implements IdentificationService {
         catch (NoSuchElementException ex) {
             throw new AccessDeniedException();
         }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
         Date currentTime = new Date();
         if (session.getExpiration().compareTo(currentTime) <= 0) {
             try {
                 sessionRepository.deleteByToken(sessionToken);
             }
-            catch (NoSuchElementException ex) {
+            catch (NoSuchElementException | IllegalArgumentException ex) {
                 throw new RuntimeException();
             }
             throw new AccessDeniedException();
@@ -45,7 +49,7 @@ public class IdentificationManager implements IdentificationService {
         try {
             return userAccountRepository.readById(session.getUserAccountId());
         }
-        catch  (NoSuchElementException ex) {
+        catch  (NoSuchElementException | IllegalArgumentException ex) {
             throw new RuntimeException();
         }
     }

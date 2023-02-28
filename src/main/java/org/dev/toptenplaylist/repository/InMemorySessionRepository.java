@@ -33,16 +33,12 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public void set(Session session) {
-        if (session == null) {
+        if (session == null || session.getToken() == null || session.getUserAccountId() == null || session.getExpiration() == null) {
             throw new IllegalArgumentException();
         }
         Session newSession = new Session(session);
         String token = newSession.getToken();
         UUID userAccountId = newSession.getUserAccountId();
-        Date expiration = newSession.getExpiration();
-        if (token == null || userAccountId == null || expiration == null) {
-            throw new IllegalArgumentException();
-        }
         if (tokenToSessionNodeMap.containsKey(token)) {
             deleteSessionNode(tokenToSessionNodeMap.get(token));
         }

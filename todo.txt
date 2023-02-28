@@ -1,2 +1,2 @@
+- Potential state corruption due to concurrency
 - Change type of Session.expiration from Date to something more modern
-- In service methods, handle all IllegalArgumentExceptions that should not propagate
