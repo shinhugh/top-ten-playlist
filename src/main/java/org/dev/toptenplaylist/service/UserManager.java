@@ -141,32 +141,34 @@ public class UserManager implements UserService {
             throw new RuntimeException();
         }
         if (user.getLoginName() != null) {
+            UserAccount loginNameUserAccount = null;
             try {
-                try {
-                    userAccountRepository.readByName(user.getLoginName());
-                }
-                catch (IllegalArgumentException ex) {
-                    throw new RuntimeException();
-                }
-                throw new ElementAlreadyExistsException();
+                loginNameUserAccount = userAccountRepository.readByName(user.getLoginName());
             }
             catch (NoSuchElementException ignored) { }
+            catch (IllegalArgumentException ex) {
+                throw new RuntimeException();
+            }
+            if (loginNameUserAccount != null && !loginNameUserAccount.getId().equals(userAccount.getId())) {
+                throw new ElementAlreadyExistsException();
+            }
             userAccount.setName(user.getLoginName());
         }
         if (user.getPassword() != null) {
             userAccount.setPasswordHash(secureHashService.hash(user.getPassword()));
         }
         if (user.getPublicName() != null) {
+            UserProfile publicNameUserAccount = null;
             try {
-                try {
-                    userProfileRepository.readByName(user.getPublicName());
-                }
-                catch (IllegalArgumentException ex) {
-                    throw new RuntimeException();
-                }
-                throw new ElementAlreadyExistsException();
+                publicNameUserAccount = userProfileRepository.readByName(user.getPublicName());
             }
             catch (NoSuchElementException ignored) { }
+            catch (IllegalArgumentException ex) {
+                throw new RuntimeException();
+            }
+            if (publicNameUserAccount != null && !publicNameUserAccount.getId().equals(userProfile.getId())) {
+                throw new ElementAlreadyExistsException();
+            }
             userProfile.setName(user.getPublicName());
         }
         try {

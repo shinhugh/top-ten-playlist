@@ -1,2 +1,3 @@
 - Potential state corruption due to concurrency
+- On any request, if session token is invalid (doesn't exist in repository), clear cookie with corresponding response
 - Change type of Session.expiration from Date to something more modern
