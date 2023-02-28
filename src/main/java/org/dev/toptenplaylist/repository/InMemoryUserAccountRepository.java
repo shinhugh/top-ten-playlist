@@ -1,11 +1,15 @@
 package org.dev.toptenplaylist.repository;
 
+import org.dev.toptenplaylist.model.ElementAlreadyExistsException;
+import org.dev.toptenplaylist.model.IllegalArgumentException;
+import org.dev.toptenplaylist.model.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserAccount;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.dev.toptenplaylist.service.SecureHashManager;
+import org.dev.toptenplaylist.service.SecureHashService;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.UUID;
 
 // TODO: Replace with JPA-backed implementation of UserAccountRepository
 @Repository
@@ -15,13 +19,13 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
 
     // TEST START
     public InMemoryUserAccountRepository() {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        SecureHashService secureHashService = new SecureHashManager();
         UUID id = new UUID(0, 0);
         String name = "dev";
         UserAccount userAccount = new UserAccount();
         userAccount.setId(id);
         userAccount.setName(name);
-        userAccount.setPasswordHash(passwordEncoder.encode("dev"));
+        userAccount.setPasswordHash(secureHashService.hash("dev"));
         idToUserAccountMap.put(id, userAccount);
         nameToIdMap.put(name, id);
     }
@@ -58,7 +62,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
         }
         else {
             if (nameToIdMap.containsKey(name) && nameToIdMap.get(name) != id) {
-                throw new IllegalArgumentException();
+                throw new ElementAlreadyExistsException();
             }
             UserAccount oldUserAccount = idToUserAccountMap.get(id);
             if (oldUserAccount != null) {

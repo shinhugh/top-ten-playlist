@@ -8,10 +8,10 @@ Create user account:
 curl http://localhost:8080/api/user -v -H "Content-Type: application/json" -d '{"loginName":"test","password":"test","publicName":"Test"}'
 
 Read user account:
-curl http://localhost:8080/api/user/test -v
+curl http://localhost:8080/api/user/dev -v -b "SESSION="
 
 Update user account:
-curl http://localhost:8080/api/user/test -v -X PUT -H "Content-Type: application/json" -d '{"loginName":"test","password":"test","publicName":"Test"}'
+curl http://localhost:8080/api/user/dev -v -X PUT -b "SESSION=" -H "Content-Type: application/json" -d '{"loginName":"test","password":"test","publicName":"Test"}'
 
 Delete user account:
-curl http://localhost:8080/api/user/test -v -X DELETE
+curl http://localhost:8080/api/user/dev -v -X DELETE -b "SESSION="

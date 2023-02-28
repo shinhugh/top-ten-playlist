@@ -1,1 +1,5 @@
-- Consider using custom exception types
+- Make sure that custom exception types are always used (instead of built-in ones)
+- Catch all exceptions that should not propagate and throw RuntimeException for unexpected instances
+- Throw ElementAlreadyExists when fitting
+- Service should not rely on underlying repository for conflict handling
+- Change type of Session.expiration from Date to something more modern

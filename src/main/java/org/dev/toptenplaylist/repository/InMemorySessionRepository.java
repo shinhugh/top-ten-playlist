@@ -1,35 +1,37 @@
 package org.dev.toptenplaylist.repository;
 
-import org.springframework.session.MapSession;
-import org.springframework.session.Session;
-import org.springframework.session.SessionRepository;
+import org.dev.toptenplaylist.model.Session;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
+import java.util.UUID;
 
 @Repository
-public class InMemorySessionRepository implements SessionRepository<Session> {
-
-    Map<String, Session> sessions = new HashMap<>();
-
+public class InMemorySessionRepository implements SessionRepository {
     @Override
-    public Session createSession() {
-        return new MapSession();
+    public Session readByToken(String token) {
+        // TODO
+        return null;
     }
 
     @Override
-    public void save(Session session) {
-        sessions.put(session.getId(), session);
+    public String set(Session session) {
+        // TODO
+        return null;
     }
 
     @Override
-    public Session findById(String s) {
-        return sessions.get(s);
+    public void deleteByToken(String token) {
+        // TODO
     }
 
     @Override
-    public void deleteById(String s) {
-        sessions.remove(s);
+    public void deleteByUserAccountId(UUID userAccountId) {
+        // TODO
+    }
+
+    @Override
+    public void deleteByLessThanOrEqualToExpiration(Date expiration) {
+        // TODO
     }
 }

@@ -1,7 +1,7 @@
 package org.dev.toptenplaylist.controller;
 
+import org.dev.toptenplaylist.model.AccessDeniedException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,7 +12,7 @@ public class AccessDeniedAdvice {
     @ResponseBody
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    String noSuchElementHandler(AccessDeniedException ex) {
+    String exceptionHandler(AccessDeniedException ex) {
         return ex.getMessage();
     }
 }

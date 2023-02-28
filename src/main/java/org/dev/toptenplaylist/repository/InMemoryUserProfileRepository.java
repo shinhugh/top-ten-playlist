@@ -1,12 +1,12 @@
 package org.dev.toptenplaylist.repository;
 
+import org.dev.toptenplaylist.model.ElementAlreadyExistsException;
+import org.dev.toptenplaylist.model.IllegalArgumentException;
+import org.dev.toptenplaylist.model.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserProfile;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 // TODO: Replace with JPA-backed implementation of UserProfileRepository
@@ -18,7 +18,6 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
 
     // TEST START
     public InMemoryUserProfileRepository() {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         UUID id = new UUID(0, 0);
         UUID userAccountId  = new UUID(0, 0);
         String name = "Dev";
@@ -64,10 +63,10 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
         }
         else {
             if (userAccountIdToIdMap.containsKey(userAccountId) && userAccountIdToIdMap.get(userAccountId) != id) {
-                throw new IllegalArgumentException();
+                throw new ElementAlreadyExistsException();
             }
             if (nameToIdMap.containsKey(name) && nameToIdMap.get(name) != id) {
-                throw new IllegalArgumentException();
+                throw new ElementAlreadyExistsException();
             }
             UserProfile oldUserProfile = idToUserProfileMap.get(id);
             if (oldUserProfile != null) {
