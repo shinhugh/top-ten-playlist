@@ -19,17 +19,17 @@ public class UserController {
     }
 
     @GetMapping("/{loginName}")
-    public User read(@CookieValue("session") String sessionToken, @PathVariable String loginName) {
+    public User read(@CookieValue(value = "session", required = false) String sessionToken, @PathVariable String loginName) {
         return userService.readByLoginName(sessionToken, loginName);
     }
 
     @PutMapping("/{loginName}")
-    public void update(@CookieValue("session") String sessionToken, @PathVariable String loginName, @RequestBody User user) {
+    public void update(@CookieValue(value = "session", required = false) String sessionToken, @PathVariable String loginName, @RequestBody User user) {
         userService.updateByLoginName(sessionToken, loginName, user);
     }
 
     @DeleteMapping("/{loginName}")
-    public void delete(@CookieValue("session") String sessionToken, @PathVariable String loginName) {
+    public void delete(@CookieValue(value = "session", required = false) String sessionToken, @PathVariable String loginName) {
         userService.deleteByLoginName(sessionToken, loginName);
     }
 }

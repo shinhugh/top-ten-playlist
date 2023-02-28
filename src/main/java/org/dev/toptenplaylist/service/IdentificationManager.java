@@ -22,6 +22,9 @@ public class IdentificationManager implements IdentificationService {
 
     @Override
     public UserAccount identifyCurrentUser(String sessionToken) {
+        if (sessionToken == null) {
+            throw new AccessDeniedException();
+        }
         Session session;
         try {
             session = sessionRepository.readByToken(sessionToken);

@@ -27,6 +27,9 @@ public class UserManager implements UserService {
 
     @Override
     public User readByLoginName(String sessionToken, String loginName) {
+        if (sessionToken == null) {
+            throw new AccessDeniedException();
+        }
         UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
         UserAccount userAccount;
         try {
@@ -83,6 +86,9 @@ public class UserManager implements UserService {
 
     @Override
     public void updateByLoginName(String sessionToken, String loginName, User user) {
+        if (sessionToken == null) {
+            throw new AccessDeniedException();
+        }
         UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
         UserAccount userAccount;
         try {
@@ -131,6 +137,9 @@ public class UserManager implements UserService {
 
     @Override
     public void deleteByLoginName(String sessionToken, String loginName) {
+        if (sessionToken == null) {
+            throw new AccessDeniedException();
+        }
         UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
         UserAccount userAccount;
         try {

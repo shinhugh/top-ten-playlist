@@ -15,6 +15,7 @@ public class AuthenticationManager implements AuthenticationService {
     private final UserAccountRepository userAccountRepository;
     private final IdentificationService identificationService;
     private final SecureHashService secureHashService;
+    private final int sessionMaxDuration = 7200;
 
     public AuthenticationManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, IdentificationService identificationService, SecureHashService secureHashService) {
         this.sessionRepository = sessionRepository;
@@ -24,7 +25,20 @@ public class AuthenticationManager implements AuthenticationService {
     }
 
     @Override
-    public String login(UserCredentials userCredentials) {
+    public SessionCookie login(String sessionToken, UserCredentials userCredentials) {
+        try {
+            identificationService.identifyCurrentUser(sessionToken);
+            Session existingSession;
+            try {
+                existingSession = sessionRepository.readByToken(sessionToken);
+            }
+            catch (NoSuchElementException ex) {
+                throw new RuntimeException();
+            }
+            int maxAge = (int) ((existingSession.getExpiration().getTime() - System.currentTimeMillis()) / 1000);
+            return new SessionCookie(sessionToken, maxAge);
+        }
+        catch (AccessDeniedException ignored) { }
         UserAccount userAccount;
         try {
             userAccount = userAccountRepository.readByName(userCredentials.getName());
@@ -40,18 +54,21 @@ public class AuthenticationManager implements AuthenticationService {
         Session session = new Session();
         session.setToken(token);
         session.setUserAccountId(userAccount.getId());
-        session.setExpiration((new Date(System.currentTimeMillis() + 60000))); // TODO: Specify value elsewhere
+        session.setExpiration((new Date(System.currentTimeMillis() + sessionMaxDuration * 1000)));
         try {
             sessionRepository.set(session);
         }
         catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
-        return token;
+        return new SessionCookie(token, sessionMaxDuration - 1);
     }
 
     @Override
     public void logout(String sessionToken) {
+        if (sessionToken == null) {
+            return;
+        }
         try {
             sessionRepository.deleteByToken(sessionToken);
         }
