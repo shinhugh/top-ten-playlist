@@ -7,14 +7,15 @@ import org.dev.toptenplaylist.model.UserProfile;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 // TODO: Replace with JPA-backed implementation of UserProfileRepository
 @Repository
 public class InMemoryUserProfileRepository implements UserProfileRepository {
-    private final HashMap<UUID, UserProfile> idToUserProfileMap = new HashMap<>();
-    private final HashMap<UUID, UUID> userAccountIdToIdMap = new HashMap<>();
-    private final HashMap<String, UUID> nameToIdMap = new HashMap<>();
+    private final Map<UUID, UserProfile> idToUserProfileMap = new HashMap<>();
+    private final Map<UUID, UUID> userAccountIdToIdMap = new HashMap<>();
+    private final Map<String, UUID> nameToIdMap = new HashMap<>();
 
     // TEST START
     public InMemoryUserProfileRepository() {
@@ -51,15 +52,16 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
 
     @Override
     public UUID set(UserProfile userProfile) {
-        UUID id = userProfile.getId();
-        UUID userAccountId = userProfile.getUserAccountId();
-        String name = userProfile.getName();
+        UserProfile newUserProfile = new UserProfile(userProfile);
+        UUID id = newUserProfile.getId();
+        UUID userAccountId = newUserProfile.getUserAccountId();
+        String name = newUserProfile.getName();
         if (userAccountId == null || name == null) {
             throw new IllegalArgumentException();
         }
         if (id == null) {
             id = generateId();
-            userProfile.setId(id);
+            newUserProfile.setId(id);
         }
         else {
             if (userAccountIdToIdMap.containsKey(userAccountId) && userAccountIdToIdMap.get(userAccountId) != id) {
@@ -74,7 +76,7 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
                 nameToIdMap.remove(oldUserProfile.getName());
             }
         }
-        idToUserProfileMap.put(id, new UserProfile(userProfile)); // TODO: Does Map.put() store reference?
+        idToUserProfileMap.put(id, newUserProfile);
         userAccountIdToIdMap.put(userAccountId, id);
         nameToIdMap.put(name, id);
         return id;

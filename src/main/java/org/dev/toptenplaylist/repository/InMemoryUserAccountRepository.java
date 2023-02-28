@@ -9,13 +9,14 @@ import org.dev.toptenplaylist.service.SecureHashService;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 // TODO: Replace with JPA-backed implementation of UserAccountRepository
 @Repository
 public class InMemoryUserAccountRepository implements UserAccountRepository {
-    private final HashMap<UUID, UserAccount> idToUserAccountMap = new HashMap<>();
-    private final HashMap<String, UUID> nameToIdMap = new HashMap<>();
+    private final Map<UUID, UserAccount> idToUserAccountMap = new HashMap<>();
+    private final Map<String, UUID> nameToIdMap = new HashMap<>();
 
     // TEST START
     public InMemoryUserAccountRepository() {
@@ -32,7 +33,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
     // TEST FINISH
 
     @Override
-    public UserAccount readById(UUID id) { // TODO: Necessary?
+    public UserAccount readById(UUID id) {
         UserAccount userAccount = idToUserAccountMap.get(id);
         if (userAccount == null) {
             throw new NoSuchElementException();
@@ -51,14 +52,15 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
 
     @Override
     public UUID set(UserAccount userAccount) {
-        UUID id = userAccount.getId();
-        String name = userAccount.getName();
+        UserAccount newUserAccount = new UserAccount(userAccount);
+        UUID id = newUserAccount.getId();
+        String name = newUserAccount.getName();
         if (name == null) {
             throw new IllegalArgumentException();
         }
         if (id == null) {
             id = generateId();
-            userAccount.setId(id);
+            newUserAccount.setId(id);
         }
         else {
             if (nameToIdMap.containsKey(name) && nameToIdMap.get(name) != id) {
@@ -69,7 +71,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
                 nameToIdMap.remove(oldUserAccount.getName());
             }
         }
-        idToUserAccountMap.put(id, new UserAccount(userAccount)); // TODO: Does Map.put() store reference?
+        idToUserAccountMap.put(id, newUserAccount);
         nameToIdMap.put(name, id);
         return id;
     }

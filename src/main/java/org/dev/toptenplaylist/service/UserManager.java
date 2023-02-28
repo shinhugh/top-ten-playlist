@@ -149,6 +149,6 @@ public class UserManager implements UserService {
         catch (NoSuchElementException ex) {
             throw new RuntimeException();
         }
-        // TODO: Purge all sessions for this user
+        sessionRepository.deleteByUserAccountId(userAccount.getId());
     }
 }
