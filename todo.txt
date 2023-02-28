@@ -1,3 +1,2 @@
 - Change type of Session.expiration from Date to something more modern
-- Remove unnecessary code that comes from forgetting that things are references
-  (fetching reference, modifying reference, then unnecessarily assigning original variable to reference again)
+- In service methods, handle all IllegalArgumentExceptions that should not propagate

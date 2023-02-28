@@ -34,6 +34,9 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
 
     @Override
     public UserAccount readById(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
         UserAccount userAccount = idToUserAccountMap.get(id);
         if (userAccount == null) {
             throw new NoSuchElementException();
@@ -43,6 +46,9 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
 
     @Override
     public UserAccount readByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
         UserAccount userAccount = idToUserAccountMap.get(nameToIdMap.get(name));
         if (userAccount == null) {
             throw new NoSuchElementException();
@@ -52,6 +58,9 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
 
     @Override
     public UUID set(UserAccount userAccount) {
+        if (userAccount == null) {
+            throw new IllegalArgumentException();
+        }
         UserAccount newUserAccount = new UserAccount(userAccount);
         UUID id = newUserAccount.getId();
         String name = newUserAccount.getName();
@@ -78,6 +87,9 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
 
     @Override
     public void deleteByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
         UUID id = nameToIdMap.get(name);
         if (id == null) {
             throw new NoSuchElementException();

@@ -44,6 +44,9 @@ public class AuthenticationManager implements AuthenticationService {
             return new SessionCookie(sessionToken, maxAge);
         }
         catch (AccessDeniedException ignored) { }
+        if (userCredentials == null || userCredentials.getName() == null || userCredentials.getPassword() == null) {
+            throw new IllegalArgumentException();
+        }
         UserAccount userAccount;
         try {
             userAccount = userAccountRepository.readByName(userCredentials.getName());

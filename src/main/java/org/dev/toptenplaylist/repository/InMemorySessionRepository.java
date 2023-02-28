@@ -21,6 +21,9 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public Session readByToken(String token) {
+        if (token == null) {
+            throw new IllegalArgumentException();
+        }
         Node<Session> sessionNode = tokenToSessionNodeMap.get(token);
         if (sessionNode == null) {
             throw new NoSuchElementException();
@@ -30,6 +33,9 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public void set(Session session) {
+        if (session == null) {
+            throw new IllegalArgumentException();
+        }
         Session newSession = new Session(session);
         String token = newSession.getToken();
         UUID userAccountId = newSession.getUserAccountId();
@@ -72,6 +78,9 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public void deleteByToken(String token) {
+        if (token == null) {
+            throw new IllegalArgumentException();
+        }
         Node<Session> sessionNode = tokenToSessionNodeMap.get(token);
         if (sessionNode == null) {
             throw new NoSuchElementException();
@@ -81,6 +90,9 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public void deleteByUserAccountId(UUID userAccountId) {
+        if (userAccountId == null) {
+            throw new IllegalArgumentException();
+        }
         Set<String> tokens = new HashSet<>(userAccountIdToTokensMap.get(userAccountId));
         for (String token : tokens) {
             deleteSessionNode(tokenToSessionNodeMap.get(token));
@@ -89,6 +101,9 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public void deleteByLessThanOrEqualToExpiration(Date expiration) {
+        if (expiration == null) {
+            throw new IllegalArgumentException();
+        }
         Node<Session> currentNode = oldestSessionNode;
         while (currentNode != null && currentNode.getContent().getExpiration().compareTo(expiration) <= 0) {
             Node<Session> deleteNode = currentNode;

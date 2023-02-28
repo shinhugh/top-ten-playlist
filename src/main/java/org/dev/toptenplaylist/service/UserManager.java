@@ -36,6 +36,9 @@ public class UserManager implements UserService {
             throw new AccessDeniedException();
         }
         UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
+        if (loginName == null) {
+            throw new IllegalArgumentException();
+        }
         UserAccount userAccount;
         try {
             userAccount = userAccountRepository.readByName(loginName);
@@ -58,6 +61,9 @@ public class UserManager implements UserService {
 
     @Override
     public void create(User user) {
+        if (user == null || user.getLoginName() == null || user.getPassword() == null || user.getPublicName() == null) {
+            throw new IllegalArgumentException();
+        }
         try {
             userAccountRepository.readByName(user.getLoginName());
             throw new ElementAlreadyExistsException();
@@ -95,6 +101,9 @@ public class UserManager implements UserService {
             throw new AccessDeniedException();
         }
         UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
+        if (loginName == null) {
+            throw new IllegalArgumentException();
+        }
         UserAccount userAccount;
         try {
             userAccount = userAccountRepository.readByName(loginName);
@@ -104,6 +113,9 @@ public class UserManager implements UserService {
         }
         if (!activeUserAccount.getId().equals(userAccount.getId())) {
             throw new AccessDeniedException();
+        }
+        if (user == null) {
+            throw new IllegalArgumentException();
         }
         UserProfile userProfile;
         try {
@@ -146,6 +158,9 @@ public class UserManager implements UserService {
             throw new AccessDeniedException();
         }
         UserAccount activeUserAccount = identificationService.identifyCurrentUser(sessionToken);
+        if (loginName == null) {
+            throw new IllegalArgumentException();
+        }
         UserAccount userAccount;
         try {
             userAccount = userAccountRepository.readByName(loginName);
