@@ -101,7 +101,6 @@ public class InMemorySessionRepository implements SessionRepository {
         Session session = sessionNode.getContent();
         String token = session.getToken();
         UUID userAccountId = session.getUserAccountId();
-        Date expiration = session.getExpiration();
         if (!tokenToSessionNodeMap.containsKey(token)) {
             throw new NoSuchElementException();
         }
@@ -114,10 +113,10 @@ public class InMemorySessionRepository implements SessionRepository {
             nextNode.setPreviousNode(previousNode);
         }
         if (oldestSessionNode == sessionNode) {
-            oldestSessionNode = sessionNode.getNextNode();
+            oldestSessionNode = nextNode;
         }
         if (newestSessionNode == sessionNode) {
-            newestSessionNode = sessionNode.getPreviousNode();
+            newestSessionNode = previousNode;
         }
         Set<String> tokens = userAccountIdToTokensMap.get(userAccountId);
         tokens.remove(token);
