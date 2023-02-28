@@ -72,17 +72,29 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public void deleteByToken(String token) {
-        // TODO
+        Node<Session> sessionNode = tokenToSessionNodeMap.get(token);
+        if (sessionNode == null) {
+            throw new NoSuchElementException();
+        }
+        deleteSessionNode(sessionNode);
     }
 
     @Override
     public void deleteByUserAccountId(UUID userAccountId) {
-        // TODO
+        Set<String> tokens = new HashSet<>(userAccountIdToTokensMap.get(userAccountId));
+        for (String token : tokens) {
+            deleteSessionNode(tokenToSessionNodeMap.get(token));
+        }
     }
 
     @Override
     public void deleteByLessThanOrEqualToExpiration(Date expiration) {
-        // TODO
+        Node<Session> currentNode = oldestSessionNode;
+        while (currentNode != null && currentNode.getContent().getExpiration().compareTo(expiration) <= 0) {
+            Node<Session> deleteNode = currentNode;
+            currentNode = currentNode.getNextNode();
+            deleteSessionNode(deleteNode);
+        }
     }
 
     private void deleteSessionNode(Node<Session> sessionNode) {
