@@ -2,7 +2,7 @@ Login:
 curl http://localhost:8080/api/auth -v -H "Content-Type: application/json" -d '{"name":"dev","password":"dev"}'
 
 Logout:
-curl http://localhost:8080/api/auth -v -X DELETE
+curl http://localhost:8080/api/auth -v -X DELETE -b "session="
 
 Create user account:
 curl http://localhost:8080/api/user -v -H "Content-Type: application/json" -d '{"loginName":"dev","password":"dev","publicName":"Dev"}'
