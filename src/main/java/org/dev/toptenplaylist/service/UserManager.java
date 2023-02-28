@@ -1,7 +1,12 @@
 package org.dev.toptenplaylist.service;
 
-import org.dev.toptenplaylist.model.IllegalArgumentException;
-import org.dev.toptenplaylist.model.*;
+import org.dev.toptenplaylist.exception.AccessDeniedException;
+import org.dev.toptenplaylist.exception.ElementAlreadyExistsException;
+import org.dev.toptenplaylist.exception.IllegalArgumentException;
+import org.dev.toptenplaylist.exception.NoSuchElementException;
+import org.dev.toptenplaylist.model.User;
+import org.dev.toptenplaylist.model.UserAccount;
+import org.dev.toptenplaylist.model.UserProfile;
 import org.dev.toptenplaylist.repository.SessionRepository;
 import org.dev.toptenplaylist.repository.UserAccountRepository;
 import org.dev.toptenplaylist.repository.UserProfileRepository;

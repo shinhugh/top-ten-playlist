@@ -13,7 +13,7 @@ public class Session {
     public Session(Session session) {
         token = session.token;
         userAccountId = session.userAccountId;
-        expiration = session.expiration;
+        expiration = new Date(session.expiration.getTime());
     }
 
     public String getToken() {

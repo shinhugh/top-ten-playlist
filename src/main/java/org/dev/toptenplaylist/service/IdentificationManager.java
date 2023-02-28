@@ -1,7 +1,7 @@
 package org.dev.toptenplaylist.service;
 
-import org.dev.toptenplaylist.model.AccessDeniedException;
-import org.dev.toptenplaylist.model.NoSuchElementException;
+import org.dev.toptenplaylist.exception.AccessDeniedException;
+import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.dev.toptenplaylist.repository.SessionRepository;

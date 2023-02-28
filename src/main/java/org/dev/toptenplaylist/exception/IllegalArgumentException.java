@@ -1,4 +1,4 @@
-package org.dev.toptenplaylist.model;
+package org.dev.toptenplaylist.exception;
 
 public class IllegalArgumentException extends RuntimeException {
     public IllegalArgumentException() {

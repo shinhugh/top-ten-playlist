@@ -1,4 +1,3 @@
 - Change type of Session.expiration from Date to something more modern
-- Implement deep copy for copy constructors (UUID, Date, etc.)
 - Remove unnecessary code that comes from forgetting that things are references
   (fetching reference, modifying reference, then unnecessarily assigning original variable to reference again)

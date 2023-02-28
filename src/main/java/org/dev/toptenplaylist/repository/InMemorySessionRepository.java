@@ -1,7 +1,7 @@
 package org.dev.toptenplaylist.repository;
 
-import org.dev.toptenplaylist.model.IllegalArgumentException;
-import org.dev.toptenplaylist.model.NoSuchElementException;
+import org.dev.toptenplaylist.exception.IllegalArgumentException;
+import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
 import org.springframework.stereotype.Repository;
 

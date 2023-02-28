@@ -1,6 +1,6 @@
 package org.dev.toptenplaylist.controller;
 
-import org.dev.toptenplaylist.model.ElementAlreadyExistsException;
+import org.dev.toptenplaylist.exception.ElementAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

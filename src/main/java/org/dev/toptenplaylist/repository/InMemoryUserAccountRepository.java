@@ -1,8 +1,8 @@
 package org.dev.toptenplaylist.repository;
 
-import org.dev.toptenplaylist.model.ElementAlreadyExistsException;
-import org.dev.toptenplaylist.model.IllegalArgumentException;
-import org.dev.toptenplaylist.model.NoSuchElementException;
+import org.dev.toptenplaylist.exception.ElementAlreadyExistsException;
+import org.dev.toptenplaylist.exception.IllegalArgumentException;
+import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.dev.toptenplaylist.service.SecureHashManager;
 import org.dev.toptenplaylist.service.SecureHashService;
