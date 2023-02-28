@@ -40,7 +40,7 @@ public class AuthenticationManager implements AuthenticationService {
         Session session = new Session();
         session.setToken(token);
         session.setUserAccountId(userAccount.getId());
-        session.setExpiration((new Date())); // TODO: Add interval to current time
+        session.setExpiration((new Date(System.currentTimeMillis() + 60000))); // TODO: Specify value elsewhere
         try {
             sessionRepository.set(session);
         }
