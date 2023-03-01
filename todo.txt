@@ -1,5 +1,5 @@
+- Clear session cookie when user deletes self (perhaps unnecessary, since next request with invalid session cookie will
+  receive response that clears cookie)
 - Potential state corruption due to concurrency
 - Change type of Session.expiration from Date to something more modern
 - Set up JPA and replace in-memory implementations of repositories
-- Clear session cookie when user deletes self (perhaps unnecessary, since next request with invalid session cookie will
-  receive response that clears cookie)
