@@ -32,7 +32,7 @@ public class SessionTokenManager implements SessionTokenService {
                 throw new RuntimeException();
             }
             if (session != null) {
-                if (System.currentTimeMillis() < session.getExpiration().getTime()) {
+                if (System.currentTimeMillis() < session.getExpiration()) {
                     userAccountId = session.getUserAccountId();
                 }
                 else {

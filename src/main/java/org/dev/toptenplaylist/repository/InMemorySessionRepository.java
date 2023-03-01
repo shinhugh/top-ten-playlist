@@ -33,7 +33,7 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public void set(Session session) {
-        if (session == null || session.getToken() == null || session.getUserAccountId() == null || session.getExpiration() == null) {
+        if (session == null || session.getToken() == null || session.getUserAccountId() == null) {
             throw new IllegalArgumentException();
         }
         Session newSession = new Session(session);
@@ -45,7 +45,7 @@ public class InMemorySessionRepository implements SessionRepository {
         Node<Session> sessionNode = new Node<>(newSession);
         Node<Session> oneOlderNode = newestSessionNode;
         Node<Session> oneNewerNode = null;
-        while (oneOlderNode != null && oneOlderNode.getContent().getExpiration().compareTo(newSession.getExpiration()) > 0) {
+        while (oneOlderNode != null && newSession.getExpiration() < oneOlderNode.getContent().getExpiration()) {
             oneNewerNode = oneOlderNode;
             oneOlderNode = oneOlderNode.getPreviousNode();
         }
@@ -96,12 +96,9 @@ public class InMemorySessionRepository implements SessionRepository {
     }
 
     @Override
-    public void deleteByLessThanOrEqualToExpiration(Date expiration) {
-        if (expiration == null) {
-            throw new IllegalArgumentException();
-        }
+    public void deleteByLessThanOrEqualToExpiration(long expiration) {
         Node<Session> currentNode = oldestSessionNode;
-        while (currentNode != null && currentNode.getContent().getExpiration().compareTo(expiration) <= 0) {
+        while (currentNode != null && currentNode.getContent().getExpiration() <= expiration) {
             Node<Session> deleteNode = currentNode;
             currentNode = currentNode.getNextNode();
             deleteSessionNode(deleteNode);

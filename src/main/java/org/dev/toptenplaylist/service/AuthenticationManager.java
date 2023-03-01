@@ -42,7 +42,7 @@ public class AuthenticationManager implements AuthenticationService {
                 throw new RuntimeException();
             }
             if (requestSession != null) {
-                if (System.currentTimeMillis() < requestSession.getExpiration().getTime()) {
+                if (System.currentTimeMillis() < requestSession.getExpiration()) {
                     return result;
                 }
                 else {
@@ -71,7 +71,7 @@ public class AuthenticationManager implements AuthenticationService {
             return result;
         }
         String token = generateToken();
-        Session session = new Session(token, userAccount.getId(), (new Date(System.currentTimeMillis() + sessionMaxDuration * 1000)));
+        Session session = new Session(token, userAccount.getId(), System.currentTimeMillis() + sessionMaxDuration * 1000L);
         try {
             sessionRepository.set(session);
         }

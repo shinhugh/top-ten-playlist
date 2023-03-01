@@ -1,13 +1,12 @@
 package org.dev.toptenplaylist.model;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class SongList implements Identifiable {
     private UUID id;
     private UUID userProfileId;
     private String title;
-    private Date lastModificationDate;
+    private long lastModificationDate;
 
     @Override
     public UUID getId() {
@@ -35,11 +34,11 @@ public class SongList implements Identifiable {
         this.title = title;
     }
 
-    public Date getLastModificationDate() {
+    public long getLastModificationDate() {
         return lastModificationDate;
     }
 
-    public void setLastModificationDate(Date lastModificationDate) {
+    public void setLastModificationDate(long lastModificationDate) {
         this.lastModificationDate = lastModificationDate;
     }
 }

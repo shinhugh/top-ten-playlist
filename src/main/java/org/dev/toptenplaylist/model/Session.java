@@ -1,16 +1,15 @@
 package org.dev.toptenplaylist.model;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class Session {
     private String token;
     private UUID userAccountId;
-    private Date expiration;
+    private long expiration;
 
     public Session() { }
 
-    public Session(String token, UUID userAccountId, Date expiration) {
+    public Session(String token, UUID userAccountId, long expiration) {
         this.token = token;
         this.userAccountId = userAccountId;
         this.expiration = expiration;
@@ -19,7 +18,7 @@ public class Session {
     public Session(Session session) {
         token = session.token;
         userAccountId = session.userAccountId;
-        expiration = new Date(session.expiration.getTime());
+        expiration = session.expiration;
     }
 
     public String getToken() {
@@ -38,11 +37,11 @@ public class Session {
         this.userAccountId = userAccountId;
     }
 
-    public Date getExpiration() {
+    public long getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(Date expiration) {
+    public void setExpiration(long expiration) {
         this.expiration = expiration;
     }
 }
