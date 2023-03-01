@@ -368,7 +368,7 @@ public class UserManager implements UserService {
         }
         try {
             userProfileRepository.deleteByUserAccountId(userAccount.getId());
-            userAccountRepository.deleteByName(loginName);
+            userAccountRepository.deleteById(userAccount.getId());
         }
         catch (NoSuchElementException | IllegalArgumentException ex) {
             throw new RuntimeException();

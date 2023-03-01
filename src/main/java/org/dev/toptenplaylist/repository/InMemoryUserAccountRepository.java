@@ -95,19 +95,6 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
         idToUserAccountMap.remove(id);
     }
 
-    @Override
-    public void deleteByName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException();
-        }
-        UUID id = nameToIdMap.get(name);
-        if (id == null) {
-            throw new NoSuchElementException();
-        }
-        nameToIdMap.remove(name);
-        idToUserAccountMap.remove(id);
-    }
-
     private UUID generateId() {
         UUID id = UUID.randomUUID();
         while (idToUserAccountMap.containsKey(id)) {
