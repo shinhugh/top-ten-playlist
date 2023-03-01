@@ -11,7 +11,6 @@ import org.dev.toptenplaylist.repository.SessionRepository;
 import org.dev.toptenplaylist.repository.UserAccountRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Service
