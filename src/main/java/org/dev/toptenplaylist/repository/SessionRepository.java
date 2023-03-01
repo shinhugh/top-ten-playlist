@@ -9,6 +9,6 @@ public interface SessionRepository {
     Session readByToken(String token);
     void set(Session session);
     void deleteByToken(String token);
-    void deleteByUserAccountId(UUID  userAccountId);
+    void deleteByUserAccountId(UUID userAccountId);
     void deleteByLessThanOrEqualToExpiration(Date expiration);
 }
