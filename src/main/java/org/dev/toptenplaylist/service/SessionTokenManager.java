@@ -11,14 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Service
-public class RequestHandlerManager implements RequestHandlerService {
+public class SessionTokenManager implements SessionTokenService {
     private final SessionRepository sessionRepository;
 
-    public RequestHandlerManager(SessionRepository sessionRepository) {
+    public SessionTokenManager(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
     }
 
-    public Object handle(HttpServletResponse response, String requestSessionToken, RequestHandler requestHandler) {
+    public UUID handleSessionToken(HttpServletResponse response, String requestSessionToken) {
         UUID userAccountId = null;
         if (requestSessionToken != null) {
             Session session = null;
@@ -46,7 +46,7 @@ public class RequestHandlerManager implements RequestHandlerService {
                 }
             }
         }
-        return requestHandler.handle(userAccountId);
+        return userAccountId;
     }
 
     private void clearSessionCookie(HttpServletResponse response) {
