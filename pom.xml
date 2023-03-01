@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.dev</groupId>
-	<artifactId>hub</artifactId>
+	<artifactId>top-ten-playlist</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>hub</name>
-	<description>Personal hub</description>
+	<name>top-ten-playlist</name>
+	<description>Playlist of top ten songs</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
