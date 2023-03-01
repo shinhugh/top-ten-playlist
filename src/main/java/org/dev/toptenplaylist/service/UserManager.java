@@ -29,6 +29,37 @@ public class UserManager implements UserService {
     }
 
     @Override
+    public User readById(UUID activeUserAccountId, UUID id) {
+        if (activeUserAccountId == null) {
+            throw new AccessDeniedException();
+        }
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+        UserProfile userProfile;
+        try {
+            userProfile = userProfileRepository.readById(id);
+        }
+        catch (NoSuchElementException ex) {
+            throw new AccessDeniedException();
+        }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        UserAccount userAccount;
+        try {
+            userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
+        }
+        catch (NoSuchElementException | IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        if (!activeUserAccountId.equals(userAccount.getId())) {
+            throw new AccessDeniedException();
+        }
+        return new User(userAccount, userProfile);
+    }
+
+    @Override
     public User readByLoginName(UUID activeUserAccountId, String loginName) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
@@ -55,6 +86,37 @@ public class UserManager implements UserService {
         }
         catch (NoSuchElementException | IllegalArgumentException ex) {
             throw new RuntimeException();
+        }
+        return new User(userAccount, userProfile);
+    }
+
+    @Override
+    public User readByPublicName(UUID activeUserAccountId, String publicName) {
+        if (activeUserAccountId == null) {
+            throw new AccessDeniedException();
+        }
+        if (publicName == null) {
+            throw new IllegalArgumentException();
+        }
+        UserProfile userProfile;
+        try {
+            userProfile = userProfileRepository.readByName(publicName);
+        }
+        catch (NoSuchElementException ex) {
+            throw new AccessDeniedException();
+        }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        UserAccount userAccount;
+        try {
+            userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
+        }
+        catch (NoSuchElementException | IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        if (!activeUserAccountId.equals(userAccount.getId())) {
+            throw new AccessDeniedException();
         }
         return new User(userAccount, userProfile);
     }
@@ -101,6 +163,77 @@ public class UserManager implements UserService {
             userProfileRepository.set(userProfile);
         }
         catch (IllegalArgumentException  | ElementAlreadyExistsException ex) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public void updateById(UUID activeUserAccountId, UUID id, User user) {
+        if (activeUserAccountId == null) {
+            throw new AccessDeniedException();
+        }
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+        UserProfile userProfile;
+        try {
+            userProfile = userProfileRepository.readById(id);
+        }
+        catch (NoSuchElementException ex) {
+            throw new AccessDeniedException();
+        }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        UserAccount userAccount;
+        try {
+            userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
+        }
+        catch (NoSuchElementException | IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        if (!activeUserAccountId.equals(userAccount.getId())) {
+            throw new AccessDeniedException();
+        }
+        if (user == null) {
+            throw new IllegalArgumentException();
+        }
+        if (user.getLoginName() != null) {
+            UserAccount loginNameUserAccount = null;
+            try {
+                loginNameUserAccount = userAccountRepository.readByName(user.getLoginName());
+            }
+            catch (NoSuchElementException ignored) { }
+            catch (IllegalArgumentException ex) {
+                throw new RuntimeException();
+            }
+            if (loginNameUserAccount != null && !loginNameUserAccount.getId().equals(userAccount.getId())) {
+                throw new ElementAlreadyExistsException();
+            }
+            userAccount.setName(user.getLoginName());
+        }
+        if (user.getPassword() != null) {
+            userAccount.setPasswordHash(secureHashService.hash(user.getPassword()));
+        }
+        if (user.getPublicName() != null) {
+            UserProfile publicNameUserAccount = null;
+            try {
+                publicNameUserAccount = userProfileRepository.readByName(user.getPublicName());
+            }
+            catch (NoSuchElementException ignored) { }
+            catch (IllegalArgumentException ex) {
+                throw new RuntimeException();
+            }
+            if (publicNameUserAccount != null && !publicNameUserAccount.getId().equals(userProfile.getId())) {
+                throw new ElementAlreadyExistsException();
+            }
+            userProfile.setName(user.getPublicName());
+        }
+        try {
+            userAccountRepository.set(userAccount);
+            userProfileRepository.set(userProfile);
+        }
+        catch (IllegalArgumentException | ElementAlreadyExistsException ex) {
             throw new RuntimeException();
         }
     }
@@ -172,6 +305,42 @@ public class UserManager implements UserService {
             userProfileRepository.set(userProfile);
         }
         catch (IllegalArgumentException | ElementAlreadyExistsException ex) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public void deleteById(UUID activeUserAccountId, UUID id) {
+        if (activeUserAccountId == null) {
+            throw new AccessDeniedException();
+        }
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+        UserProfile userProfile;
+        try {
+            userProfile = userProfileRepository.readById(id);
+        }
+        catch (NoSuchElementException ex) {
+            throw new AccessDeniedException();
+        }
+        catch (IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        if (!activeUserAccountId.equals(userProfile.getUserAccountId())) {
+            throw new AccessDeniedException();
+        }
+        try {
+            userProfileRepository.deleteById(id);
+            userAccountRepository.deleteById(userProfile.getUserAccountId());
+        }
+        catch (NoSuchElementException | IllegalArgumentException ex) {
+            throw new RuntimeException();
+        }
+        try {
+            sessionRepository.deleteByUserAccountId(userProfile.getUserAccountId());
+        }
+        catch (IllegalArgumentException ex) {
             throw new RuntimeException();
         }
     }

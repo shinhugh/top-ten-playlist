@@ -19,8 +19,8 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
 
     // TEST START
     public InMemoryUserProfileRepository() {
-        UUID id = new UUID(0, 0);
-        UUID userAccountId  = new UUID(0, 0);
+        UUID id = new UUID(1, 2);
+        UUID userAccountId  = new UUID(1, 2);
         String name = "Dev";
         UserProfile userProfile = new UserProfile();
         userProfile.setId(id);
@@ -31,6 +31,18 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
         nameToIdMap.put(name, id);
     }
     // TEST FINISH
+
+    @Override
+    public UserProfile readById(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+        UserProfile userProfile = idToUserProfileMap.get(id);
+        if (userProfile == null) {
+            throw new NoSuchElementException();
+        }
+        return new UserProfile(userProfile);
+    }
 
     @Override
     public UserProfile readByUserAccountId(UUID userAccountId) {
@@ -86,6 +98,20 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
         userAccountIdToIdMap.put(userAccountId, id);
         nameToIdMap.put(name, id);
         return id;
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+        UserProfile userProfile = idToUserProfileMap.get(id);
+        if (userProfile == null) {
+            throw new NoSuchElementException();
+        }
+        userAccountIdToIdMap.remove(userProfile.getUserAccountId());
+        nameToIdMap.remove(userProfile.getName());
+        idToUserProfileMap.remove(id);
     }
 
     @Override

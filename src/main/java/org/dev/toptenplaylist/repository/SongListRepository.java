@@ -5,7 +5,7 @@ import org.dev.toptenplaylist.model.SongList;
 import java.util.UUID;
 
 public interface SongListRepository {
-    SongList readByUserProfileId(UUID userProfileId);
+    // TODO
     UUID set(SongList songList);
-    void deleteByUserProfileId(UUID userProfileId);
+    // TODO
 }

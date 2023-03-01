@@ -18,7 +18,7 @@ public class AuthenticationController {
     }
 
     @PostMapping
-    public void login(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken, @RequestBody LoginCredentials loginCredentials) {
+    public void login(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken, @RequestBody(required = false) LoginCredentials loginCredentials) {
         AuthenticationResult result = authenticationService.login(sessionToken, loginCredentials);
         if (result.isShouldSetCookie()) {
             setSessionCookie(response, result.getSessionToken(), result.getSessionCookieMaxAge());

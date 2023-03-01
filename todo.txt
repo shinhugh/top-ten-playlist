@@ -1,3 +1,4 @@
 - Potential state corruption due to concurrency
 - Change type of Session.expiration from Date to something more modern
-- On any request, if session token is invalid (doesn't exist in repository), clear cookie with corresponding response
+- Shift to using ID as public way to identify resources
+  Expose UserProfile's ID as public ID for User

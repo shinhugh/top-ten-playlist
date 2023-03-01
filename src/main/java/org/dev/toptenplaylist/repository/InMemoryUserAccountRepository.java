@@ -21,7 +21,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
     // TEST START
     public InMemoryUserAccountRepository() {
         SecureHashService secureHashService = new SecureHashManager();
-        UUID id = new UUID(0, 0);
+        UUID id = new UUID(1, 2);
         String name = "dev";
         UserAccount userAccount = new UserAccount();
         userAccount.setId(id);
@@ -80,6 +80,19 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
         idToUserAccountMap.put(id, newUserAccount);
         nameToIdMap.put(name, id);
         return id;
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+        UserAccount userAccount = idToUserAccountMap.get(id);
+        if (userAccount == null) {
+            throw new NoSuchElementException();
+        }
+        nameToIdMap.remove(userAccount.getName());
+        idToUserAccountMap.remove(id);
     }
 
     @Override

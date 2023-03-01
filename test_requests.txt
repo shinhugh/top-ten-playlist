@@ -8,10 +8,14 @@ Create user account:
 curl http://localhost:8080/api/user -v -H "Content-Type: application/json" -d '{"loginName":"dev","password":"dev","publicName":"Dev"}'
 
 Read user account:
-curl http://localhost:8080/api/user/dev -v -b "session="
+curl http://localhost:8080/api/user/id/00000000-0000-0001-0000-000000000002 -v -b "session="
+curl http://localhost:8080/api/user/login-name/dev -v -b "session="
+curl http://localhost:8080/api/user/public-name/Dev -v -b "session="
 
 Update user account:
-curl http://localhost:8080/api/user/dev -v -X PUT -b "session=" -H "Content-Type: application/json" -d '{"loginName":"dev","password":"dev","publicName":"Dev"}'
+curl http://localhost:8080/api/user/id/00000000-0000-0001-0000-000000000002 -v -X PUT -b "session=" -H "Content-Type: application/json" -d '{"loginName":"dev","password":"dev","publicName":"Dev"}'
+curl http://localhost:8080/api/user/login-name/dev -v -X PUT -b "session=" -H "Content-Type: application/json" -d '{"loginName":"dev","password":"dev","publicName":"Dev"}'
 
 Delete user account:
-curl http://localhost:8080/api/user/dev -v -X DELETE -b "session="
+curl http://localhost:8080/api/user/id/00000000-0000-0001-0000-000000000002 -v -X DELETE -b "session="
+curl http://localhost:8080/api/user/login-name/dev -v -X DELETE -b "session="

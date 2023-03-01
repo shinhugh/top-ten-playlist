@@ -1,6 +1,9 @@
 package org.dev.toptenplaylist.model;
 
+import java.util.UUID;
+
 public class User {
+    private UUID id;
     private String loginName;
     private String password;
     private String publicName;
@@ -8,8 +11,17 @@ public class User {
     public User() { }
 
     public User(UserAccount userAccount, UserProfile userProfile) {
+        id = userProfile.getId();
         loginName = userAccount.getName();
         publicName = userProfile.getName();
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getLoginName() {
