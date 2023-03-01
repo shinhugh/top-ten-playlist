@@ -1,4 +1,2 @@
 - Potential state corruption due to concurrency
 - Change type of Session.expiration from Date to something more modern
-- Shift to using ID as public way to identify resources
-  Expose UserProfile's ID as public ID for User
