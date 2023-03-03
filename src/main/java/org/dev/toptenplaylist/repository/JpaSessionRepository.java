@@ -3,6 +3,7 @@ package org.dev.toptenplaylist.repository;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,7 +19,7 @@ public class JpaSessionRepository implements SessionRepository {
         try {
             return sessionCrudRepository.findById(token).orElseThrow(NoSuchElementException::new);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -37,7 +38,7 @@ public class JpaSessionRepository implements SessionRepository {
         try {
             sessionCrudRepository.deleteById(token);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -47,7 +48,7 @@ public class JpaSessionRepository implements SessionRepository {
         try {
             sessionCrudRepository.deleteByUserAccountId(userAccountId);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }

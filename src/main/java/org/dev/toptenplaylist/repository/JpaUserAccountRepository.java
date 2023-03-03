@@ -5,6 +5,7 @@ import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class JpaUserAccountRepository implements UserAccountRepository {
         try {
             return userAccountCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -32,7 +33,7 @@ public class JpaUserAccountRepository implements UserAccountRepository {
         try {
             return userAccountCrudRepository.findByName(name).orElseThrow(NoSuchElementException::new);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -69,7 +70,7 @@ public class JpaUserAccountRepository implements UserAccountRepository {
         try {
             userAccountCrudRepository.deleteById(id);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }

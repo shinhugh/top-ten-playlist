@@ -5,6 +5,7 @@ import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserProfile;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class JpaUserProfileRepository implements UserProfileRepository {
         try {
             return userProfileCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -32,7 +33,7 @@ public class JpaUserProfileRepository implements UserProfileRepository {
         try {
             return userProfileCrudRepository.findByUserAccountId(userAccountId).orElseThrow(NoSuchElementException::new);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -42,7 +43,7 @@ public class JpaUserProfileRepository implements UserProfileRepository {
         try {
             return userProfileCrudRepository.findByName(name).orElseThrow(NoSuchElementException::new);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -79,7 +80,7 @@ public class JpaUserProfileRepository implements UserProfileRepository {
         try {
             userProfileCrudRepository.deleteById(id);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }
@@ -89,7 +90,7 @@ public class JpaUserProfileRepository implements UserProfileRepository {
         try {
             userProfileCrudRepository.deleteByUserAccountId(userAccountId);
         }
-        catch (java.lang.IllegalArgumentException ex) {
+        catch (InvalidDataAccessApiUsageException ex) {
             throw new IllegalArgumentException();
         }
     }

@@ -11,3 +11,5 @@
 - Repository should validate input (non-null or unique) and throw IllegalArgumentException or
   ElementAlreadyExistsException if necessary (DONE)
   Service should not validate input, unless exception throw order is a concern or fields need to be accessed (DONE)
+
+- Test every repository method to verify that the expected exceptions are thrown by the underlying JPA instances
