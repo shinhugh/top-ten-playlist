@@ -5,6 +5,7 @@ import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserProfile;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
@@ -20,32 +21,26 @@ public class JpaUserProfileRepository implements UserProfileRepository {
 
     @Override
     public UserProfile readById(String id) {
-        try {
-            return userProfileCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (id == null) {
             throw new IllegalArgumentException();
         }
+        return userProfileCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
     public UserProfile readByUserAccountId(String userAccountId) {
-        try {
-            return userProfileCrudRepository.findByUserAccountId(userAccountId).orElseThrow(NoSuchElementException::new);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (userAccountId == null) {
             throw new IllegalArgumentException();
         }
+        return userProfileCrudRepository.findByUserAccountId(userAccountId).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
     public UserProfile readByName(String name) {
-        try {
-            return userProfileCrudRepository.findByName(name).orElseThrow(NoSuchElementException::new);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (name == null) {
             throw new IllegalArgumentException();
         }
+        return userProfileCrudRepository.findByName(name).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -77,22 +72,21 @@ public class JpaUserProfileRepository implements UserProfileRepository {
 
     @Override
     public void deleteById(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
         try {
             userProfileCrudRepository.deleteById(id);
         }
-        catch (InvalidDataAccessApiUsageException ex) {
-            throw new IllegalArgumentException();
-        }
+        catch (EmptyResultDataAccessException ignored) { }
     }
 
     @Override
     public void deleteByUserAccountId(String userAccountId) {
-        try {
-            userProfileCrudRepository.deleteByUserAccountId(userAccountId);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (userAccountId == null) {
             throw new IllegalArgumentException();
         }
+        userProfileCrudRepository.deleteByUserAccountId(userAccountId);
     }
 
     private String generateId() {

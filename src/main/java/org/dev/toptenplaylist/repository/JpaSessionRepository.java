@@ -3,7 +3,7 @@ package org.dev.toptenplaylist.repository;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,12 +16,10 @@ public class JpaSessionRepository implements SessionRepository {
 
     @Override
     public Session readByToken(String token) {
-        try {
-            return sessionCrudRepository.findById(token).orElseThrow(NoSuchElementException::new);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (token == null) {
             throw new IllegalArgumentException();
         }
+        return sessionCrudRepository.findById(token).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -35,22 +33,21 @@ public class JpaSessionRepository implements SessionRepository {
 
     @Override
     public void deleteByToken(String token) {
+        if (token == null) {
+            throw new IllegalArgumentException();
+        }
         try {
             sessionCrudRepository.deleteById(token);
         }
-        catch (InvalidDataAccessApiUsageException ex) {
-            throw new IllegalArgumentException();
-        }
+        catch (EmptyResultDataAccessException ignored) { }
     }
 
     @Override
     public void deleteByUserAccountId(String userAccountId) {
-        try {
-            sessionCrudRepository.deleteByUserAccountId(userAccountId);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (userAccountId == null) {
             throw new IllegalArgumentException();
         }
+        sessionCrudRepository.deleteByUserAccountId(userAccountId);
     }
 
     @Override

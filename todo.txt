@@ -12,4 +12,8 @@
   ElementAlreadyExistsException if necessary (DONE)
   Service should not validate input, unless exception throw order is a concern or fields need to be accessed (DONE)
 
-- Test every repository method to verify that the expected exceptions are thrown by the underlying JPA instances
+- Test every repository method to verify that the expected exceptions are thrown by the underlying JPA instances (DONE)
+
+- Underlying JPA implementation is inconsistent with how it handles null arguments amongst different methods
+  Wrapper repository class should take responsibility for verifying for non-null arguments (IllegalArgumentException)
+  (DONE)

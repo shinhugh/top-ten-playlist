@@ -5,6 +5,7 @@ import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
@@ -20,22 +21,18 @@ public class JpaUserAccountRepository implements UserAccountRepository {
 
     @Override
     public UserAccount readById(String id) {
-        try {
-            return userAccountCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (id == null) {
             throw new IllegalArgumentException();
         }
+        return userAccountCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
     public UserAccount readByName(String name) {
-        try {
-            return userAccountCrudRepository.findByName(name).orElseThrow(NoSuchElementException::new);
-        }
-        catch (InvalidDataAccessApiUsageException ex) {
+        if (name == null) {
             throw new IllegalArgumentException();
         }
+        return userAccountCrudRepository.findByName(name).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -67,12 +64,13 @@ public class JpaUserAccountRepository implements UserAccountRepository {
 
     @Override
     public void deleteById(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
         try {
             userAccountCrudRepository.deleteById(id);
         }
-        catch (InvalidDataAccessApiUsageException ex) {
-            throw new IllegalArgumentException();
-        }
+        catch (EmptyResultDataAccessException ignored) { }
     }
 
     private String generateId() {
