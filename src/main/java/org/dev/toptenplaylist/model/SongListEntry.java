@@ -1,30 +1,28 @@
 package org.dev.toptenplaylist.model;
 
-import java.util.UUID;
-
 public class SongListEntry implements Identifiable {
-    private UUID id;
-    private UUID songListId;
+    private String id;
+    private String songListId;
     private int rank;
     private String title;
     private String artist;
     private String contentUrl;
 
     @Override
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public UUID getSongListId() {
+    public String getSongListId() {
         return songListId;
     }
 
-    public void setSongListId(UUID songListId) {
+    public void setSongListId(String songListId) {
         this.songListId = songListId;
     }
 

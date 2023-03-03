@@ -1,9 +1,7 @@
 package org.dev.toptenplaylist.model;
 
-import java.util.UUID;
-
 public class UserAccount implements Identifiable {
-    private UUID id;
+    private String id;
     private String name;
     private String passwordHash;
 
@@ -16,12 +14,12 @@ public class UserAccount implements Identifiable {
     }
 
     @Override
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

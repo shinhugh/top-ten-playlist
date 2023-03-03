@@ -15,13 +15,13 @@ import java.util.UUID;
 // TODO: Replace with JPA-backed implementation of UserAccountRepository
 @Repository
 public class InMemoryUserAccountRepository implements UserAccountRepository {
-    private final Map<UUID, UserAccount> idToUserAccountMap = new HashMap<>();
-    private final Map<String, UUID> nameToIdMap = new HashMap<>();
+    private final Map<String, UserAccount> idToUserAccountMap = new HashMap<>();
+    private final Map<String, String> nameToIdMap = new HashMap<>();
 
     // TEST START
     public InMemoryUserAccountRepository() {
         SecureHashService secureHashService = new SecureHashManager();
-        UUID id = new UUID(1, 2);
+        String id = new UUID(1, 2).toString();
         String name = "dev";
         UserAccount userAccount = new UserAccount();
         userAccount.setId(id);
@@ -33,7 +33,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
     // TEST FINISH
 
     @Override
-    public UserAccount readById(UUID id) {
+    public UserAccount readById(String id) {
         if (id == null) {
             throw new IllegalArgumentException();
         }
@@ -57,12 +57,12 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
     }
 
     @Override
-    public UUID set(UserAccount userAccount) {
+    public String set(UserAccount userAccount) {
         if (userAccount == null || userAccount.getName() == null) {
             throw new IllegalArgumentException();
         }
         UserAccount newUserAccount = new UserAccount(userAccount);
-        UUID id = newUserAccount.getId();
+        String id = newUserAccount.getId();
         String name = newUserAccount.getName();
         if (id == null) {
             id = generateId();
@@ -83,7 +83,7 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(String id) {
         if (id == null) {
             throw new IllegalArgumentException();
         }
@@ -95,10 +95,10 @@ public class InMemoryUserAccountRepository implements UserAccountRepository {
         idToUserAccountMap.remove(id);
     }
 
-    private UUID generateId() {
-        UUID id = UUID.randomUUID();
+    private String generateId() {
+        String id = UUID.randomUUID().toString();
         while (idToUserAccountMap.containsKey(id)) {
-            id  = UUID.randomUUID();
+            id = UUID.randomUUID().toString();
         }
         return id;
     }

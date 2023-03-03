@@ -13,14 +13,14 @@ import java.util.UUID;
 // TODO: Replace with JPA-backed implementation of UserProfileRepository
 @Repository
 public class InMemoryUserProfileRepository implements UserProfileRepository {
-    private final Map<UUID, UserProfile> idToUserProfileMap = new HashMap<>();
-    private final Map<UUID, UUID> userAccountIdToIdMap = new HashMap<>();
-    private final Map<String, UUID> nameToIdMap = new HashMap<>();
+    private final Map<String, UserProfile> idToUserProfileMap = new HashMap<>();
+    private final Map<String, String> userAccountIdToIdMap = new HashMap<>();
+    private final Map<String, String> nameToIdMap = new HashMap<>();
 
     // TEST START
     public InMemoryUserProfileRepository() {
-        UUID id = new UUID(1, 2);
-        UUID userAccountId  = new UUID(1, 2);
+        String id = new UUID(1, 2).toString();
+        String userAccountId  = new UUID(1, 2).toString();
         String name = "Dev";
         UserProfile userProfile = new UserProfile();
         userProfile.setId(id);
@@ -33,7 +33,7 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
     // TEST FINISH
 
     @Override
-    public UserProfile readById(UUID id) {
+    public UserProfile readById(String id) {
         if (id == null) {
             throw new IllegalArgumentException();
         }
@@ -45,7 +45,7 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
     }
 
     @Override
-    public UserProfile readByUserAccountId(UUID userAccountId) {
+    public UserProfile readByUserAccountId(String userAccountId) {
         if (userAccountId == null) {
             throw new IllegalArgumentException();
         }
@@ -69,13 +69,13 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
     }
 
     @Override
-    public UUID set(UserProfile userProfile) {
+    public String set(UserProfile userProfile) {
         if (userProfile == null || userProfile.getUserAccountId() == null || userProfile.getName() == null) {
             throw new IllegalArgumentException();
         }
         UserProfile newUserProfile = new UserProfile(userProfile);
-        UUID id = newUserProfile.getId();
-        UUID userAccountId = newUserProfile.getUserAccountId();
+        String id = newUserProfile.getId();
+        String userAccountId = newUserProfile.getUserAccountId();
         String name = newUserProfile.getName();
         if (id == null) {
             id = generateId();
@@ -101,7 +101,7 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(String id) {
         if (id == null) {
             throw new IllegalArgumentException();
         }
@@ -115,11 +115,11 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
     }
 
     @Override
-    public void deleteByUserAccountId(UUID userAccountId) {
+    public void deleteByUserAccountId(String userAccountId) {
         if (userAccountId == null) {
             throw new IllegalArgumentException();
         }
-        UUID id = userAccountIdToIdMap.get(userAccountId);
+        String id = userAccountIdToIdMap.get(userAccountId);
         if (id == null) {
             throw new NoSuchElementException();
         }
@@ -128,10 +128,10 @@ public class InMemoryUserProfileRepository implements UserProfileRepository {
         idToUserProfileMap.remove(id);
     }
 
-    private UUID generateId() {
-        UUID id = UUID.randomUUID();
+    private String generateId() {
+        String id = UUID.randomUUID().toString();
         while (idToUserProfileMap.containsKey(id)) {
-            id  = UUID.randomUUID();
+            id = UUID.randomUUID().toString();
         }
         return id;
     }

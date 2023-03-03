@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.UUID;
 
 @Service
 public class SessionTokenManager implements SessionTokenService {
@@ -18,8 +17,8 @@ public class SessionTokenManager implements SessionTokenService {
         this.sessionRepository = sessionRepository;
     }
 
-    public UUID handleSessionToken(HttpServletResponse response, String requestSessionToken) {
-        UUID userAccountId = null;
+    public String handleSessionToken(HttpServletResponse response, String requestSessionToken) {
+        String userAccountId = null;
         if (requestSessionToken != null) {
             Session session = null;
             try {

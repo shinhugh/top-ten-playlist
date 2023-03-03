@@ -1,15 +1,18 @@
 package org.dev.toptenplaylist.model;
 
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
 public class Session {
+    @Id
     private String token;
-    private UUID userAccountId;
+    private String userAccountId;
     private long expiration;
 
     public Session() { }
 
-    public Session(String token, UUID userAccountId, long expiration) {
+    public Session(String token, String userAccountId, long expiration) {
         this.token = token;
         this.userAccountId = userAccountId;
         this.expiration = expiration;
@@ -29,11 +32,11 @@ public class Session {
         this.token = token;
     }
 
-    public UUID getUserAccountId() {
+    public String getUserAccountId() {
         return userAccountId;
     }
 
-    public void setUserAccountId(UUID userAccountId) {
+    public void setUserAccountId(String userAccountId) {
         this.userAccountId = userAccountId;
     }
 

@@ -1,4 +1,5 @@
 - Clear session cookie when user deletes self (perhaps unnecessary, since next request with invalid session cookie will
   receive response that clears cookie)
 - Potential state corruption due to concurrency
+- Repositories' delete methods should not throw NoSuchElementException when element does not exist
 - Set up JPA and replace in-memory implementations of repositories

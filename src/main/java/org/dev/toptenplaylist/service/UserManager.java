@@ -12,8 +12,6 @@ import org.dev.toptenplaylist.repository.UserAccountRepository;
 import org.dev.toptenplaylist.repository.UserProfileRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 public class UserManager implements UserService {
     private final SessionRepository sessionRepository;
@@ -29,7 +27,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public User readById(UUID activeUserAccountId, UUID id) {
+    public User readById(String activeUserAccountId, String id) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -60,7 +58,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public User readByLoginName(UUID activeUserAccountId, String loginName) {
+    public User readByLoginName(String activeUserAccountId, String loginName) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -91,7 +89,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public User readByPublicName(UUID activeUserAccountId, String publicName) {
+    public User readByPublicName(String activeUserAccountId, String publicName) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -149,7 +147,7 @@ public class UserManager implements UserService {
         UserAccount userAccount = new UserAccount();
         userAccount.setName(user.getLoginName());
         userAccount.setPasswordHash(secureHashService.hash(user.getPassword()));
-        UUID userAccountId;
+        String userAccountId;
         try {
             userAccountId = userAccountRepository.set(userAccount);
         }
@@ -168,7 +166,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void updateById(UUID activeUserAccountId, UUID id, User user) {
+    public void updateById(String activeUserAccountId, String id, User user) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -239,7 +237,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void updateByLoginName(UUID activeUserAccountId, String loginName, User user) {
+    public void updateByLoginName(String activeUserAccountId, String loginName, User user) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -310,7 +308,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void deleteById(UUID activeUserAccountId, UUID id) {
+    public void deleteById(String activeUserAccountId, String id) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -346,7 +344,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void deleteByLoginName(UUID activeUserAccountId, String loginName) {
+    public void deleteByLoginName(String activeUserAccountId, String loginName) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }

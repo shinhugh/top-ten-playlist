@@ -3,16 +3,17 @@ package org.dev.toptenplaylist.repository;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
-import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-@Repository
 public class InMemorySessionRepository implements SessionRepository {
     private Node<Session> newestSessionNode;
     private Node<Session> oldestSessionNode;
     private final Map<String, Node<Session>> tokenToSessionNodeMap;
-    private final Map<UUID, Set<String>> userAccountIdToTokensMap;
+    private final Map<String, Set<String>> userAccountIdToTokensMap;
 
     public InMemorySessionRepository() {
         tokenToSessionNodeMap = new HashMap<>();
@@ -38,7 +39,7 @@ public class InMemorySessionRepository implements SessionRepository {
         }
         Session newSession = new Session(session);
         String token = newSession.getToken();
-        UUID userAccountId = newSession.getUserAccountId();
+        String userAccountId = newSession.getUserAccountId();
         if (tokenToSessionNodeMap.containsKey(token)) {
             deleteSessionNode(tokenToSessionNodeMap.get(token));
         }
@@ -85,7 +86,7 @@ public class InMemorySessionRepository implements SessionRepository {
     }
 
     @Override
-    public void deleteByUserAccountId(UUID userAccountId) {
+    public void deleteByUserAccountId(String userAccountId) {
         if (userAccountId == null) {
             throw new IllegalArgumentException();
         }
@@ -108,7 +109,7 @@ public class InMemorySessionRepository implements SessionRepository {
     private void deleteSessionNode(Node<Session> sessionNode) {
         Session session = sessionNode.getContent();
         String token = session.getToken();
-        UUID userAccountId = session.getUserAccountId();
+        String userAccountId = session.getUserAccountId();
         if (!tokenToSessionNodeMap.containsKey(token)) {
             throw new NoSuchElementException();
         }

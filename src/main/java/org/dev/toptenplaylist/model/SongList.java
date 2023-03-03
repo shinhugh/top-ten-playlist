@@ -1,28 +1,26 @@
 package org.dev.toptenplaylist.model;
 
-import java.util.UUID;
-
 public class SongList implements Identifiable {
-    private UUID id;
-    private UUID userProfileId;
+    private String id;
+    private String userProfileId;
     private String title;
     private long lastModificationDate;
 
     @Override
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public UUID getUserProfileId() {
+    public String getUserProfileId() {
         return userProfileId;
     }
 
-    public void setUserProfileId(UUID userProfileId) {
+    public void setUserProfileId(String userProfileId) {
         this.userProfileId = userProfileId;
     }
 
