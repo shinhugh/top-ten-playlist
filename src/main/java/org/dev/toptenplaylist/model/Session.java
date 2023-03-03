@@ -1,5 +1,6 @@
 package org.dev.toptenplaylist.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -7,6 +8,7 @@ import javax.persistence.Id;
 public class Session {
     @Id
     private String token;
+    @Column(nullable = false)
     private String userAccountId;
     private long expiration;
 

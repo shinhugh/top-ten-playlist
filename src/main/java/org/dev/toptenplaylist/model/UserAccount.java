@@ -1,11 +1,24 @@
 package org.dev.toptenplaylist.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class UserAccount implements Identifiable {
+    @Id
     private String id;
+    @Column(nullable = false, unique = true)
     private String name;
+    @Column(nullable = false)
     private String passwordHash;
 
     public UserAccount() { }
+
+    public UserAccount(String name, String passwordHash) {
+        this.name = name;
+        this.passwordHash = passwordHash;
+    }
 
     public UserAccount(UserAccount userAccount) {
         id = userAccount.id;

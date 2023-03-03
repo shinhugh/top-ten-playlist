@@ -4,14 +4,11 @@ import org.dev.toptenplaylist.exception.ElementAlreadyExistsException;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserProfile;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-// TODO: Replace with JPA-backed implementation of UserProfileRepository
-@Repository
 public class InMemoryUserProfileRepository implements UserProfileRepository {
     private final Map<String, UserProfile> idToUserProfileMap = new HashMap<>();
     private final Map<String, String> userAccountIdToIdMap = new HashMap<>();

@@ -37,19 +37,17 @@ public class AuthenticationManager implements AuthenticationService {
             catch (NoSuchElementException ex) {
                 result.setShouldSetCookie(true);
             }
-            catch (IllegalArgumentException ex) {
-                throw new RuntimeException();
-            }
             if (requestSession != null) {
                 if (System.currentTimeMillis() < requestSession.getExpiration()) {
                     return result;
                 }
                 else {
                     result.setShouldSetCookie(true);
+                    sessionRepository.deleteByToken(sessionToken);
                 }
             }
         }
-        if (loginCredentials == null || loginCredentials.getName() == null || loginCredentials.getPassword() == null) {
+        if (loginCredentials == null) {
             result.setException(new IllegalArgumentException());
             return result;
         }
@@ -61,8 +59,9 @@ public class AuthenticationManager implements AuthenticationService {
             result.setException(new AccessDeniedException());
             return result;
         }
-        catch (IllegalArgumentException ex) {
-            throw new RuntimeException();
+        catch (RuntimeException ex) {
+            result.setException(ex);
+            return result;
         }
         String passwordHash = secureHashService.hash(loginCredentials.getPassword());
         if (!userAccount.getPasswordHash().equals(passwordHash)) {
@@ -70,27 +69,19 @@ public class AuthenticationManager implements AuthenticationService {
             return result;
         }
         String token = generateToken();
-        Session session = new Session(token, userAccount.getId(), System.currentTimeMillis() + sessionMaxDuration * 1000L);
-        try {
-            sessionRepository.set(session);
-        }
-        catch (IllegalArgumentException ex) {
-            throw new RuntimeException();
-        }
+//        Session session = new Session(token, userAccount.getId(), System.currentTimeMillis() + sessionMaxDuration * 1000L);
+        Session session = new Session(token, null, System.currentTimeMillis() + sessionMaxDuration * 1000L); // DEBUG
+        sessionRepository.set(session);
         return new AuthenticationResult(true, token, sessionMaxDuration - 1, null);
     }
 
     @Override
     public AuthenticationResult logout(String sessionToken) {
-        if (sessionToken == null) {
-            return new AuthenticationResult(false, null, 0, null);
-        }
         try {
             sessionRepository.deleteByToken(sessionToken);
         }
-        catch (NoSuchElementException ignored) { }
         catch (IllegalArgumentException ex) {
-            throw new RuntimeException();
+            return new AuthenticationResult(false, null, 0, null);
         }
         return new AuthenticationResult(true, null, 0, null);
     }
@@ -103,9 +94,6 @@ public class AuthenticationManager implements AuthenticationService {
             }
             catch (NoSuchElementException ex) {
                 break;
-            }
-            catch (IllegalArgumentException ex) {
-                throw new RuntimeException();
             }
             token = UUID.randomUUID().toString();
         }

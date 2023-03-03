@@ -6,14 +6,11 @@ import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.dev.toptenplaylist.service.SecureHashManager;
 import org.dev.toptenplaylist.service.SecureHashService;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-// TODO: Replace with JPA-backed implementation of UserAccountRepository
-@Repository
 public class InMemoryUserAccountRepository implements UserAccountRepository {
     private final Map<String, UserAccount> idToUserAccountMap = new HashMap<>();
     private final Map<String, String> nameToIdMap = new HashMap<>();

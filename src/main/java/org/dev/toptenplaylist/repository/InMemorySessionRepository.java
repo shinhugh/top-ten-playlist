@@ -33,7 +33,7 @@ public class InMemorySessionRepository implements SessionRepository {
     }
 
     @Override
-    public void set(Session session) {
+    public String set(Session session) {
         if (session == null || session.getToken() == null || session.getUserAccountId() == null) {
             throw new IllegalArgumentException();
         }
@@ -71,6 +71,7 @@ public class InMemorySessionRepository implements SessionRepository {
             userAccountIdToTokensMap.put(userAccountId, tokens);
         }
         tokens.add(token);
+        return token;
     }
 
     @Override

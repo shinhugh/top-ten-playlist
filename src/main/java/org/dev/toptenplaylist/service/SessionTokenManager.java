@@ -18,34 +18,23 @@ public class SessionTokenManager implements SessionTokenService {
     }
 
     public String handleSessionToken(HttpServletResponse response, String requestSessionToken) {
-        String userAccountId = null;
-        if (requestSessionToken != null) {
-            Session session = null;
-            try {
-                session = sessionRepository.readByToken(requestSessionToken);
-            }
-            catch (NoSuchElementException ex) {
-                clearSessionCookie(response);
-            }
-            catch (IllegalArgumentException ex) {
-                throw new RuntimeException();
-            }
-            if (session != null) {
-                if (System.currentTimeMillis() < session.getExpiration()) {
-                    userAccountId = session.getUserAccountId();
-                }
-                else {
-                    try {
-                        sessionRepository.deleteByToken(requestSessionToken);
-                    }
-                    catch (IllegalArgumentException | NoSuchElementException ex) {
-                        throw new RuntimeException();
-                    }
-                    clearSessionCookie(response);
-                }
-            }
+        Session session = null;
+        try {
+            session = sessionRepository.readByToken(requestSessionToken);
         }
-        return userAccountId;
+        catch (IllegalArgumentException ex) {
+            return null;
+        }
+        catch (NoSuchElementException ex) {
+            clearSessionCookie(response);
+            return null;
+        }
+        if (System.currentTimeMillis() < session.getExpiration()) {
+            return session.getUserAccountId();
+        }
+        sessionRepository.deleteByToken(requestSessionToken);
+        clearSessionCookie(response);
+        return null;
     }
 
     private void clearSessionCookie(HttpServletResponse response) {
