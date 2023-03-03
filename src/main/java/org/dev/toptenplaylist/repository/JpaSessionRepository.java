@@ -1,11 +1,8 @@
 package org.dev.toptenplaylist.repository;
 
-import org.dev.toptenplaylist.exception.ElementAlreadyExistsException;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.Session;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -28,22 +25,10 @@ public class JpaSessionRepository implements SessionRepository {
 
     @Override
     public String set(Session session) {
-        try {
-            sessionCrudRepository.save(session);
-        }
-        catch (java.lang.IllegalArgumentException | JpaSystemException ex) {
+        if (session == null || session.getToken() == null || session.getUserAccountId() == null) {
             throw new IllegalArgumentException();
         }
-        catch (DataIntegrityViolationException ex) {
-            System.out.println("@@ DEBUG: " + ex.getClass() + " | " + ex.getMessage()); // DEBUG
-//            if () { // TODO: If non-null rule is violated
-//                throw new IllegalArgumentException();
-//            }
-//            else { // TODO: If unique rule is violated
-//                throw new ElementAlreadyExistsException();
-//            }
-            throw new ElementAlreadyExistsException();
-        }
+        sessionCrudRepository.save(session);
         return session.getToken();
     }
 

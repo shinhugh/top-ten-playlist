@@ -69,8 +69,7 @@ public class AuthenticationManager implements AuthenticationService {
             return result;
         }
         String token = generateToken();
-//        Session session = new Session(token, userAccount.getId(), System.currentTimeMillis() + sessionMaxDuration * 1000L);
-        Session session = new Session(token, null, System.currentTimeMillis() + sessionMaxDuration * 1000L); // DEBUG
+        Session session = new Session(token, userAccount.getId(), System.currentTimeMillis() + sessionMaxDuration * 1000L);
         sessionRepository.set(session);
         return new AuthenticationResult(true, token, sessionMaxDuration - 1, null);
     }

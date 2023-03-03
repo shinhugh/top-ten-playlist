@@ -3,9 +3,11 @@
 
 - Potential state corruption due to concurrency
 
+- Periodically purge expired sessions by calling deleteByLessThanOrEqualToExpiration()
+
 - Repositories' delete methods should not throw NoSuchElementException when element does not exist (DONE)
   Service should check for existence and directly throw NoSuchElementException itself (DONE)
 
 - Repository should validate input (non-null or unique) and throw IllegalArgumentException or
-  ElementAlreadyExistsException if necessary
+  ElementAlreadyExistsException if necessary (DONE)
   Service should not validate input, unless exception throw order is a concern or fields need to be accessed (DONE)

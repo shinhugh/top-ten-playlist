@@ -5,7 +5,6 @@ import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -40,7 +39,7 @@ public class JpaUserAccountRepository implements UserAccountRepository {
 
     @Override
     public String set(UserAccount userAccount) {
-        if (userAccount == null) {
+        if (userAccount == null || userAccount.getName() == null || userAccount.getPasswordHash() == null) {
             throw new IllegalArgumentException();
         }
         String id = userAccount.getId();
@@ -59,17 +58,7 @@ public class JpaUserAccountRepository implements UserAccountRepository {
         try {
             userAccountCrudRepository.save(userAccount);
         }
-        catch (java.lang.IllegalArgumentException | JpaSystemException ex) {
-            throw new IllegalArgumentException();
-        }
         catch (DataIntegrityViolationException ex) {
-            System.out.println("@@ DEBUG: " + ex.getClass() + " | " + ex.getMessage()); // DEBUG
-//            if () { // TODO: If non-null rule is violated
-//                throw new IllegalArgumentException();
-//            }
-//            else { // TODO: If unique rule is violated
-//                throw new ElementAlreadyExistsException();
-//            }
             throw new ElementAlreadyExistsException();
         }
         return id;
