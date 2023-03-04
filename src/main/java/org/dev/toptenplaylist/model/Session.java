@@ -10,6 +10,7 @@ public class Session {
     private String token;
     @Column(nullable = false)
     private String userAccountId;
+    @Column(nullable = false)
     private long expiration;
 
     public Session() { }
