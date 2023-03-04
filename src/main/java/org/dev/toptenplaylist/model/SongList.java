@@ -1,5 +1,7 @@
 package org.dev.toptenplaylist.model;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class SongList {
@@ -16,10 +18,11 @@ public class SongList {
         userId = songListContainer.getUserProfileId();
         title = songListContainer.getTitle();
         lastModificationDate = songListContainer.getLastModificationDate();
-        entries = new Entry[songListEntries.size()];
-        // TODO: Order by rank (0 ~ 9)
-        for (int i = 0; i < songListEntries.size(); i++) {
-            entries[i] = new Entry(songListEntries.get(i));
+        List<SongListEntry> songListEntriesSorted = new ArrayList<>(songListEntries);
+        songListEntriesSorted.sort(new SongListEntryComparator());
+        entries = new Entry[songListEntriesSorted.size()];
+        for (int i = 0; i < songListEntriesSorted.size(); i++) {
+            entries[i] = new Entry(songListEntriesSorted.get(i));
         }
     }
 
@@ -99,6 +102,14 @@ public class SongList {
 
         public void setContentUrl(String contentUrl) {
             this.contentUrl = contentUrl;
+        }
+    }
+
+    private static class SongListEntryComparator implements Comparator<SongListEntry> {
+        @Override
+        public int compare(SongListEntry songListEntry, SongListEntry t1) {
+            int difference = songListEntry.getRank() - t1.getRank();
+            return difference == 0 ? 0 : (difference / Math.abs(difference));
         }
     }
 }
