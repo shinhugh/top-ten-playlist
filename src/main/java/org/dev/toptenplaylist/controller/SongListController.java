@@ -26,8 +26,8 @@ public class SongListController {
 
     @GetMapping("/id/{id}")
     public SongList readById(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken, @PathVariable String id) {
-        String activeUserAccountId = sessionTokenService.handleSessionToken(response, sessionToken);
-        return songListService.readById(activeUserAccountId, id);
+        sessionTokenService.handleSessionToken(response, sessionToken);
+        return songListService.readById(id);
     }
 
     @GetMapping("/session")

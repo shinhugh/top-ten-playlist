@@ -16,7 +16,7 @@ public class SongListManager implements SongListService {
     }
 
     @Override
-    public SongList readById(String activeUserAccountId, String id) {
+    public SongList readById(String id) {
         // TODO
         throw new RuntimeException();
     }

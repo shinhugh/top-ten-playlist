@@ -3,7 +3,7 @@ package org.dev.toptenplaylist.service;
 import org.dev.toptenplaylist.model.SongList;
 
 public interface SongListService {
-    public SongList readById(String activeUserAccountId, String id);
+    public SongList readById(String id);
     public SongList readByActiveUserAccountId(String activeUserAccountId);
     public SongList readByUserPublicName(String userPublicName);
     public void create(String activeUserAccountId, SongList songList);
