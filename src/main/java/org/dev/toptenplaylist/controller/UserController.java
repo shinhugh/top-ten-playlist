@@ -30,10 +30,10 @@ public class UserController {
         return userService.readById(activeUserAccountId, id);
     }
 
-    @GetMapping("/login-name/{loginName}")
-    public User readByLoginName(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken, @PathVariable String loginName) {
+    @GetMapping("/session")
+    public User readBySession(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken) {
         String activeUserAccountId = sessionTokenService.handleSessionToken(response, sessionToken);
-        return userService.readByLoginName(activeUserAccountId, loginName);
+        return userService.readByActiveUserAccountId(activeUserAccountId);
     }
 
     @GetMapping("/public-name/{publicName}")
@@ -48,10 +48,10 @@ public class UserController {
         userService.updateById(activeUserAccountId, id, user);
     }
 
-    @PutMapping("/login-name/{loginName}")
-    public void updateByLoginName(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken, @PathVariable String loginName, @RequestBody(required = false) User user) {
+    @PutMapping("/session")
+    public void updateBySession(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken, @RequestBody(required = false) User user) {
         String activeUserAccountId = sessionTokenService.handleSessionToken(response, sessionToken);
-        userService.updateByLoginName(activeUserAccountId, loginName, user);
+        userService.updateByActiveUserAccountId(activeUserAccountId, user);
     }
 
     @DeleteMapping("/id/{id}")
@@ -60,9 +60,9 @@ public class UserController {
         userService.deleteById(activeUserAccountId, id);
     }
 
-    @DeleteMapping("/login-name/{loginName}")
-    public void deleteByLoginName(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken, @PathVariable String loginName) {
+    @DeleteMapping("/session")
+    public void deleteBySession(HttpServletResponse response, @CookieValue(value = "session", required = false) String sessionToken) {
         String activeUserAccountId = sessionTokenService.handleSessionToken(response, sessionToken);
-        userService.deleteByLoginName(activeUserAccountId, loginName);
+        userService.deleteByActiveUserAccountId(activeUserAccountId);
     }
 }

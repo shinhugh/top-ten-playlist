@@ -46,41 +46,25 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public User readByLoginName(String activeUserAccountId, String loginName) {
+    public User readByActiveUserAccountId(String activeUserAccountId) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        UserAccount userAccount;
-        try {
-            userAccount = userAccountRepository.readByName(loginName);
-        }
-        catch (NoSuchElementException ex) {
-            throw new AccessDeniedException();
-        }
-        if (!activeUserAccountId.equals(userAccount.getId())) {
-            throw new AccessDeniedException();
-        }
-        UserProfile userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
+        UserAccount userAccount = userAccountRepository.readById(activeUserAccountId);
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
         return new User(userAccount, userProfile);
     }
 
     @Override
     public User readByPublicName(String activeUserAccountId, String publicName) {
-        if (activeUserAccountId == null) {
-            throw new AccessDeniedException();
-        }
-        UserProfile userProfile;
-        try {
-            userProfile = userProfileRepository.readByName(publicName);
-        }
-        catch (NoSuchElementException ex) {
-            throw new AccessDeniedException();
-        }
+        UserProfile userProfile = userProfileRepository.readByName(publicName);
         UserAccount userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
-        if (!activeUserAccountId.equals(userAccount.getId())) {
-            throw new AccessDeniedException();
+        User user = new User(userAccount, userProfile);
+        if (!userAccount.getId().equals(activeUserAccountId)) {
+            user.setId(null);
+            user.setLoginName(null);
         }
-        return new User(userAccount, userProfile);
+        return user;
     }
 
     @Override
@@ -151,24 +135,15 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void updateByLoginName(String activeUserAccountId, String loginName, User user) {
+    public void updateByActiveUserAccountId(String activeUserAccountId, User user) {
         if (activeUserAccountId == null) {
-            throw new AccessDeniedException();
-        }
-        UserAccount userAccount;
-        try {
-            userAccount = userAccountRepository.readByName(loginName);
-        }
-        catch (NoSuchElementException ex) {
-            throw new AccessDeniedException();
-        }
-        if (!activeUserAccountId.equals(userAccount.getId())) {
             throw new AccessDeniedException();
         }
         if (user == null) {
             throw new IllegalArgumentException();
         }
-        UserProfile userProfile = userProfileRepository.readByUserAccountId(userAccount.getId());
+        UserAccount userAccount = userAccountRepository.readById(activeUserAccountId);
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
         if (user.getLoginName() != null) {
             try {
                 UserAccount loginNameUserAccount = userAccountRepository.readByName(user.getLoginName());
@@ -217,22 +192,12 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public void deleteByLoginName(String activeUserAccountId, String loginName) {
+    public void deleteByActiveUserAccountId(String activeUserAccountId) {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        UserAccount userAccount;
-        try {
-            userAccount = userAccountRepository.readByName(loginName);
-        }
-        catch (NoSuchElementException ex) {
-            throw new AccessDeniedException();
-        }
-        if (!activeUserAccountId.equals(userAccount.getId())) {
-            throw new AccessDeniedException();
-        }
-        userProfileRepository.deleteByUserAccountId(userAccount.getId());
-        userAccountRepository.deleteById(userAccount.getId());
-        sessionRepository.deleteByUserAccountId(userAccount.getId());
+        userProfileRepository.deleteByUserAccountId(activeUserAccountId);
+        userAccountRepository.deleteById(activeUserAccountId);
+        sessionRepository.deleteByUserAccountId(activeUserAccountId);
     }
 }
