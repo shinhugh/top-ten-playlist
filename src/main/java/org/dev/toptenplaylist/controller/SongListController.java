@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/song-list")
 public class SongListController {
-    private SongListService songListService;
+    private final SongListService songListService;
 
     public SongListController(SongListService songListService) {
         this.songListService = songListService;
