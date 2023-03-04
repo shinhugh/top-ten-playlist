@@ -7,6 +7,19 @@ public class SongList {
     private long lastModificationDate;
     private Entry[] entries;
 
+    public SongList() { }
+
+    public SongList(SongListContainer songListContainer, SongListEntry[] songListEntries) {
+        id = songListContainer.getId();
+        userId = songListContainer.getUserProfileId();
+        title = songListContainer.getTitle();
+        lastModificationDate = songListContainer.getLastModificationDate();
+        entries = new Entry[songListEntries.length];
+        for (int i = 0; i < songListEntries.length; i++) {
+            entries[i] = new Entry(songListEntries[i]);
+        }
+    }
+
     public String getId() {
         return id;
     }
@@ -49,17 +62,16 @@ public class SongList {
     }
 
     public static class Entry {
-        private String id;
         private String title;
         private String artist;
         private String contentUrl;
 
-        public String getId() {
-            return id;
-        }
+        public Entry() { }
 
-        public void setId(String id) {
-            this.id = id;
+        public Entry(SongListEntry songListEntry) {
+            title = songListEntry.getTitle();
+            artist = songListEntry.getArtist();
+            contentUrl = songListEntry.getContentUrl();
         }
 
         public String getTitle() {
