@@ -14,6 +14,14 @@ public class SongListContainer implements Identifiable {
     @Column(nullable = false)
     private long lastModificationDate;
 
+    public SongListContainer() { }
+
+    public SongListContainer(String userProfileId, String title, long lastModificationDate) {
+        this.userProfileId = userProfileId;
+        this.title = title;
+        this.lastModificationDate = lastModificationDate;
+    }
+
     @Override
     public String getId() {
         return id;

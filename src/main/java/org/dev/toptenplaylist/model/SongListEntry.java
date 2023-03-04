@@ -9,13 +9,23 @@ public class SongListEntry implements Identifiable {
     @Id
     private String id;
     @Column(nullable = false)
-    private String songListId;
+    private String songListContainerId;
     @Column(nullable = false)
     private int rank;
     private String title;
     private String artist;
     @Column(nullable = false)
     private String contentUrl;
+
+    public SongListEntry() { }
+
+    public SongListEntry(String songListContainerId, int rank, String title, String artist, String contentUrl) {
+        this.songListContainerId = songListContainerId;
+        this.rank = rank;
+        this.title = title;
+        this.artist = artist;
+        this.contentUrl = contentUrl;
+    }
 
     @Override
     public String getId() {
@@ -27,12 +37,12 @@ public class SongListEntry implements Identifiable {
         this.id = id;
     }
 
-    public String getSongListId() {
-        return songListId;
+    public String getSongListContainerId() {
+        return songListContainerId;
     }
 
-    public void setSongListId(String songListId) {
-        this.songListId = songListId;
+    public void setSongListContainerId(String songListContainerId) {
+        this.songListContainerId = songListContainerId;
     }
 
     public int getRank() {

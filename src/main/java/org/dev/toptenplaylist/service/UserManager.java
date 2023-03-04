@@ -81,23 +81,14 @@ public class UserManager implements UserService {
 
     @Override
     public void updateById(String activeUserAccountId, String id, User user) {
-        if (activeUserAccountId == null) {
-            throw new AccessDeniedException();
-        }
-        UserProfile userProfile;
-        try {
-            userProfile = userProfileRepository.readById(id);
-        }
-        catch (NoSuchElementException ex) {
-            throw new AccessDeniedException();
-        }
-        UserAccount userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
-        if (!userAccount.getId().equals(activeUserAccountId)) {
+        UserProfile userProfile = userProfileRepository.readById(id);
+        if (!userProfile.getUserAccountId().equals(activeUserAccountId)) {
             throw new AccessDeniedException();
         }
         if (user == null) {
             throw new IllegalArgumentException();
         }
+        UserAccount userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
         if (user.getLoginName() != null) {
             try {
                 UserAccount loginNameUserAccount = userAccountRepository.readByName(user.getLoginName());
@@ -164,16 +155,7 @@ public class UserManager implements UserService {
 
     @Override
     public void deleteById(String activeUserAccountId, String id) {
-        if (activeUserAccountId == null) {
-            throw new AccessDeniedException();
-        }
-        UserProfile userProfile;
-        try {
-            userProfile = userProfileRepository.readById(id);
-        }
-        catch (NoSuchElementException ex) {
-            throw new AccessDeniedException();
-        }
+        UserProfile userProfile = userProfileRepository.readById(id);
         if (!userProfile.getUserAccountId().equals(activeUserAccountId)) {
             throw new AccessDeniedException();
         }

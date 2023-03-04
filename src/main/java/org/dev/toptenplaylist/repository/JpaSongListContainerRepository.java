@@ -11,12 +11,27 @@ public class JpaSongListContainerRepository implements SongListContainerReposito
         this.songListContainerCrudRepository = songListContainerCrudRepository;
     }
 
-    // TODO
+    @Override
+    public SongListContainer readById(String id) {
+        // TODO
+        throw new RuntimeException();
+    }
+
+    @Override
+    public SongListContainer readByUserProfileId(String userProfileId) {
+        // TODO
+        throw new RuntimeException();
+    }
 
     @Override
     public String set(SongListContainer songListContainer) {
-        return null;
+        // TODO
+        throw new RuntimeException();
     }
 
-    // TODO
+    @Override
+    public void deleteById(String id) {
+        // TODO
+        throw new RuntimeException();
+    }
 }

@@ -1,5 +1,7 @@
 package org.dev.toptenplaylist.model;
 
+import java.util.List;
+
 public class SongList {
     private String id;
     private String userId;
@@ -9,14 +11,14 @@ public class SongList {
 
     public SongList() { }
 
-    public SongList(SongListContainer songListContainer, SongListEntry[] songListEntries) {
+    public SongList(SongListContainer songListContainer, List<SongListEntry> songListEntries) {
         id = songListContainer.getId();
         userId = songListContainer.getUserProfileId();
         title = songListContainer.getTitle();
         lastModificationDate = songListContainer.getLastModificationDate();
-        entries = new Entry[songListEntries.length];
-        for (int i = 0; i < songListEntries.length; i++) {
-            entries[i] = new Entry(songListEntries[i]);
+        entries = new Entry[songListEntries.size()];
+        for (int i = 0; i < songListEntries.size(); i++) {
+            entries[i] = new Entry(songListEntries.get(i));
         }
     }
 
