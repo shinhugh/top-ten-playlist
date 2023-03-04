@@ -17,6 +17,7 @@ public class SongList {
         title = songListContainer.getTitle();
         lastModificationDate = songListContainer.getLastModificationDate();
         entries = new Entry[songListEntries.size()];
+        // TODO: Order by rank (0 ~ 9)
         for (int i = 0; i < songListEntries.size(); i++) {
             entries[i] = new Entry(songListEntries.get(i));
         }

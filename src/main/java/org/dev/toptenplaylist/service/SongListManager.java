@@ -37,7 +37,8 @@ public class SongListManager implements SongListService {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(activeUserAccountId);
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
+        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
         List<SongListEntry> songListEntries = songListEntryRepository.readBySongListContainerId(songListContainer.getId());
         return new SongList(songListContainer, songListEntries);
     }
@@ -51,7 +52,7 @@ public class SongListManager implements SongListService {
     }
 
     @Override
-    public void create(String activeUserAccountId, SongList songList) {
+    public void create(String activeUserAccountId, SongList songList) { // TODO: Populate title and artist fields using provided content URL
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
