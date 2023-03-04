@@ -1,0 +1,446 @@
+{
+	"info": {
+		"_postman_id": "d261d221-c9b5-40bc-846d-86a362aeca3d",
+		"name": "Top Ten",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"dev\",\n    \"password\": \"dev\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/auth",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/auth",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"loginName\": \"dev\",\n    \"password\": \"dev\",\n    \"publicName\": \"Dev\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/user",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/user/id/{{user_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"id",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user by session",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/user/session",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user by public name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/user/public-name/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"public-name",
+						"dev"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user by ID",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"loginName\": \"dev\",\n    \"password\": \"dev\",\n    \"publicName\": \"Dev\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/user/id/{{user_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"id",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user by session",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"loginName\": \"dev\",\n    \"password\": \"dev\",\n    \"publicName\": \"Dev\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/user/session",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user by ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/user/id/{{user_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"id",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user by session",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/user/session",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create song list",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"My Top Ten\",\n    \"entries\": [\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=9dLmeVCryag\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=xwXAh4gxMbM\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=oqHONL-LZ58\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=Rp-21xj1yVU\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=oB6FZUl5KCA\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=KvPYHRZmibU\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=7yzgxBbZvh8\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=LniVXcRMnLs\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=Mh-RJVpyK8E\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=T7m9xx6CGTs\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/song-list",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get song list by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/song-list/id/{{song_list_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list",
+						"id",
+						"{{song_list_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get song list by session",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/song-list/session",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get song list by user public name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/song-list/user-public-name/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list",
+						"user-public-name",
+						"dev"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update song list by ID",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"My Top Ten\",\n    \"entries\": [\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=9dLmeVCryag\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=xwXAh4gxMbM\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=oqHONL-LZ58\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=Rp-21xj1yVU\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=oB6FZUl5KCA\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=KvPYHRZmibU\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=7yzgxBbZvh8\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=LniVXcRMnLs\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=Mh-RJVpyK8E\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=T7m9xx6CGTs\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/song-list/id/{{song_list_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list",
+						"id",
+						"{{song_list_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update song list by session",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"My Top Ten\",\n    \"entries\": [\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=9dLmeVCryag\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=xwXAh4gxMbM\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=oqHONL-LZ58\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=Rp-21xj1yVU\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=oB6FZUl5KCA\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=KvPYHRZmibU\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=7yzgxBbZvh8\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=LniVXcRMnLs\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=Mh-RJVpyK8E\"\n        },\n        {\n            \"contentUrl\": \"https://www.youtube.com/watch?v=T7m9xx6CGTs\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/song-list/session",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete song list by ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/song-list/id/{{song_list_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list",
+						"id",
+						"{{song_list_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete song list by session",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/song-list/session",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"song-list",
+						"session"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
