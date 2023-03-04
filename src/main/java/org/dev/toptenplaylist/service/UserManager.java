@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserManager implements UserService {
-    private final SessionRepository sessionRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserProfileRepository userProfileRepository;
+    private final SessionRepository sessionRepository;
     private final SecureHashService secureHashService;
 
     public UserManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, UserProfileRepository userProfileRepository, SecureHashService secureHashService) {
