@@ -17,3 +17,5 @@
 - Underlying JPA implementation is inconsistent with how it handles null arguments amongst different methods
   Wrapper repository class should take responsibility for verifying for non-null arguments (IllegalArgumentException)
   (DONE)
+
+- Configure Spring to eliminate null JSON fields when writing HTTP response bodies
