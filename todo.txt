@@ -19,3 +19,8 @@
   (DONE)
 
 - Configure Spring to eliminate null JSON fields when writing HTTP response bodies
+
+temp:
+- when possible, use method argument instead of .getId() or the like
+- in non-"ByActiveUserAccountId" methods, activeUserAccountId should only be used for AccessDenied check
+- use readById(), updateById(), or deleteById() if possible without additional query

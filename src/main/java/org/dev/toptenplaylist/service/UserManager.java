@@ -107,8 +107,8 @@ public class UserManager implements UserService {
         }
         if (user.getPublicName() != null) {
             try {
-                UserProfile publicNameUserAccount = userProfileRepository.readByName(user.getPublicName());
-                if (!publicNameUserAccount.getId().equals(userProfile.getId())) {
+                UserProfile publicNameUserProfile = userProfileRepository.readByName(user.getPublicName());
+                if (!publicNameUserProfile.getId().equals(id)) {
                     throw new ElementAlreadyExistsException();
                 }
             }
@@ -132,7 +132,7 @@ public class UserManager implements UserService {
         if (user.getLoginName() != null) {
             try {
                 UserAccount loginNameUserAccount = userAccountRepository.readByName(user.getLoginName());
-                if (!loginNameUserAccount.getId().equals(userAccount.getId())) {
+                if (!loginNameUserAccount.getId().equals(activeUserAccountId)) {
                     throw new ElementAlreadyExistsException();
                 }
             }
@@ -144,8 +144,8 @@ public class UserManager implements UserService {
         }
         if (user.getPublicName() != null) {
             try {
-                UserProfile publicNameUserAccount = userProfileRepository.readByName(user.getPublicName());
-                if (!publicNameUserAccount.getId().equals(userProfile.getId())) {
+                UserProfile publicNameUserProfile = userProfileRepository.readByName(user.getPublicName());
+                if (!publicNameUserProfile.getId().equals(userProfile.getId())) {
                     throw new ElementAlreadyExistsException();
                 }
             }
@@ -165,7 +165,7 @@ public class UserManager implements UserService {
         userProfileRepository.deleteById(id);
         userAccountRepository.deleteById(userProfile.getUserAccountId());
         sessionRepository.deleteByUserAccountId(userProfile.getUserAccountId());
-        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
+        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(id);
         songListContainerRepository.deleteById(songListContainer.getId());
         songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
     }

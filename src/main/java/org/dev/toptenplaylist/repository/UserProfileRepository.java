@@ -8,5 +8,4 @@ public interface UserProfileRepository {
     UserProfile readByName(String name);
     String set(UserProfile userProfile);
     void deleteById(String id);
-    void deleteByUserAccountId(String userAccountId);
 }

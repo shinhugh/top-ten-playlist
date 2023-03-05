@@ -80,14 +80,6 @@ public class JpaUserProfileRepository implements UserProfileRepository {
         catch (EmptyResultDataAccessException ignored) { }
     }
 
-    @Override
-    public void deleteByUserAccountId(String userAccountId) {
-        if (userAccountId == null) {
-            throw new IllegalArgumentException();
-        }
-        userProfileCrudRepository.deleteByUserAccountId(userAccountId);
-    }
-
     private String generateId() {
         String id = UUID.randomUUID().toString();
         while (userProfileCrudRepository.existsById(id)) {
