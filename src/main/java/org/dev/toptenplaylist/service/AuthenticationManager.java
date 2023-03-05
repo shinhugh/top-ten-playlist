@@ -18,7 +18,7 @@ public class AuthenticationManager implements AuthenticationService {
     private final SessionRepository sessionRepository;
     private final UserAccountRepository userAccountRepository;
     private final SecureHashService secureHashService;
-    private final int sessionMaxDuration = 7200;
+    private static final int SESSION_MAX_DURATION = 7200;
 
     public AuthenticationManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, SecureHashService secureHashService) {
         this.sessionRepository = sessionRepository;
@@ -69,9 +69,9 @@ public class AuthenticationManager implements AuthenticationService {
             return result;
         }
         String token = generateToken();
-        Session session = new Session(token, userAccount.getId(), System.currentTimeMillis() + sessionMaxDuration * 1000L);
+        Session session = new Session(token, userAccount.getId(), System.currentTimeMillis() + SESSION_MAX_DURATION * 1000L);
         sessionRepository.set(session);
-        return new AuthenticationResult(true, token, sessionMaxDuration - 1, null);
+        return new AuthenticationResult(true, token, SESSION_MAX_DURATION - 1, null);
     }
 
     @Override
