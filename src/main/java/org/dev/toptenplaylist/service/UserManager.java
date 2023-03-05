@@ -4,12 +4,11 @@ import org.dev.toptenplaylist.exception.AccessDeniedException;
 import org.dev.toptenplaylist.exception.ElementAlreadyExistsException;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
 import org.dev.toptenplaylist.exception.NoSuchElementException;
+import org.dev.toptenplaylist.model.SongListContainer;
 import org.dev.toptenplaylist.model.User;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.dev.toptenplaylist.model.UserProfile;
-import org.dev.toptenplaylist.repository.SessionRepository;
-import org.dev.toptenplaylist.repository.UserAccountRepository;
-import org.dev.toptenplaylist.repository.UserProfileRepository;
+import org.dev.toptenplaylist.repository.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,12 +16,16 @@ public class UserManager implements UserService {
     private final UserAccountRepository userAccountRepository;
     private final UserProfileRepository userProfileRepository;
     private final SessionRepository sessionRepository;
+    private final SongListContainerRepository songListContainerRepository;
+    private final SongListEntryRepository songListEntryRepository;
     private final SecureHashService secureHashService;
 
-    public UserManager(SessionRepository sessionRepository, UserAccountRepository userAccountRepository, UserProfileRepository userProfileRepository, SecureHashService secureHashService) {
-        this.sessionRepository =  sessionRepository;
+    public UserManager(UserAccountRepository userAccountRepository, UserProfileRepository userProfileRepository, SessionRepository sessionRepository, SongListContainerRepository songListContainerRepository, SongListEntryRepository songListEntryRepository, SecureHashService secureHashService) {
         this.userAccountRepository = userAccountRepository;
         this.userProfileRepository = userProfileRepository;
+        this.sessionRepository =  sessionRepository;
+        this.songListContainerRepository = songListContainerRepository;
+        this.songListEntryRepository = songListEntryRepository;
         this.secureHashService = secureHashService;
     }
 
@@ -162,7 +165,9 @@ public class UserManager implements UserService {
         userProfileRepository.deleteById(id);
         userAccountRepository.deleteById(userProfile.getUserAccountId());
         sessionRepository.deleteByUserAccountId(userProfile.getUserAccountId());
-        // TODO: Delete user's song list
+        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
+        songListContainerRepository.deleteById(songListContainer.getId());
+        songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
     }
 
     @Override
@@ -170,9 +175,12 @@ public class UserManager implements UserService {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        userProfileRepository.deleteByUserAccountId(activeUserAccountId);
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
+        userProfileRepository.deleteById(userProfile.getId());
         userAccountRepository.deleteById(activeUserAccountId);
         sessionRepository.deleteByUserAccountId(activeUserAccountId);
-        // TODO: Delete user's song list
+        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
+        songListContainerRepository.deleteById(songListContainer.getId());
+        songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
     }
 }
