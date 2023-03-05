@@ -52,7 +52,9 @@ public class SongListManager implements SongListService {
     }
 
     @Override
-    public void create(String activeUserAccountId, SongList songList) { // TODO: Populate title and artist fields using provided content URL
+    public void create(String activeUserAccountId, SongList songList) {
+        // TODO: Populate title and artist fields using provided content URL
+        // TODO: Throw IllegalArgumentException if content URL is invalid
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -79,6 +81,8 @@ public class SongListManager implements SongListService {
 
     @Override
     public void updateById(String activeUserAccountId, String id, SongList songList) {
+        // TODO: Populate title and artist fields using provided content URL
+        // TODO: Throw IllegalArgumentException if content URL is invalid
         SongListContainer songListContainer = songListContainerRepository.readById(id);
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
@@ -112,6 +116,8 @@ public class SongListManager implements SongListService {
 
     @Override
     public void updateByActiveUserAccountId(String activeUserAccountId, SongList songList) {
+        // TODO: Populate title and artist fields using provided content URL
+        // TODO: Throw IllegalArgumentException if content URL is invalid
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
