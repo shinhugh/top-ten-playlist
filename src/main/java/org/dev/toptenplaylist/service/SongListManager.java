@@ -99,9 +99,10 @@ public class SongListManager implements SongListService {
                 throw new IllegalArgumentException();
             }
         }
-        songListContainerRepository.deleteById(id);
+        songListContainer.setTitle(songList.getTitle());
+        songListContainer.setLastModificationDate(System.currentTimeMillis());
+        songListContainerRepository.set(songListContainer);
         songListEntryRepository.deleteBySongListContainerId(id);
-        songListContainer = new SongListContainer(userProfile.getId(), songList.getTitle(), System.currentTimeMillis());
         String songListContainerId = songListContainerRepository.set(songListContainer);
         for (int i = 0; i < songListEntries.length; i++) {
             SongListEntry songListEntry = new SongListEntry(songListContainerId, i, songListEntries[i].getTitle(), songListEntries[i].getArtist(), songListEntries[i].getContentUrl());
@@ -128,9 +129,10 @@ public class SongListManager implements SongListService {
                 throw new IllegalArgumentException();
             }
         }
-        songListContainerRepository.deleteById(songListContainer.getId());
+        songListContainer.setTitle(songList.getTitle());
+        songListContainer.setLastModificationDate(System.currentTimeMillis());
+        songListContainerRepository.set(songListContainer);
         songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
-        songListContainer = new SongListContainer(userProfile.getId(), songList.getTitle(), System.currentTimeMillis());
         String songListContainerId = songListContainerRepository.set(songListContainer);
         for (int i = 0; i < songListEntries.length; i++) {
             SongListEntry songListEntry = new SongListEntry(songListContainerId, i, songListEntries[i].getTitle(), songListEntries[i].getArtist(), songListEntries[i].getContentUrl());
