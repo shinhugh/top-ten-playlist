@@ -79,14 +79,63 @@ public class SongListManager implements SongListService {
 
     @Override
     public void updateById(String activeUserAccountId, String id, SongList songList) {
-        // TODO
-        throw new RuntimeException();
+        SongListContainer songListContainer = songListContainerRepository.readById(id);
+        if (activeUserAccountId == null) {
+            throw new AccessDeniedException();
+        }
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
+        if (!songListContainer.getUserProfileId().equals(userProfile.getId())) {
+            throw new AccessDeniedException();
+        }
+        if (songList == null) {
+            throw new IllegalArgumentException();
+        }
+        SongList.Entry[] songListEntries = songList.getEntries();
+        if (songListEntries == null) {
+            throw new IllegalArgumentException();
+        }
+        for (SongList.Entry entry : songListEntries) {
+            if (entry == null || entry.getContentUrl() == null) {
+                throw new IllegalArgumentException();
+            }
+        }
+        songListContainerRepository.deleteById(id);
+        songListEntryRepository.deleteBySongListContainerId(id);
+        songListContainer = new SongListContainer(userProfile.getId(), songList.getTitle(), System.currentTimeMillis());
+        String songListContainerId = songListContainerRepository.set(songListContainer);
+        for (int i = 0; i < songListEntries.length; i++) {
+            SongListEntry songListEntry = new SongListEntry(songListContainerId, i, songListEntries[i].getTitle(), songListEntries[i].getArtist(), songListEntries[i].getContentUrl());
+            songListEntryRepository.set(songListEntry);
+        }
     }
 
     @Override
     public void updateByActiveUserAccountId(String activeUserAccountId, SongList songList) {
-        // TODO
-        throw new RuntimeException();
+        if (activeUserAccountId == null) {
+            throw new AccessDeniedException();
+        }
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
+        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
+        if (songList == null) {
+            throw new IllegalArgumentException();
+        }
+        SongList.Entry[] songListEntries = songList.getEntries();
+        if (songListEntries == null) {
+            throw new IllegalArgumentException();
+        }
+        for (SongList.Entry entry : songListEntries) {
+            if (entry == null || entry.getContentUrl() == null) {
+                throw new IllegalArgumentException();
+            }
+        }
+        songListContainerRepository.deleteById(songListContainer.getId());
+        songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
+        songListContainer = new SongListContainer(userProfile.getId(), songList.getTitle(), System.currentTimeMillis());
+        String songListContainerId = songListContainerRepository.set(songListContainer);
+        for (int i = 0; i < songListEntries.length; i++) {
+            SongListEntry songListEntry = new SongListEntry(songListContainerId, i, songListEntries[i].getTitle(), songListEntries[i].getArtist(), songListEntries[i].getContentUrl());
+            songListEntryRepository.set(songListEntry);
+        }
     }
 
     @Override

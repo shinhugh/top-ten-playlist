@@ -162,6 +162,7 @@ public class UserManager implements UserService {
         userProfileRepository.deleteById(id);
         userAccountRepository.deleteById(userProfile.getUserAccountId());
         sessionRepository.deleteByUserAccountId(userProfile.getUserAccountId());
+        // TODO: Delete user's song list
     }
 
     @Override
@@ -172,5 +173,6 @@ public class UserManager implements UserService {
         userProfileRepository.deleteByUserAccountId(activeUserAccountId);
         userAccountRepository.deleteById(activeUserAccountId);
         sessionRepository.deleteByUserAccountId(activeUserAccountId);
+        // TODO: Delete user's song list
     }
 }
