@@ -13,3 +13,7 @@
   How to terminate the chain prematurely?
 
 - Handle native browser navigation (back button, rewriting URLs, etc)
+
+- Figure out URL encoding (uppercase, whitespace, etc)
+
+- Restrict allowed characters for API endpoints

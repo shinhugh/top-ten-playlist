@@ -31,6 +31,9 @@ const accountButton = document.getElementById('account-button');
 const accountLoadingOverlay = document.getElementById('account-loading-overlay');
 
 const playlistPageRoot = document.getElementById('playlist-page-root');
+const playlistTitle = document.getElementById('playlist-title');
+const playlistUserPublicName = document.getElementById('playlist-user-public-name');
+const playlistList = document.getElementById('playlist-list');
 
 const systemMessageDialog = document.getElementById('system-message-dialog');
 const systemMessageDialogContent = document.getElementById('system-message-dialog-content');
@@ -48,16 +51,18 @@ const extractInput = (element) => {
 
 // Functions: Global
 
-const clearPageInputs = () => {
+const clearPageContents = () => {
   loginNameInput.value = '';
   loginPasswordInput.value = '';
   signUpLoginNameInput.value = '';
   signUpPasswordInput.value = '';
   signUpPublicNameInput.value = '';
+  playlistUserPublicName.innerHTML = '';
+  playlistList.innerHTML = '';
 };
 
 const navigateToHomePage = () => {
-  clearPageInputs();
+  clearPageContents();
   loginPageRoot.hidden = true;
   signUpPageRoot.hidden = true;
   playlistPageRoot.hidden = true;
@@ -66,7 +71,7 @@ const navigateToHomePage = () => {
 };
 
 const navigateToLoginPage = () => {
-  clearPageInputs();
+  clearPageContents();
   homePageRoot.hidden = true;
   signUpPageRoot.hidden = true;
   playlistPageRoot.hidden = true;
@@ -75,7 +80,7 @@ const navigateToLoginPage = () => {
 };
 
 const navigateToSignUpPage = () => {
-  clearPageInputs();
+  clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
   playlistPageRoot.hidden = true;
@@ -84,7 +89,7 @@ const navigateToSignUpPage = () => {
 };
 
 const navigateToAccountPage = () => {
-  clearPageInputs();
+  clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
   signUpPageRoot.hidden = true;
@@ -113,13 +118,20 @@ const navigateToAccountPage = () => {
   });
 };
 
-const navigateToPlaylistPage = () => {
-  clearPageInputs();
+const navigateToPlaylistPage = (user, songList) => {
+  clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
   signUpPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   playlistPageRoot.hidden = false;
+  playlistTitle.innerHTML = songList.title;
+  playlistUserPublicName.innerHTML = user.publicName;
+  songList.entries.forEach((songListEntry) => {
+    const songListEntryIFrame = document.createElement('iframe');
+    songListEntryIFrame.src = songListEntry.contentUrl;
+    playlistList.appendChild(songListEntryIFrame);
+  });
 };
 
 let hideSystemMessageDialogTimeout;
@@ -189,15 +201,28 @@ topBarSearchButton.addEventListener('click', () => {
   if (userName == null) {
     return;
   }
+  topBarSearchButton.disabled = true;
   fetch('http://localhost:8080/api/song-list/user-public-name/' + userName)
-  .then((response) => {
-    if (response.status == 200) {
-      response.json()
-      .then((data) => {
-        // TODO
-        console.log(data); // DEBUG
+  .then((songListResponse) => {
+    if (songListResponse.status == 200) {
+      songListResponse.json()
+      .then((songList) => {
+        fetch('http://localhost:8080/api/user/id/' + songList.userId)
+        .then((userResponse) => {
+          if (userResponse.ok) {
+            userResponse.json()
+            .then((user) => {
+              navigateToPlaylistPage(user, songList);
+            });
+          } else {
+            showSystemMessage('Unable to fetch user data');
+          }
+        })
+        .catch(() => {
+          showSystemMessage('Unable to fetch user data');
+        });
       });
-    } else if (response.status == 404) {
+    } else if (songListResponse.status == 404) {
       showSystemMessage('No such user');
     } else {
       showSystemMessage('Unable to fetch playlist data');
@@ -205,6 +230,9 @@ topBarSearchButton.addEventListener('click', () => {
   })
   .catch(() => {
     showSystemMessage('Unable to fetch playlist data');
+  })
+  .finally(() => {
+    topBarSearchButton.disabled = false;
   });
 });
 
@@ -336,7 +364,7 @@ accountButton.addEventListener('click', () => {
   })
   .then((response) => {
     if (response.ok) {
-      clearPageInputs();
+      clearPageContents();
       fetch('http://localhost:8080/api/user/session')
       .then((response) => {
         if (response.ok) {
@@ -387,6 +415,26 @@ fetch('http://localhost:8080/api/user/session')
   } else {
     updateTopBar(false);
   }
+})
+.catch(() => {
+  updateTopBar(false);
 });
 
-navigateToPlaylistPage();
+navigateToHomePage();
+
+// navigateToPlaylistPage({
+//   publicName: 'Hugh'
+// }, {
+//   title: 'Hugh-kun no sugoi playlist',
+//   entries: [
+//     {
+//       contentUrl: 'https://www.youtube-nocookie.com/embed/1Ys6C1QMNvI'
+//     },
+//     {
+//       contentUrl: 'https://www.youtube-nocookie.com/embed/T7m9xx6CGTs'
+//     },
+//     {
+//       contentUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1258057960&visual=true&show_comments=false&show_teaser=false&hide_related=true'
+//     }
+//   ]
+// });
