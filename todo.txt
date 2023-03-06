@@ -5,15 +5,12 @@
 
 - Periodically purge expired sessions by calling deleteByLessThanOrEqualToExpiration()
 
-- Configure Spring to eliminate null JSON fields when writing HTTP response bodies
-
-- SameSite cookies
-
-- Replace nested fetch() statements with chained fetch() statements
-  How to terminate the chain prematurely?
-
-- Handle native browser navigation (back button, rewriting URLs, etc)
+- Handle native browser navigation (back button, rewriting URLs, navigating to specific pages, etc.)
 
 - Figure out URL encoding (uppercase, whitespace, etc)
 
-- Restrict allowed characters for API endpoints
+- Restrict allowed characters for API endpoint inputs
+
+- Configure Spring to eliminate null JSON fields when writing HTTP response bodies
+
+- SameSite cookies
