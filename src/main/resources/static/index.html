@@ -14,12 +14,16 @@
     <div id="top-bar-center-section">
         <div id="top-bar-search-root">
             <input id="top-bar-search-input" placeholder="Search for a user">
-            <button id="top-bar-search-button">Go</button>
+            <button id="top-bar-search-button">
+                <img src="search.png">
+            </button>
         </div>
     </div>
     <div id="top-bar-right-section">
-        <a id="top-bar-login-link">Login</a>
-        <a id="top-bar-sign-up-link">Sign up</a>
+        <a id="top-bar-login-link" hidden>Login</a>
+        <a id="top-bar-sign-up-link" hidden>Sign up</a>
+        <a id="top-bar-account-link" hidden>Account</a>
+        <a id="top-bar-logout-link" hidden>Logout</a>
     </div>
 </div>
 <div id="content-root">
@@ -28,19 +32,51 @@
     </div>
     <div id="login-page-root" class="page-root" hidden>
         <div id="login-root">
-            <p>Name</p>
+            <p>Login ID</p>
             <input id="login-name-input">
             <p>Password</p>
             <input id="login-password-input" type="password">
             <button id="login-button">Login</button>
+            <div id="login-loading-overlay" hidden>
+                <p>Loading..</p>
+            </div>
         </div>
     </div>
     <div id="sign-up-page-root" class="page-root" hidden>
-        <p>Sign up page</p>
+        <div id="sign-up-root">
+            <p>Login ID</p>
+            <input id="sign-up-login-name-input">
+            <p>Password</p>
+            <input id="sign-up-password-input" type="password">
+            <p>Public name</p>
+            <input id="sign-up-public-name-input">
+            <button id="sign-up-button">Register</button>
+            <div id="sign-up-loading-overlay" hidden>
+                <p>Loading..</p>
+            </div>
+        </div>
+    </div>
+    <div id="account-page-root" class="page-root" hidden>
+        <div id="account-root">
+            <p>Update account</p>
+            <p>Login ID</p>
+            <input id="account-login-name-input">
+            <p>Password</p>
+            <input id="account-password-input" type="password">
+            <p>Public name</p>
+            <input id="account-public-name-input">
+            <button id="account-button">Update</button>
+            <div id="account-loading-overlay" hidden>
+                <p>Loading..</p>
+            </div>
+        </div>
     </div>
     <div id="playlist-page-root" class="page-root" hidden>
         <p>Playlist page</p>
     </div>
+</div>
+<div id="system-message-dialog" hidden>
+    <p id="system-message-dialog-content">System message</p>
 </div>
 </body>
 </html>

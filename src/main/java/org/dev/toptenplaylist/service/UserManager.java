@@ -88,7 +88,7 @@ public class UserManager implements UserService {
         if (!userProfile.getUserAccountId().equals(activeUserAccountId)) {
             throw new AccessDeniedException();
         }
-        if (user == null) {
+        if (user == null || (user.getLoginName() == null && user.getPassword() == null && user.getPublicName() == null)) {
             throw new IllegalArgumentException();
         }
         UserAccount userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
@@ -124,7 +124,7 @@ public class UserManager implements UserService {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
-        if (user == null) {
+        if (user == null || (user.getLoginName() == null && user.getPassword() == null && user.getPublicName() == null)) {
             throw new IllegalArgumentException();
         }
         UserAccount userAccount = userAccountRepository.readById(activeUserAccountId);
