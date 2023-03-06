@@ -59,7 +59,9 @@ public class SongList {
     }
 
     public Entry[] getEntries() {
-        return entries;
+        Entry[] copy = new Entry[entries.length];
+        System.arraycopy(entries, 0, copy, 0, entries.length);
+        return copy;
     }
 
     public void setEntries(Entry[] entries) {

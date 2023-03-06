@@ -54,7 +54,6 @@ public class SongListManager implements SongListService {
     @Override
     public void create(String activeUserAccountId, SongList songList) {
         // TODO: Populate title and artist fields using provided content URL
-        // TODO: Throw IllegalArgumentException if content URL is invalid
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -69,6 +68,7 @@ public class SongListManager implements SongListService {
             if (entry == null || entry.getContentUrl() == null) {
                 throw new IllegalArgumentException();
             }
+            entry.setContentUrl(transformContentUrl(entry.getContentUrl()));
         }
         UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
         SongListContainer songListContainer = new SongListContainer(userProfile.getId(), songList.getTitle(), System.currentTimeMillis());
@@ -82,7 +82,6 @@ public class SongListManager implements SongListService {
     @Override
     public void updateById(String activeUserAccountId, String id, SongList songList) {
         // TODO: Populate title and artist fields using provided content URL
-        // TODO: Throw IllegalArgumentException if content URL is invalid
         SongListContainer songListContainer = songListContainerRepository.readById(id);
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
@@ -102,6 +101,7 @@ public class SongListManager implements SongListService {
             if (entry == null || entry.getContentUrl() == null) {
                 throw new IllegalArgumentException();
             }
+            entry.setContentUrl(transformContentUrl(entry.getContentUrl()));
         }
         songListContainer.setTitle(songList.getTitle());
         songListContainer.setLastModificationDate(System.currentTimeMillis());
@@ -117,7 +117,6 @@ public class SongListManager implements SongListService {
     @Override
     public void updateByActiveUserAccountId(String activeUserAccountId, SongList songList) {
         // TODO: Populate title and artist fields using provided content URL
-        // TODO: Throw IllegalArgumentException if content URL is invalid
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
@@ -134,6 +133,7 @@ public class SongListManager implements SongListService {
             if (entry == null || entry.getContentUrl() == null) {
                 throw new IllegalArgumentException();
             }
+            entry.setContentUrl(transformContentUrl(entry.getContentUrl()));
         }
         songListContainer.setTitle(songList.getTitle());
         songListContainer.setLastModificationDate(System.currentTimeMillis());
@@ -169,5 +169,10 @@ public class SongListManager implements SongListService {
         SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
         songListContainerRepository.deleteById(songListContainer.getId());
         songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
+    }
+
+    private String transformContentUrl(String contentUrl) {
+        // TODO: Throw IllegalArgumentException if content URL is invalid
+        return contentUrl;
     }
 }
