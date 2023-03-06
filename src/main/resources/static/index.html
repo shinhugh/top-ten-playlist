@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Ten</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js" defer></script>
+</head>
+<body>
+<div id="top-bar-root">
+    <div id="top-bar-left-section">
+        <a id="top-bar-home-link">Top 10</a>
+    </div>
+    <div id="top-bar-center-section">
+        <div id="top-bar-search-root">
+            <input id="top-bar-search-input" placeholder="Search for a user">
+            <button id="top-bar-search-button">Go</button>
+        </div>
+    </div>
+    <div id="top-bar-right-section">
+        <a id="top-bar-login-link">Login</a>
+        <a id="top-bar-sign-up-link">Sign up</a>
+    </div>
+</div>
+<div id="content-root">
+    <div id="home-page-root" class="page-root" hidden>
+        <p>Home page</p>
+    </div>
+    <div id="login-page-root" class="page-root" hidden>
+        <div id="login-root">
+            <p>Name</p>
+            <input id="login-name-input">
+            <p>Password</p>
+            <input id="login-password-input" type="password">
+            <button id="login-button">Login</button>
+        </div>
+    </div>
+    <div id="sign-up-page-root" class="page-root" hidden>
+        <p>Sign up page</p>
+    </div>
+    <div id="playlist-page-root" class="page-root" hidden>
+        <p>Playlist page</p>
+    </div>
+</div>
+</body>
+</html>

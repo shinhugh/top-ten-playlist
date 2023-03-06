@@ -1,0 +1,166 @@
+* {
+    margin: 0;
+    color: inherit;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+html * {
+    font-size: 1.2rem;
+}
+
+a:hover, button:hover {
+    cursor: pointer;
+}
+
+input {
+    border: none;
+    outline: none;
+}
+
+input[type="password"] {
+    letter-spacing: 0.2rem;
+}
+
+button {
+    border: none;
+}
+
+#top-bar-root {
+    height: 2.8rem;
+    width: 100%;
+    position: relative;
+    background: #2a4930;
+    color: #ffffff;
+}
+
+#top-bar-left-section {
+    height: 100%;
+    padding: 0 0.8rem;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#top-bar-left-section #top-bar-home-link {
+    font-size: 1.6rem;
+}
+
+#top-bar-root a:hover {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#top-bar-center-section {
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+}
+
+#top-bar-search-root {
+    display: flex;
+    align-items: center;
+    border-radius: 15px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#top-bar-search-input {
+    width: 8rem;
+    margin: 0 15px;
+    font-size: 0.9rem;
+    background: transparent;
+    color: #ffffff;
+}
+
+#top-bar-search-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    background: transparent;
+    color: #ffffff;
+}
+
+#top-bar-search-button:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#top-bar-right-section {
+    height: 100%;
+    padding: 0 0.8rem;
+    position: absolute;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#top-bar-right-section * {
+    font-size: 1rem;
+}
+
+#content-root {
+    height: calc(100% - 2.8rem);
+    width: 100%;
+    background: #181818;
+    color: #ffffff;
+}
+
+.page-root {
+    height: 100%;
+    width: 100%;
+}
+
+#login-page-root {
+    position: relative;
+}
+
+#login-root {
+    padding: 40px 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    overflow: hidden;
+    border-radius: 15px;
+    background: #2a4930;
+}
+
+#login-root>p {
+    align-self: flex-start;
+    font-size: 0.9rem;
+}
+
+#login-root>input {
+    width: 12rem;
+    margin-bottom: 0.8rem;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+#login-root>input:focus {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#login-root>button {
+    margin-top: 0.6rem;
+    padding: 10px 20px;
+    align-self: flex-end;
+    font-size: 1rem;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#login-root>button:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
