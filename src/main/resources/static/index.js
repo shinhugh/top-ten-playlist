@@ -27,7 +27,8 @@ const accountPageRoot = document.getElementById('account-page-root');
 const accountLoginNameInput = document.getElementById('account-login-name-input');
 const accountPasswordInput = document.getElementById('account-password-input');
 const accountPublicNameInput = document.getElementById('account-public-name-input');
-const accountButton = document.getElementById('account-button');
+const accountUpdateButton = document.getElementById('account-update-button');
+const accountDeleteButton = document.getElementById('account-delete-button');
 const accountLoadingOverlay = document.getElementById('account-loading-overlay');
 
 const playlistPageRoot = document.getElementById('playlist-page-root');
@@ -95,7 +96,7 @@ const navigateToAccountPage = () => {
   signUpPageRoot.hidden = true;
   playlistPageRoot.hidden = true;
   accountPageRoot.hidden = false;
-  accountButton.disabled = true;
+  accountUpdateButton.disabled = true;
   accountLoadingOverlay.hidden = false;
   fetch('http://localhost:8080/api/user/session')
   .then((response) => {
@@ -113,7 +114,7 @@ const navigateToAccountPage = () => {
     showSystemMessage('Unable to fetch account data');
   })
   .finally(() => {
-    accountButton.disabled = false;
+    accountUpdateButton.disabled = false;
     accountLoadingOverlay.hidden = true;
   });
 };
@@ -189,11 +190,21 @@ topBarLogoutLink.addEventListener('click', () => {
   .then((response) => {
     if (response.ok) {
       updateTopBar(false);
-      navigateToLoginPage();
+      navigateToHomePage();
     } else {
       showSystemMessage('Unable to logout');
     }
+  })
+  .catch(() => {
+    showSystemMessage('Unable to logout');
   });
+});
+
+topBarSearchInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    topBarSearchButton.click();
+  }
 });
 
 topBarSearchButton.addEventListener('click', () => {
@@ -240,6 +251,20 @@ topBarSearchButton.addEventListener('click', () => {
 
 // Configure event listeners: Login page
 
+loginNameInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    loginPasswordInput.focus();
+  }
+});
+
+loginPasswordInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    loginButton.click();
+  }
+});
+
 loginButton.addEventListener('click', () => {
   const name = extractInput(loginNameInput);
   const password = extractInput(loginPasswordInput);
@@ -282,6 +307,27 @@ loginButton.addEventListener('click', () => {
 
 // Configure event listeners: Sign up page
 
+signUpLoginNameInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    signUpPasswordInput.focus();
+  }
+});
+
+signUpPasswordInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    signUpPublicNameInput.focus();
+  }
+});
+
+signUpPublicNameInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    signUpButton.click();
+  }
+});
+
 signUpButton.addEventListener('click', () => {
   const loginName = extractInput(signUpLoginNameInput);
   const password = extractInput(signUpPasswordInput);
@@ -317,8 +363,27 @@ signUpButton.addEventListener('click', () => {
       })
       .then((response) => {
         if (response.ok) {
-          updateTopBar(true);
-          navigateToHomePage();
+          fetch('http://localhost:8080/api/song-list', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              title: 'Top 10',
+              entries: []
+            })
+          })
+          .then((response) => {
+            if (response.ok) {
+              updateTopBar(true);
+              navigateToHomePage();
+            } else {
+              showSystemMessage('Unable to create song list');
+            }
+          })
+          .catch(() => {
+            showSystemMessage('Unable to create song list');
+          });
         } else {
           showSystemMessage('Account has been created but unable to login');
         }
@@ -345,8 +410,30 @@ signUpButton.addEventListener('click', () => {
 
 // Configure event listeners: Account page
 
-accountButton.addEventListener('click', () => {
-  accountButton.disabled = true;
+accountLoginNameInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    accountPasswordInput.focus();
+  }
+});
+
+accountPasswordInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    accountPublicNameInput.focus();
+  }
+});
+
+accountPublicNameInput.addEventListener('keypress', (event) => {
+  if (event.key == 'Enter') {
+    event.preventDefault();
+    accountUpdateButton.click();
+  }
+});
+
+accountUpdateButton.addEventListener('click', () => {
+  accountUpdateButton.disabled = true;
+  accountDeleteButton.disabled = true;
   accountLoadingOverlay.hidden = false;
   const loginName = extractInput(accountLoginNameInput);
   const password = extractInput(accountPasswordInput);
@@ -382,7 +469,8 @@ accountButton.addEventListener('click', () => {
       })
       .finally(() => {
         showSystemMessage('Account successfully updated');
-        accountButton.disabled = false;
+        accountUpdateButton.disabled = false;
+        accountDeleteButton.disabled = false;
         accountLoadingOverlay.hidden = true;
       });
     } else {
@@ -393,13 +481,46 @@ accountButton.addEventListener('click', () => {
       } else {
         showSystemMessage('Unable to update account');
       }
-      accountButton.disabled = false;
+      accountUpdateButton.disabled = false;
+      accountDeleteButton.disabled = false;
       accountLoadingOverlay.hidden = true;
     }
   })
   .catch(() => {
     showSystemMessage('Unable to update account');
-    accountButton.disabled = false;
+    accountUpdateButton.disabled = false;
+    accountDeleteButton.disabled = false;
+    accountLoadingOverlay.hidden = true;
+  });
+});
+
+accountDeleteButton.addEventListener('click', () => {
+  accountUpdateButton.disabled = true;
+  accountDeleteButton.disabled = true;
+  accountLoadingOverlay.hidden = false;
+  fetch('http://localhost:8080/api/user/session', {
+    method: 'DELETE'
+  })
+  .then((response) => {
+    if (response.ok) {
+      fetch('http://localhost:8080/api/auth', {
+        method: 'DELETE'
+      })
+      .finally(() => {
+        showSystemMessage('Successfully deleted account');
+        updateTopBar(false);
+        navigateToHomePage();
+      });
+    } else {
+      showSystemMessage('Unable to delete account');
+    }
+  })
+  .catch(() => {
+    showSystemMessage('Unable to delete account');
+  })
+  .finally(() => {
+    accountUpdateButton.disabled = false;
+    accountDeleteButton.disabled = false;
     accountLoadingOverlay.hidden = true;
   });
 });
@@ -434,7 +555,7 @@ navigateToHomePage();
 //       contentUrl: 'https://www.youtube-nocookie.com/embed/T7m9xx6CGTs'
 //     },
 //     {
-//       contentUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1258057960&visual=true&show_comments=false&show_teaser=false&hide_related=true'
+//       contentUrl: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fyomoha%2F2o22o428&visual=true&show_comments=false&show_teaser=false&hide_related=true'
 //     }
 //   ]
 // });

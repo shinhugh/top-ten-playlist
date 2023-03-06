@@ -165,9 +165,12 @@ public class UserManager implements UserService {
         userProfileRepository.deleteById(id);
         userAccountRepository.deleteById(userProfile.getUserAccountId());
         sessionRepository.deleteByUserAccountId(userProfile.getUserAccountId());
-        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(id);
-        songListContainerRepository.deleteById(songListContainer.getId());
-        songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
+        try {
+            SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(id);
+            songListContainerRepository.deleteById(songListContainer.getId());
+            songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
+        }
+        catch (NoSuchElementException ignored) { }
     }
 
     @Override
@@ -179,8 +182,11 @@ public class UserManager implements UserService {
         userProfileRepository.deleteById(userProfile.getId());
         userAccountRepository.deleteById(activeUserAccountId);
         sessionRepository.deleteByUserAccountId(activeUserAccountId);
-        SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
-        songListContainerRepository.deleteById(songListContainer.getId());
-        songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
+        try {
+            SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
+            songListContainerRepository.deleteById(songListContainer.getId());
+            songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
+        }
+        catch (NoSuchElementException ignored) { }
     }
 }

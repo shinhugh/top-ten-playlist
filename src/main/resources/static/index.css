@@ -312,16 +312,35 @@ iframe {
 }
 
 #account-root>button {
-    margin-top: 0.6rem;
-    padding: 0.6rem 1.2rem;
-    align-self: flex-end;
+    padding: 0.6rem 0;
+    align-self: stretch;
     font-size: 1rem;
     border-radius: 5px;
+}
+
+#account-update-button {
+    margin-top: 0.6rem;
     background: rgba(0, 0, 0, 0.3);
 }
 
-#account-root>button:hover {
+#account-update-button:hover {
     background: rgba(0, 0, 0, 0.4);
+}
+
+#account-root>.divider {
+    height: 1px;
+    margin-top: 1.5rem;
+    align-self: stretch;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+#account-delete-button {
+    margin-top: 1.5rem;
+    background: rgba(255, 0, 0, 0.3);
+}
+
+#account-delete-button:hover {
+    background: rgba(255, 0, 0, 0.4);
 }
 
 #account-loading-overlay {
