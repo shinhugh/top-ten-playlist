@@ -55,7 +55,7 @@ button {
 }
 
 #top-bar-root a:hover {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 #top-bar-center-section {
@@ -132,9 +132,6 @@ button {
 .page-root {
     height: 100%;
     width: 100%;
-}
-
-#login-page-root {
     position: relative;
 }
 
@@ -202,10 +199,6 @@ button {
     letter-spacing: 0.2rem;
 }
 
-#sign-up-page-root {
-    position: relative;
-}
-
 #sign-up-root {
     padding: 3rem 2rem 2rem;
     position: absolute;
@@ -270,10 +263,6 @@ button {
     letter-spacing: 0.2rem;
 }
 
-#account-page-root {
-    position: relative;
-}
-
 #account-root {
     padding: 3rem 2rem 2rem;
     position: absolute;
@@ -298,6 +287,11 @@ button {
     margin-bottom: 1rem;
     align-self: initial;
     font-size: 1.6rem;
+}
+
+#account-root>p:nth-child(2) {
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
 }
 
 #account-root>input {

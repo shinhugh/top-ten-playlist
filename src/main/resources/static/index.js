@@ -1,3 +1,5 @@
+// DOM elements
+
 const topBarHomeLink = document.getElementById('top-bar-home-link');
 const topBarSearchInput = document.getElementById('top-bar-search-input');
 const topBarSearchButton = document.getElementById('top-bar-search-button');
@@ -32,6 +34,19 @@ const playlistPageRoot = document.getElementById('playlist-page-root');
 
 const systemMessageDialog = document.getElementById('system-message-dialog');
 const systemMessageDialogContent = document.getElementById('system-message-dialog-content');
+
+// ------------------------------------------------------------
+
+// Functions: Utility
+
+const extractInput = (element) => {
+  const inputValue = element.value;
+  return inputValue.length == 0 ? null : inputValue;
+};
+
+// ------------------------------------------------------------
+
+// Functions: Global
 
 const clearPageInputs = () => {
   loginNameInput.value = '';
@@ -117,6 +132,10 @@ const showSystemMessage = (message) => {
   }, 2000);
 };
 
+// ------------------------------------------------------------
+
+// Functions: Top bar
+
 const updateTopBar = (signedIn) => {
   if (signedIn) {
     topBarLoginLink.hidden = true;
@@ -130,6 +149,10 @@ const updateTopBar = (signedIn) => {
     topBarSignUpLink.hidden = false;
   }
 };
+
+// ------------------------------------------------------------
+
+// Configure event listeners: Top bar
 
 topBarHomeLink.addEventListener('click', () => {
   navigateToHomePage();
@@ -155,20 +178,27 @@ topBarLogoutLink.addEventListener('click', () => {
     if (response.ok) {
       updateTopBar(false);
       navigateToLoginPage();
+    } else {
+      showSystemMessage('Unable to logout');
     }
   });
 });
 
 topBarSearchButton.addEventListener('click', () => {
-  const userName = topBarSearchInput.value;
+  const userName = extractInput(topBarSearchInput);
+  if (userName == null) {
+    return;
+  }
   fetch('http://localhost:8080/api/song-list/user-public-name/' + userName)
   .then((response) => {
-    if (response.ok) {
+    if (response.status == 200) {
       response.json()
       .then((data) => {
         // TODO
-        console.log(data);
+        console.log(data); // DEBUG
       });
+    } else if (response.status == 404) {
+      showSystemMessage('No such user');
     } else {
       showSystemMessage('Unable to fetch playlist data');
     }
@@ -178,11 +208,19 @@ topBarSearchButton.addEventListener('click', () => {
   });
 });
 
+// ------------------------------------------------------------
+
+// Configure event listeners: Login page
+
 loginButton.addEventListener('click', () => {
+  const name = extractInput(loginNameInput);
+  const password = extractInput(loginPasswordInput);
+  if (name == null || password == null) {
+    showSystemMessage('Missing required fields');
+    return;
+  }
   loginButton.disabled = true;
   loginLoadingOverlay.hidden = false;
-  const name = loginNameInput.value;
-  const password = loginPasswordInput.value;
   fetch('http://localhost:8080/api/auth', {
     method: 'POST',
     headers: {
@@ -197,7 +235,7 @@ loginButton.addEventListener('click', () => {
     if (response.status == 200) {
       updateTopBar(true);
       navigateToHomePage();
-    } else if (response.status == 403) {
+    } else if (response.status == 400 || response.status == 403) {
       showSystemMessage('Invalid credentials');
     } else {
       showSystemMessage('Unable to login');
@@ -212,12 +250,20 @@ loginButton.addEventListener('click', () => {
   });
 });
 
+// ------------------------------------------------------------
+
+// Configure event listeners: Sign up page
+
 signUpButton.addEventListener('click', () => {
+  const loginName = extractInput(signUpLoginNameInput);
+  const password = extractInput(signUpPasswordInput);
+  const publicName = extractInput(signUpPublicNameInput);
+  if (loginName == null || password == null || publicName == null) {
+    showSystemMessage('Missing required fields');
+    return;
+  }
   signUpButton.disabled = true;
   signUpLoadingOverlay.hidden = false;
-  const loginName = signUpLoginNameInput.value;
-  const password = signUpPasswordInput.value;
-  const publicName = signUpPublicNameInput.value;
   fetch('http://localhost:8080/api/user', {
     method: 'POST',
     headers: {
@@ -267,15 +313,16 @@ signUpButton.addEventListener('click', () => {
   });
 });
 
+// ------------------------------------------------------------
+
+// Configure event listeners: Account page
+
 accountButton.addEventListener('click', () => {
   accountButton.disabled = true;
   accountLoadingOverlay.hidden = false;
-  let loginName = accountLoginNameInput.value;
-  loginName = loginName.length == 0 ? null : loginName;
-  let password = accountPasswordInput.value;
-  password = password.length == 0 ? null : password;
-  let publicName = accountPublicNameInput.value;
-  publicName = publicName.length == 0 ? null : publicName;
+  const loginName = extractInput(accountLoginNameInput);
+  const password = extractInput(accountPasswordInput);
+  const publicName = extractInput(accountPublicNameInput);
   fetch('http://localhost:8080/api/user/session', {
     method: 'PUT',
     headers: {
@@ -288,7 +335,7 @@ accountButton.addEventListener('click', () => {
     })
   })
   .then((response) => {
-    if (response.status == 200) {
+    if (response.ok) {
       clearPageInputs();
       fetch('http://localhost:8080/api/user/session')
       .then((response) => {
@@ -329,6 +376,10 @@ accountButton.addEventListener('click', () => {
   });
 });
 
+// ------------------------------------------------------------
+
+// Initialize
+
 fetch('http://localhost:8080/api/user/session')
 .then((response) => {
   if (response.ok) {
@@ -338,4 +389,4 @@ fetch('http://localhost:8080/api/user/session')
   }
 });
 
-navigateToHomePage();
+navigateToPlaylistPage();
