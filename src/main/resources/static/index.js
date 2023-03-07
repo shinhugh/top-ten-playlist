@@ -556,6 +556,8 @@ signUpButton.addEventListener('click', () => {
       });
     } else if (response.status == 403) {
       showSystemMessage('Invalid credentials');
+    } else if (response.status == 409) {
+      showSystemMessage('Provided login ID or public name is already taken');
     } else {
       showSystemMessage('Unable to sign up');
     }

@@ -6,7 +6,6 @@ import org.dev.toptenplaylist.model.Session;
 import org.dev.toptenplaylist.repository.SessionRepository;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Service

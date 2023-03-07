@@ -5,7 +5,6 @@ import org.dev.toptenplaylist.model.LoginCredentials;
 import org.dev.toptenplaylist.service.AuthenticationService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController

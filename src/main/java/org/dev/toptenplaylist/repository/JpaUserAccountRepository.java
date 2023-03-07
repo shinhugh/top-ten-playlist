@@ -35,6 +35,15 @@ public class JpaUserAccountRepository implements UserAccountRepository {
     }
 
     @Override
+    public UserAccount readByNameCS(String name) {
+        UserAccount candidate = readByName(name);
+        if (!candidate.getName().equals(name)) {
+            throw new NoSuchElementException();
+        }
+        return candidate;
+    }
+
+    @Override
     public String set(UserAccount userAccount) {
         if (userAccount == null || userAccount.getName() == null || userAccount.getPasswordHash() == null) {
             throw new IllegalArgumentException();

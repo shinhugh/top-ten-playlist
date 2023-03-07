@@ -53,7 +53,7 @@ public class AuthenticationManager implements AuthenticationService {
         }
         UserAccount userAccount;
         try {
-            userAccount = userAccountRepository.readByName(loginCredentials.getName());
+            userAccount = userAccountRepository.readByNameCS(loginCredentials.getName());
         }
         catch (NoSuchElementException ex) {
             result.setException(new AccessDeniedException());

@@ -10,6 +10,6 @@
 - Restrict allowed characters for API endpoint inputs
 
 - Explicitly configure case-sensitivity for SQL depending on table and column
-  All UUID columns should be case sensitive
+  All UUID values should be case insensitive
   UserAccount Name (LoginName) should be case sensitive for login but case insensitive for creation (duplicate check)
   UserProfile Name (PublicName) should be case insensitive
