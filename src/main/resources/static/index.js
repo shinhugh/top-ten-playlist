@@ -693,7 +693,7 @@ fetch('http://localhost:8080/api/user/session')
   updateTopBar(false);
 });
 
-// navigateToHomePage();
+navigateToHomePage();
 
 // TEST START
 
@@ -714,12 +714,12 @@ fetch('http://localhost:8080/api/user/session')
 //   ]
 // });
 
-homePageRoot.hidden = false;
-homeUnauthenticatedRoot.hidden = true;
-homeAuthenticatedRoot.hidden = false;
-appendNewEntryToPlaylistEditor('1');
-appendNewEntryToPlaylistEditor('2');
-appendNewEntryToPlaylistEditor('3');
-appendNewEntryToPlaylistEditor('4');
+// homePageRoot.hidden = false;
+// homeUnauthenticatedRoot.hidden = true;
+// homeAuthenticatedRoot.hidden = false;
+// appendNewEntryToPlaylistEditor('1');
+// appendNewEntryToPlaylistEditor('2');
+// appendNewEntryToPlaylistEditor('3');
+// appendNewEntryToPlaylistEditor('4');
 
 // TEST FINISH

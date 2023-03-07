@@ -181,20 +181,47 @@ public class SongListManager implements SongListService {
         songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
     }
 
-    private String transformContentUrl(String contentUrl) { // TODO: Recognize already transformed URLs and leave as is
+    private String transformContentUrl(String contentUrl) {
         UriComponents uriComponents = UriComponentsBuilder.fromUriString(contentUrl).build();
         String host = uriComponents.getHost();
-        if ("youtube.com".equals(host) || "www.youtube.com".equals(host)) {
-            MultiValueMap<String, String> queryParams = uriComponents.getQueryParams();
-            String youtubeId = queryParams.getFirst("v");
-            return "https://www.youtube-nocookie.com/embed/" + youtubeId;
-        }
-        else if ("soundcloud.com".equals(host) || "www.soundcloud.com".equals(host)) {
-            String soundcloudPath = uriComponents.getPath();
-            return "https://w.soundcloud.com/player/?url=https://soundcloud.com" + soundcloudPath + "&visual=true&show_comments=false&show_teaser=false&hide_related=true";
-        }
-        else {
+        String path = uriComponents.getPath();
+        List<String> pathSegments = uriComponents.getPathSegments();
+        MultiValueMap<String, String> queryParams = uriComponents.getQueryParams();
+        if ("youtube-nocookie.com".equals(host) || "www.youtube-nocookie.com".equals(host)) {
+            if (pathSegments.size() == 2 && "embed".equals(pathSegments.get(0))) {
+                return "https://www.youtube-nocookie.com/embed/" + pathSegments.get(1);
+            }
             throw new IllegalArgumentException();
         }
+        if ("youtube.com".equals(host) || "www.youtube.com".equals(host)) {
+            if (pathSegments.size() == 2 && "embed".equals(pathSegments.get(0))) {
+                return "https://www.youtube-nocookie.com/embed/" + pathSegments.get(1);
+            }
+            String youtubeId = queryParams.getFirst("v");
+            if (youtubeId == null) {
+                throw new IllegalArgumentException();
+            }
+            return "https://www.youtube-nocookie.com/embed/" + youtubeId;
+        }
+        if ("w.soundcloud.com".equals(host)) {
+            String soundcloudUrl = queryParams.getFirst("url");
+            if (soundcloudUrl == null) {
+                throw new IllegalArgumentException();
+            }
+            UriComponents soundcloudUriComponents = UriComponentsBuilder.fromUriString(soundcloudUrl).build();
+            String soundcloudHost = soundcloudUriComponents.getHost();
+            String soundcloudPath = soundcloudUriComponents.getPath();
+            if (!("soundcloud.com".equals(soundcloudHost) || "www.soundcloud.com".equals(soundcloudHost)) || soundcloudPath == null) {
+                throw new IllegalArgumentException();
+            }
+            return "https://w.soundcloud.com/player/?url=https://soundcloud.com" + soundcloudPath + "&visual=true&show_comments=false&show_teaser=false&hide_related=true";
+        }
+        if ("soundcloud.com".equals(host) || "www.soundcloud.com".equals(host)) {
+            if (path == null) {
+                throw new IllegalArgumentException();
+            }
+            return "https://w.soundcloud.com/player/?url=https://soundcloud.com" + path + "&visual=true&show_comments=false&show_teaser=false&hide_related=true";
+        }
+        throw new IllegalArgumentException();
     }
 }
