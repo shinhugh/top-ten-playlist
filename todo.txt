@@ -10,7 +10,3 @@
 - Figure out URL encoding (uppercase, whitespace, etc)
 
 - Restrict allowed characters for API endpoint inputs
-
-- Configure Spring to eliminate null JSON fields when writing HTTP response bodies
-
-- SameSite cookies

@@ -38,9 +38,6 @@ public class SessionTokenManager implements SessionTokenService {
     }
 
     private void clearSessionCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("session", null);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", "session=; Path=/; Max-Age=0; SameSite=strict");
     }
 }

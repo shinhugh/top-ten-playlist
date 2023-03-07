@@ -40,9 +40,6 @@ public class AuthenticationController {
     }
 
     private void setSessionCookie(HttpServletResponse response, String token, int maxAge) {
-        Cookie cookie = new Cookie("session", token);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", "session=" + token + "; Path=/; Max-Age=" + maxAge + "; SameSite=strict");
     }
 }
