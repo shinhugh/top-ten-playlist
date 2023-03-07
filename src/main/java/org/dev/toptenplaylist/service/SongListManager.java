@@ -1,7 +1,9 @@
 package org.dev.toptenplaylist.service;
 
 import org.dev.toptenplaylist.exception.AccessDeniedException;
+import org.dev.toptenplaylist.exception.ElementAlreadyExistsException;
 import org.dev.toptenplaylist.exception.IllegalArgumentException;
+import org.dev.toptenplaylist.exception.NoSuchElementException;
 import org.dev.toptenplaylist.model.SongList;
 import org.dev.toptenplaylist.model.SongListContainer;
 import org.dev.toptenplaylist.model.SongListEntry;
@@ -10,6 +12,9 @@ import org.dev.toptenplaylist.repository.SongListContainerRepository;
 import org.dev.toptenplaylist.repository.SongListEntryRepository;
 import org.dev.toptenplaylist.repository.UserProfileRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -57,6 +62,12 @@ public class SongListManager implements SongListService {
         if (activeUserAccountId == null) {
             throw new AccessDeniedException();
         }
+        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
+        try {
+            songListContainerRepository.readByUserProfileId(userProfile.getId());
+            throw new ElementAlreadyExistsException();
+        }
+        catch (NoSuchElementException ignored) { }
         if (songList == null) {
             throw new IllegalArgumentException();
         }
@@ -70,7 +81,6 @@ public class SongListManager implements SongListService {
             }
             entry.setContentUrl(transformContentUrl(entry.getContentUrl()));
         }
-        UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
         SongListContainer songListContainer = new SongListContainer(userProfile.getId(), songList.getTitle(), System.currentTimeMillis());
         String songListContainerId = songListContainerRepository.set(songListContainer);
         for (int i = 0; i < songListEntries.length; i++) {
@@ -172,7 +182,19 @@ public class SongListManager implements SongListService {
     }
 
     private String transformContentUrl(String contentUrl) {
-        // TODO: Throw IllegalArgumentException if content URL is invalid
-        return contentUrl;
+        UriComponents uriComponents = UriComponentsBuilder.fromUriString(contentUrl).build();
+        String host = uriComponents.getHost();
+        if ("youtube.com".equals(host) || "www.youtube.com".equals(host)) {
+            MultiValueMap<String, String> queryParams = uriComponents.getQueryParams();
+            String youtubeId = queryParams.getFirst("v");
+            return "https://www.youtube-nocookie.com/embed/" + youtubeId;
+        }
+        else if ("soundcloud.com".equals(host) || "www.soundcloud.com".equals(host)) {
+            String soundcloudPath = uriComponents.getPath();
+            return "https://w.soundcloud.com/player/?url=https://soundcloud.com" + soundcloudPath + "&visual=true&show_comments=false&show_teaser=false&hide_related=true";
+        }
+        else {
+            throw new IllegalArgumentException();
+        }
     }
 }
