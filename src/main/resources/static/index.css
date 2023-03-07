@@ -2,6 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Phudu:wght@600&display=swap');
 
+@font-face {
+    font-family: 'icons';
+    src: url('fonts/icons.eot?elhwgi');
+    src: url('fonts/icons.eot?elhwgi#iefix') format('embedded-opentype'),
+    url('fonts/icons.ttf?elhwgi') format('truetype'),
+    url('fonts/icons.woff?elhwgi') format('woff'),
+    url('fonts/icons.svg?elhwgi#icons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+  }
+
 #top-bar-home-link, #home-unauthenticated-container>.title {
     font-family: 'Phudu';
 }
@@ -120,12 +132,12 @@ iframe {
     background: rgba(0, 0, 0, 0.3);
 }
 
-#top-bar-search-button>img {
-    height: 40%;
+#top-bar-search-button>p {
     position: absolute;
-    top: 50%;
-    left: 46%;
+    top: 48%;
+    left: 45%;
     transform: translate(-50%, -50%);
+    font-family: 'icons';
 }
 
 #top-bar-right-section {
@@ -198,6 +210,88 @@ iframe {
 
 #home-unauthenticated-container>a:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+#home-playlist-editor-root {
+    width: 80%;
+    padding: 4rem 0 2rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+#home-playlist-editor-title {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+#home-playlist-editor-title>p {
+    flex: 0 0 auto;
+    font-size: 1.5rem;
+}
+
+#home-playlist-editor-title>input {
+    flex: 1 1 0;
+    font-size: 1.2rem;
+    background: transparent;
+}
+
+#home-playlist-editor-root input {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+#home-playlist-editor-entries-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+#home-playlist-editor-entries-container>div {
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    background: var(--bg-color-primary);
+}
+
+#home-playlist-editor-entries-container input {
+    margin: 0 1rem;
+    flex: 1 1 0;
+    font-size: 1.2rem;
+    background: transparent;
+    color: #ffffff;
+}
+
+#home-playlist-editor-entries-container button {
+    height: 100%;
+    flex: 0 0 auto;
+    aspect-ratio: 1;
+    font-size: 1.3rem;
+    background: transparent;
+    color: #ffffff;
+    font-family: 'icons';
+}
+
+#home-playlist-editor-entries-container button:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#home-playlist-editor-add-button {
+    height: 3rem;
+    font-size: 0.9rem;
+    font-family: 'icons';
+    background: var(--bg-color-primary);
+}
+
+#home-playlist-editor-submit-button {
+    height: 3rem;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    background: var(--bg-color-primary);
 }
 
 #home-loading-overlay {
@@ -466,7 +560,7 @@ iframe {
 }
 
 #playlist-title {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     font-size: 4rem;
 }
 

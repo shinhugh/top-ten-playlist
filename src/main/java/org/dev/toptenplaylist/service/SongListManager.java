@@ -72,7 +72,7 @@ public class SongListManager implements SongListService {
             throw new IllegalArgumentException();
         }
         SongList.Entry[] songListEntries = songList.getEntries();
-        if (songListEntries == null) {
+        if (songListEntries == null || songListEntries.length > 10) {
             throw new IllegalArgumentException();
         }
         for (SongList.Entry entry : songListEntries) {
@@ -104,7 +104,7 @@ public class SongListManager implements SongListService {
             throw new IllegalArgumentException();
         }
         SongList.Entry[] songListEntries = songList.getEntries();
-        if (songListEntries == null) {
+        if (songListEntries == null || songListEntries.length > 10) {
             throw new IllegalArgumentException();
         }
         for (SongList.Entry entry : songListEntries) {
@@ -136,7 +136,7 @@ public class SongListManager implements SongListService {
             throw new IllegalArgumentException();
         }
         SongList.Entry[] songListEntries = songList.getEntries();
-        if (songListEntries == null) {
+        if (songListEntries == null || songListEntries.length > 10) {
             throw new IllegalArgumentException();
         }
         for (SongList.Entry entry : songListEntries) {
@@ -181,7 +181,7 @@ public class SongListManager implements SongListService {
         songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
     }
 
-    private String transformContentUrl(String contentUrl) {
+    private String transformContentUrl(String contentUrl) { // TODO: Recognize already transformed URLs and leave as is
         UriComponents uriComponents = UriComponentsBuilder.fromUriString(contentUrl).build();
         String host = uriComponents.getHost();
         if ("youtube.com".equals(host) || "www.youtube.com".equals(host)) {

@@ -15,7 +15,7 @@
         <div id="top-bar-search-root">
             <input id="top-bar-search-input" placeholder="Search for a user">
             <button id="top-bar-search-button">
-                <img src="search.png">
+                <p></p>
             </button>
         </div>
     </div>
@@ -31,13 +31,21 @@
         <div id="home-unauthenticated-root" hidden>
             <div id="home-unauthenticated-container">
                 <p class="title">Top/Ten</p>
-                <p>Narrow down your lifetime of favorite music into just 10 songs.<br>The ultimate playlist to depict your music palette.</p>
+                <p>Narrow down your lifetime of favorite music into 10 songs.<br>The ultimate playlist to depict your music palette.</p>
                 <p>Login or sign up to create your own list.</p>
                 <a id="home-github-link" href="https://github.com/shinhugh/top-ten-playlist" target="_blank" rel="noopener noreferrer">Open-source on GitHub</a>
             </div>
         </div>
         <div id="home-authenticated-root" hidden>
-            <p>Playlist editor</p>
+            <div id="home-playlist-editor-root">
+                <div id="home-playlist-editor-title">
+                    <p>Title</p>
+                    <input id="home-playlist-editor-title-input">
+                </div>
+                <div id="home-playlist-editor-entries-container"></div>
+                <button id="home-playlist-editor-add-button"></button>
+                <button id="home-playlist-editor-submit-button">Save</button>
+            </div>
         </div>
         <div id="home-loading-overlay" hidden>
             <p>Loading..</p>
