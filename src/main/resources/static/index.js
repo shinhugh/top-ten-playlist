@@ -640,7 +640,7 @@ accountUpdateButton.addEventListener('click', () => {
       });
     } else {
       if (response.status == 400) {
-        showSystemMessage('Invalid values provided');
+        showSystemMessage('Invalid characters provided');
       } else if (response.status == 409) {
         showSystemMessage('The provided login ID or public name already exists');
       } else {
