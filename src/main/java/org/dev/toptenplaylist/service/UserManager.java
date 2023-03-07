@@ -19,6 +19,9 @@ public class UserManager implements UserService {
     private final SongListContainerRepository songListContainerRepository;
     private final SongListEntryRepository songListEntryRepository;
     private final SecureHashService secureHashService;
+    private static final String loginNameAllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-";
+    private static final String passwordAllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-!?";
+    private static final String publicNameAllowedChars = loginNameAllowedChars;
 
     public UserManager(UserAccountRepository userAccountRepository, UserProfileRepository userProfileRepository, SessionRepository sessionRepository, SongListContainerRepository songListContainerRepository, SongListEntryRepository songListEntryRepository, SecureHashService secureHashService) {
         this.userAccountRepository = userAccountRepository;
@@ -66,6 +69,21 @@ public class UserManager implements UserService {
         if (user == null || user.getLoginName() == null || user.getPassword() == null || user.getPublicName() == null) {
             throw new IllegalArgumentException();
         }
+        for (char c : user.getLoginName().toCharArray()) {
+            if (!loginNameAllowedChars.contains(String.valueOf(c))) {
+                throw new IllegalArgumentException();
+            }
+        }
+        for (char c : user.getPassword().toCharArray()) {
+            if (!passwordAllowedChars.contains(String.valueOf(c))) {
+                throw new IllegalArgumentException();
+            }
+        }
+        for (char c : user.getPublicName().toCharArray()) {
+            if (!publicNameAllowedChars.contains(String.valueOf(c))) {
+                throw new IllegalArgumentException();
+            }
+        }
         try {
             userAccountRepository.readByName(user.getLoginName());
             throw new ElementAlreadyExistsException();
@@ -90,6 +108,27 @@ public class UserManager implements UserService {
         }
         if (user == null || (user.getLoginName() == null && user.getPassword() == null && user.getPublicName() == null)) {
             throw new IllegalArgumentException();
+        }
+        if (user.getLoginName() != null) {
+            for (char c : user.getLoginName().toCharArray()) {
+                if (!loginNameAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (user.getPassword() != null) {
+            for (char c : user.getPassword().toCharArray()) {
+                if (!passwordAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (user.getPublicName() != null) {
+            for (char c : user.getPublicName().toCharArray()) {
+                if (!publicNameAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
         }
         UserAccount userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
         if (user.getLoginName() != null) {
@@ -126,6 +165,27 @@ public class UserManager implements UserService {
         }
         if (user == null || (user.getLoginName() == null && user.getPassword() == null && user.getPublicName() == null)) {
             throw new IllegalArgumentException();
+        }
+        if (user.getLoginName() != null) {
+            for (char c : user.getLoginName().toCharArray()) {
+                if (!loginNameAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (user.getPassword() != null) {
+            for (char c : user.getPassword().toCharArray()) {
+                if (!passwordAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (user.getPublicName() != null) {
+            for (char c : user.getPublicName().toCharArray()) {
+                if (!publicNameAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
         }
         UserAccount userAccount = userAccountRepository.readById(activeUserAccountId);
         UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);

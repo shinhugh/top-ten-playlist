@@ -554,8 +554,8 @@ signUpButton.addEventListener('click', () => {
       .catch (() => {
         showSystemMessage('Account has been created but unable to login');
       });
-    } else if (response.status == 403) {
-      showSystemMessage('Invalid credentials');
+    } else if (response.status == 400) {
+      showSystemMessage('Invalid characters provided');
     } else if (response.status == 409) {
       showSystemMessage('Provided login ID or public name is already taken');
     } else {
@@ -707,32 +707,3 @@ fetch('http://localhost:8080/api/user/session')
 });
 
 navigateToHomePage();
-
-// TEST START
-
-// navigateToPlaylistPage({
-//   publicName: 'Hugh'
-// }, {
-//   title: 'Hugh-kun no sugoi playlist',
-//   entries: [
-//     {
-//       contentUrl: 'https://www.youtube-nocookie.com/embed/1Ys6C1QMNvI'
-//     },
-//     {
-//       contentUrl: 'https://www.youtube-nocookie.com/embed/T7m9xx6CGTs'
-//     },
-//     {
-//       contentUrl: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fyomoha%2F2o22o428&visual=true&show_comments=false&show_teaser=false&hide_related=true'
-//     }
-//   ]
-// });
-
-// homePageRoot.hidden = false;
-// homeUnauthenticatedRoot.hidden = true;
-// homeAuthenticatedRoot.hidden = false;
-// appendNewEntryToPlaylistEditor('1');
-// appendNewEntryToPlaylistEditor('2');
-// appendNewEntryToPlaylistEditor('3');
-// appendNewEntryToPlaylistEditor('4');
-
-// TEST FINISH
