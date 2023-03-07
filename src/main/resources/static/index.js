@@ -117,6 +117,7 @@ const navigateToLoginPage = () => {
   playlistPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   loginPageRoot.hidden = false;
+  loginNameInput.focus();
 };
 
 const navigateToSignUpPage = () => {
@@ -127,6 +128,7 @@ const navigateToSignUpPage = () => {
   accountPageRoot.hidden = true;
   signUpPageRoot.hidden = false;
   showPasswordWarning();
+  signUpLoginNameInput.focus();
 };
 
 const navigateToAccountPage = () => {
@@ -530,7 +532,7 @@ signUpButton.addEventListener('click', () => {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              title: 'Top 10',
+              title: 'Top Ten',
               entries: []
             })
           })
