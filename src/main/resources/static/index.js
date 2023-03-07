@@ -29,6 +29,7 @@ const signUpPasswordInput = document.getElementById('sign-up-password-input');
 const signUpPublicNameInput = document.getElementById('sign-up-public-name-input');
 const signUpButton = document.getElementById('sign-up-button');
 const signUpLoadingOverlay = document.getElementById('sign-up-loading-overlay');
+const signUpPasswordWarning = document.getElementById('sign-up-password-warning');
 
 const accountPageRoot = document.getElementById('account-page-root');
 const accountLoginNameInput = document.getElementById('account-login-name-input');
@@ -69,6 +70,7 @@ const clearPageContents = () => {
   signUpLoginNameInput.value = '';
   signUpPasswordInput.value = '';
   signUpPublicNameInput.value = '';
+  signUpPasswordWarning.hidden = true;
   accountLoginNameInput.value = '';
   accountPasswordInput.value = '';
   accountPublicNameInput.value = '';
@@ -123,6 +125,7 @@ const navigateToSignUpPage = () => {
   playlistPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   signUpPageRoot.hidden = false;
+  showPasswordWarning();
 };
 
 const navigateToAccountPage = () => {
@@ -249,6 +252,19 @@ const populatePlaylistEditor = async () => {
   } catch {
     showSystemMessage('Unable to fetch playlist');
   }
+};
+
+// ------------------------------------------------------------
+
+// Functions: Sign up page
+
+let signUpPasswordWarningTimeout;
+const showPasswordWarning = () => {
+  clearTimeout(signUpPasswordWarningTimeout);
+  signUpPasswordWarning.hidden = false;
+  signUpPasswordWarningTimeout = setTimeout(() => {
+    signUpPasswordWarning.hidden = true;
+  }, 5000);
 };
 
 // ------------------------------------------------------------
