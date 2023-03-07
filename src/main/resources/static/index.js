@@ -80,7 +80,13 @@ const clearPageContents = () => {
   playlistList.innerHTML = '';
 };
 
-const navigateToHomePage = () => {
+const navigateToHomePage = (pushToHistory) => {
+  if (pushToHistory) {
+    history.pushState({
+      path: '/'
+    }, '', '/');
+  }
+  document.title = 'Top Ten';
   clearPageContents();
   loginPageRoot.hidden = true;
   signUpPageRoot.hidden = true;
@@ -110,7 +116,13 @@ const navigateToHomePage = () => {
   });
 };
 
-const navigateToLoginPage = () => {
+const navigateToLoginPage = (pushToHistory) => {
+  if (pushToHistory) {
+    history.pushState({
+      path: '/login'
+    }, '', '/login');
+  }
+  document.title = 'Login';
   clearPageContents();
   homePageRoot.hidden = true;
   signUpPageRoot.hidden = true;
@@ -120,7 +132,13 @@ const navigateToLoginPage = () => {
   loginNameInput.focus();
 };
 
-const navigateToSignUpPage = () => {
+const navigateToSignUpPage = (pushToHistory) => {
+  if (pushToHistory) {
+    history.pushState({
+      path: '/signup'
+    }, '', '/signup');
+  }
+  document.title = 'Sign Up';
   clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
@@ -131,7 +149,13 @@ const navigateToSignUpPage = () => {
   signUpLoginNameInput.focus();
 };
 
-const navigateToAccountPage = () => {
+const navigateToAccountPage = (pushToHistory) => {
+  if (pushToHistory) {
+    history.pushState({
+      path: '/account'
+    }, '', '/account');
+  }
+  document.title = 'Account';
   clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
@@ -161,19 +185,38 @@ const navigateToAccountPage = () => {
   });
 };
 
-const navigateToPlaylistPage = (user, songList) => {
+const navigateToPlaylistPage = (pushToHistory, userName) => {
+  if (pushToHistory) {
+    history.pushState({
+      path: '/playlist/' + userName
+    }, '', '/playlist/' + userName);
+  }
+  document.title = 'Playlist - ' + userName;
   clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
   signUpPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   playlistPageRoot.hidden = false;
-  playlistTitle.innerHTML = songList.title;
-  playlistUserPublicName.innerHTML = user.publicName;
-  songList.entries.forEach((songListEntry) => {
-    const songListEntryIFrame = document.createElement('iframe');
-    songListEntryIFrame.src = songListEntry.contentUrl;
-    playlistList.appendChild(songListEntryIFrame);
+  fetch('http://localhost:8080/api/song-list/user-public-name/' + userName)
+  .then((response) => {
+    if (response.ok) {
+      response.json()
+      .then((songList) => {
+        playlistTitle.innerHTML = songList.title;
+        playlistUserPublicName.innerHTML = userName;
+        songList.entries.forEach((songListEntry) => {
+          const songListEntryIFrame = document.createElement('iframe');
+          songListEntryIFrame.src = songListEntry.contentUrl;
+          playlistList.appendChild(songListEntryIFrame);
+        });
+      });
+    } else {
+      showSystemMessage('Unable to fetch playlist data');
+    }
+  })
+  .catch(() => {
+    showSystemMessage('Unable to fetch playlist data');
   });
 };
 
@@ -276,22 +319,41 @@ const showPasswordWarning = () => {
 
 // ------------------------------------------------------------
 
-// Configure event listeners: Top bar
+// Event listeners: Window
+
+window.addEventListener('popstate', (event) => {
+  if (event.state.path == '/') {
+    navigateToHomePage(false);
+  } else if (event.state.path == '/login') {
+    navigateToLoginPage(false);
+  } else if (event.state.path == '/signup') {
+    navigateToSignUpPage(false);
+  } else if (event.state.path == '/account') {
+    navigateToAccountPage(false);
+  } else if (event.state.path.startsWith('/playlist/')) {
+    const userName = event.state.path.substring(10);
+    navigateToPlaylistPage(false, userName);
+  }
+});
+
+// ------------------------------------------------------------
+
+// Event listeners: Top bar
 
 topBarHomeLink.addEventListener('click', () => {
-  navigateToHomePage();
+  navigateToHomePage(true);
 });
 
 topBarLoginLink.addEventListener('click', () => {
-  navigateToLoginPage();
+  navigateToLoginPage(true);
 });
 
 topBarSignUpLink.addEventListener('click', () => {
-  navigateToSignUpPage();
+  navigateToSignUpPage(true);
 });
 
 topBarAccountLink.addEventListener('click', () => {
-  navigateToAccountPage();
+  navigateToAccountPage(true);
 });
 
 topBarLogoutLink.addEventListener('click', () => {
@@ -301,7 +363,7 @@ topBarLogoutLink.addEventListener('click', () => {
   .then((response) => {
     if (response.ok) {
       updateTopBar(false);
-      navigateToHomePage();
+      navigateToHomePage(true);
     } else {
       showSystemMessage('Unable to logout');
     }
@@ -324,34 +386,18 @@ topBarSearchButton.addEventListener('click', () => {
     return;
   }
   topBarSearchButton.disabled = true;
-  fetch('http://localhost:8080/api/song-list/user-public-name/' + userName)
-  .then((songListResponse) => {
-    if (songListResponse.status == 200) {
-      songListResponse.json()
-      .then((songList) => {
-        fetch('http://localhost:8080/api/user/id/' + songList.userId)
-        .then((userResponse) => {
-          if (userResponse.ok) {
-            userResponse.json()
-            .then((user) => {
-              navigateToPlaylistPage(user, songList);
-            });
-          } else {
-            showSystemMessage('Unable to fetch user data');
-          }
-        })
-        .catch(() => {
-          showSystemMessage('Unable to fetch user data');
-        });
-      });
-    } else if (songListResponse.status == 404) {
+  fetch('http://localhost:8080/api/user/public-name/' + userName)
+  .then((response) => {
+    if (response.status == 200) {
+      navigateToPlaylistPage(true, userName);
+    } else if (response.status == 404) {
       showSystemMessage('No such user');
     } else {
-      showSystemMessage('Unable to fetch playlist data');
+      showSystemMessage('Unable to fetch user data');
     }
   })
   .catch(() => {
-    showSystemMessage('Unable to fetch playlist data');
+    showSystemMessage('Unable to fetch user data');
   })
   .finally(() => {
     topBarSearchButton.disabled = false;
@@ -360,7 +406,7 @@ topBarSearchButton.addEventListener('click', () => {
 
 // ------------------------------------------------------------
 
-// Configure event listeners: Home page
+// Event listeners: Home page
 
 homePlaylistEditorAddButton.addEventListener('click', () => {
   if (homePlaylistEditorEntriesContainer.children.length < 10) {
@@ -412,7 +458,7 @@ homePlaylistEditorSubmitButton.addEventListener('click', () => {
 
 // ------------------------------------------------------------
 
-// Configure event listeners: Login page
+// Event listeners: Login page
 
 loginNameInput.addEventListener('keypress', (event) => {
   if (event.key == 'Enter') {
@@ -450,7 +496,7 @@ loginButton.addEventListener('click', () => {
   .then((response) => {
     if (response.status == 200) {
       updateTopBar(true);
-      navigateToHomePage();
+      navigateToHomePage(true);
     } else if (response.status == 400 || response.status == 403) {
       showSystemMessage('Invalid credentials');
     } else {
@@ -468,7 +514,7 @@ loginButton.addEventListener('click', () => {
 
 // ------------------------------------------------------------
 
-// Configure event listeners: Sign up page
+// Event listeners: Sign up page
 
 signUpLoginNameInput.addEventListener('keypress', (event) => {
   if (event.key == 'Enter') {
@@ -539,7 +585,7 @@ signUpButton.addEventListener('click', () => {
           .then((response) => {
             if (response.ok) {
               updateTopBar(true);
-              navigateToHomePage();
+              navigateToHomePage(true);
             } else {
               showSystemMessage('Unable to create song list');
             }
@@ -573,7 +619,7 @@ signUpButton.addEventListener('click', () => {
 
 // ------------------------------------------------------------
 
-// Configure event listeners: Account page
+// Event listeners: Account page
 
 accountLoginNameInput.addEventListener('keypress', (event) => {
   if (event.key == 'Enter') {
@@ -674,7 +720,7 @@ accountDeleteButton.addEventListener('click', () => {
       .finally(() => {
         showSystemMessage('Successfully deleted account');
         updateTopBar(false);
-        navigateToHomePage();
+        navigateToHomePage(true);
       });
     } else {
       showSystemMessage('Unable to delete account');
@@ -706,4 +752,7 @@ fetch('http://localhost:8080/api/user/session')
   updateTopBar(false);
 });
 
-navigateToHomePage();
+history.replaceState({
+  path: '/'
+}, '', '/');
+navigateToHomePage(false);
