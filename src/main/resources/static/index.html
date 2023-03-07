@@ -9,7 +9,7 @@
 <body>
 <div id="top-bar-root">
     <div id="top-bar-left-section">
-        <a id="top-bar-home-link">Top 10</a>
+        <a id="top-bar-home-link">T/T</a>
     </div>
     <div id="top-bar-center-section">
         <div id="top-bar-search-root">
@@ -28,7 +28,20 @@
 </div>
 <div id="content-root">
     <div id="home-page-root" class="page-root" hidden>
-        <p>Home page</p>
+        <div id="home-unauthenticated-root" hidden>
+            <div id="home-unauthenticated-container">
+                <p class="title">Top/Ten</p>
+                <p>Narrow down your lifetime of favorite music into just 10 songs.<br>The ultimate playlist to depict your music palette.</p>
+                <p>Login or sign up to create your own list.</p>
+                <a id="home-github-link" href="https://github.com/shinhugh/top-ten-playlist" target="_blank" rel="noopener noreferrer">Open-source on GitHub</a>
+            </div>
+        </div>
+        <div id="home-authenticated-root" hidden>
+            <p>Playlist editor</p>
+        </div>
+        <div id="home-loading-overlay" hidden>
+            <p>Loading..</p>
+        </div>
     </div>
     <div id="login-page-root" class="page-root" hidden>
         <div id="login-root">
@@ -55,11 +68,12 @@
                 <p>Loading..</p>
             </div>
         </div>
+        <p id="sign-up-password-warning"><strong>Do NOT reuse existing passwords or include confidential information when creating an account!</strong> Although password storage is encrypted and nothing is logged, the network communication is in plaintext (SSL certificates are very expensive).</p>
     </div>
     <div id="account-page-root" class="page-root" hidden>
         <div id="account-root">
             <p>Account settings</p>
-            <p>All fields are optional.</p>
+            <p>Blank fields will remain unchanged.</p>
             <p>Login ID</p>
             <input id="account-login-name-input">
             <p>Password</p>

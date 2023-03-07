@@ -9,6 +9,9 @@ const topBarAccountLink = document.getElementById('top-bar-account-link');
 const topBarLogoutLink = document.getElementById('top-bar-logout-link');
 
 const homePageRoot = document.getElementById('home-page-root');
+const homeUnauthenticatedRoot = document.getElementById('home-unauthenticated-root');
+const homeAuthenticatedRoot = document.getElementById('home-authenticated-root');
+const homeLoadingOverlay = document.getElementById('home-loading-overlay');
 
 const loginPageRoot = document.getElementById('login-page-root');
 const loginNameInput = document.getElementById('login-name-input');
@@ -53,11 +56,17 @@ const extractInput = (element) => {
 // Functions: Global
 
 const clearPageContents = () => {
+  homeUnauthenticatedRoot.hidden = true;
+  homeAuthenticatedRoot.hidden = true;
   loginNameInput.value = '';
   loginPasswordInput.value = '';
   signUpLoginNameInput.value = '';
   signUpPasswordInput.value = '';
   signUpPublicNameInput.value = '';
+  accountLoginNameInput.value = '';
+  accountPasswordInput.value = '';
+  accountPublicNameInput.value = '';
+  playlistTitle.innerHTML = '';
   playlistUserPublicName.innerHTML = '';
   playlistList.innerHTML = '';
 };
@@ -69,6 +78,24 @@ const navigateToHomePage = () => {
   playlistPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   homePageRoot.hidden = false;
+  homeLoadingOverlay.hidden = false;
+  fetch('http://localhost:8080/api/user/session')
+  .then((response) => {
+    if (response.ok) {
+      updateTopBar(true);
+      homeAuthenticatedRoot.hidden = false;
+    } else {
+      updateTopBar(false);
+      homeUnauthenticatedRoot.hidden = false;
+    }
+  })
+  .catch(() => {
+    updateTopBar(false);
+    homeUnauthenticatedRoot.hidden = false;
+  })
+  .finally(() => {
+    homeLoadingOverlay.hidden = true;
+  });
 };
 
 const navigateToLoginPage = () => {
