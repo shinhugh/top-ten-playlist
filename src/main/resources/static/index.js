@@ -14,6 +14,7 @@ const homeAuthenticatedRoot = document.getElementById('home-authenticated-root')
 const homePlaylistEditorTitleInput = document.getElementById('home-playlist-editor-title-input');
 const homePlaylistEditorEntriesContainer = document.getElementById('home-playlist-editor-entries-container');
 const homePlaylistEditorAddButton = document.getElementById('home-playlist-editor-add-button');
+const homePlaylistEditorClearButton = document.getElementById('home-playlist-editor-clear-button');
 const homePlaylistEditorSubmitButton = document.getElementById('home-playlist-editor-submit-button');
 const homeLoadingOverlay = document.getElementById('home-loading-overlay');
 
@@ -211,12 +212,16 @@ const appendNewEntryToPlaylistEditor = (contentUrl) => {
   entryElementUrlInput.value = contentUrl;
   const entryElementMoveUpButton = document.createElement('button');
   entryElementMoveUpButton.addEventListener('click', () => {
-    // TODO: entryElement should swap places with its previous sibling under homePlaylistEditorEntriesContainer
+    if (entryElement.previousSibling != null) {
+      homePlaylistEditorEntriesContainer.insertBefore(entryElement, entryElement.previousSibling);
+    }
   });
   entryElementMoveUpButton.innerHTML = '';
   const entryElementMoveDownButton = document.createElement('button');
   entryElementMoveDownButton.addEventListener('click', () => {
-    // TODO: entryElement should swap places with its next sibling under homePlaylistEditorEntriesContainer
+    if (entryElement.nextSibling != null) {
+      homePlaylistEditorEntriesContainer.insertBefore(entryElement.nextSibling, entryElement);
+    }
   });
   entryElementMoveDownButton.innerHTML = '';
   const entryElementRemoveButton = document.createElement('button');
@@ -355,6 +360,18 @@ topBarSearchButton.addEventListener('click', () => {
 
 // Configure event listeners: Home page
 
+homePlaylistEditorAddButton.addEventListener('click', () => {
+  if (homePlaylistEditorEntriesContainer.children.length < 10) {
+    appendNewEntryToPlaylistEditor(null);
+  } else {
+    showSystemMessage('Up to 10 songs are allowed');
+  }
+});
+
+homePlaylistEditorClearButton.addEventListener('click', () => {
+  homePlaylistEditorEntriesContainer.innerHTML = '';
+});
+
 homePlaylistEditorSubmitButton.addEventListener('click', () => {
   let songList = {
     title: extractInput(homePlaylistEditorTitleInput),
@@ -389,14 +406,6 @@ homePlaylistEditorSubmitButton.addEventListener('click', () => {
   .catch(() => {
     showSystemMessage('Unable to save playlist');
   });
-});
-
-homePlaylistEditorAddButton.addEventListener('click', () => {
-  if (homePlaylistEditorEntriesContainer.children.length < 10) {
-    appendNewEntryToPlaylistEditor(null);
-  } else {
-    showSystemMessage('Up to 10 songs are allowed');
-  }
 });
 
 // ------------------------------------------------------------

@@ -303,12 +303,29 @@ iframe {
     background: rgba(255, 255, 255, 0.4);
 }
 
-#home-playlist-editor-submit-button {
+#home-playlist-editor-button-strip {
     height: 3rem;
     margin-top: 2rem;
-    padding: 0 2rem;
+    display: flex;
+    gap: 1.5rem;
     align-self: flex-end;
+}
+
+#home-playlist-editor-button-strip>button {
+    height: 100%;
+    padding: 0 2rem;
     font-size: 1.1rem;
+}
+
+#home-playlist-editor-clear-button {
+    background: rgba(255, 0, 0, 0.2);
+}
+
+#home-playlist-editor-clear-button:hover {
+    background: rgba(255, 0, 0, 0.4);
+}
+
+#home-playlist-editor-submit-button {
     background: rgba(255, 255, 255, 0.2);
 }
 
