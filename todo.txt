@@ -7,6 +7,9 @@
 
 - Handle native browser navigation (back button, rewriting URLs, navigating to specific pages, etc.)
 
-- Figure out URL encoding (uppercase, whitespace, etc)
-
 - Restrict allowed characters for API endpoint inputs
+
+- Explicitly configure case-sensitivity for SQL depending on table and column
+  All UUID columns should be case sensitive
+  UserAccount Name (LoginName) should be case sensitive for login but case insensitive for creation (duplicate check)
+  UserProfile Name (PublicName) should be case insensitive
