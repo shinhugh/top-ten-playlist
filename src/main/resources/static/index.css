@@ -202,6 +202,7 @@ iframe {
 }
 
 #home-github-link {
+    margin-top: 4rem;
     padding: 0.4rem 1rem;
     border-radius: 10px;
     border: 1px solid #ffffff;
@@ -221,6 +222,13 @@ iframe {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
+}
+
+#home-playlist-editor-root>p:first-child {
+    margin-bottom: 2rem;
+    align-self: center;
+    text-align: center;
+    font-size: 2rem;
 }
 
 #home-playlist-editor-title {
@@ -243,6 +251,10 @@ iframe {
 
 #home-playlist-editor-root input {
     border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+#home-playlist-editor-root input:focus {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.8);
 }
 
 #home-playlist-editor-entries-container {
@@ -284,14 +296,24 @@ iframe {
     height: 3rem;
     font-size: 0.9rem;
     font-family: 'icons';
-    background: var(--bg-color-primary);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#home-playlist-editor-add-button:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
 #home-playlist-editor-submit-button {
     height: 3rem;
     margin-top: 2rem;
-    font-size: 0.9rem;
-    background: var(--bg-color-primary);
+    padding: 0 2rem;
+    align-self: flex-end;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#home-playlist-editor-submit-button:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
 #home-loading-overlay {

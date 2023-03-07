@@ -211,12 +211,12 @@ const appendNewEntryToPlaylistEditor = (contentUrl) => {
   entryElementUrlInput.value = contentUrl;
   const entryElementMoveUpButton = document.createElement('button');
   entryElementMoveUpButton.addEventListener('click', () => {
-    // TODO: entryElement should swap places with its previous sibling
+    // TODO: entryElement should swap places with its previous sibling under homePlaylistEditorEntriesContainer
   });
   entryElementMoveUpButton.innerHTML = '';
   const entryElementMoveDownButton = document.createElement('button');
   entryElementMoveDownButton.addEventListener('click', () => {
-    // TODO: entryElement should swap places with its next sibling
+    // TODO: entryElement should swap places with its next sibling under homePlaylistEditorEntriesContainer
   });
   entryElementMoveDownButton.innerHTML = '';
   const entryElementRemoveButton = document.createElement('button');
@@ -693,7 +693,7 @@ fetch('http://localhost:8080/api/user/session')
   updateTopBar(false);
 });
 
-navigateToHomePage();
+// navigateToHomePage();
 
 // TEST START
 
@@ -714,12 +714,12 @@ navigateToHomePage();
 //   ]
 // });
 
-// homePageRoot.hidden = false;
-// homeUnauthenticatedRoot.hidden = true;
-// homeAuthenticatedRoot.hidden = false;
-// appendNewEntryToPlaylistEditor('1');
-// appendNewEntryToPlaylistEditor('2');
-// appendNewEntryToPlaylistEditor('3');
-// appendNewEntryToPlaylistEditor('4');
+homePageRoot.hidden = false;
+homeUnauthenticatedRoot.hidden = true;
+homeAuthenticatedRoot.hidden = false;
+appendNewEntryToPlaylistEditor('1');
+appendNewEntryToPlaylistEditor('2');
+appendNewEntryToPlaylistEditor('3');
+appendNewEntryToPlaylistEditor('4');
 
 // TEST FINISH
