@@ -203,6 +203,13 @@ public class SongListManager implements SongListService {
             }
             return "https://www.youtube-nocookie.com/embed/" + youtubeId;
         }
+        if ("music.youtube.com".equals(host)) {
+            String youtubeId = queryParams.getFirst("v");
+            if (youtubeId == null) {
+                throw new IllegalArgumentException();
+            }
+            return "https://www.youtube-nocookie.com/embed/" + youtubeId;
+        }
         if ("w.soundcloud.com".equals(host)) {
             String soundcloudUrl = queryParams.getFirst("url");
             if (soundcloudUrl == null) {

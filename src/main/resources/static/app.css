@@ -12,10 +12,6 @@
     font-weight: normal;
     font-style: normal;
     font-display: block;
-  }
-
-#top-bar-home-link, #home-unauthenticated-container>.title {
-    font-family: 'Phudu';
 }
 
 :root {
@@ -75,8 +71,9 @@ iframe {
     gap: 1rem;
 }
 
-#top-bar-left-section #top-bar-home-link {
+#top-bar-home-link {
     font-size: 1.6rem;
+    font-family: 'Phudu';
 }
 
 #top-bar-root a:hover {
@@ -190,6 +187,7 @@ iframe {
 #home-unauthenticated-container>.title {
     margin: 8rem 0 3rem;
     font-size: 8rem;
+    font-family: 'Phudu';
 }
 
 #home-unauthenticated-container>p:nth-child(2) {
@@ -213,7 +211,63 @@ iframe {
     background: rgba(255, 255, 255, 0.2);
 }
 
+#home-playlist-root {
+    width: 100%;
+}
+
+#home-playlist-container {
+    width: 100%;
+    padding: 3rem 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+#home-playlist-title {
+    font-size: 3rem;
+    text-align: center;
+}
+
+#home-playlist-button-strip {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#home-playlist-button-strip>button {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+#home-playlist-button-strip>button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+#home-playlist-entries-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+#home-playlist-entries-container>iframe {
+    height: 36vw;
+    width: 64vw;
+}
+
 #home-playlist-editor-root {
+    width: 100%;
+    position: relative;
+}
+
+#home-playlist-editor-back-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+#home-playlist-editor-container {
     width: 80%;
     padding: 4rem 0 2rem;
     position: absolute;
@@ -224,7 +278,7 @@ iframe {
     gap: 0.2rem;
 }
 
-#home-playlist-editor-root>p:first-child {
+#home-playlist-editor-container>p:first-child {
     margin-bottom: 2rem;
     align-self: center;
     text-align: center;
@@ -249,11 +303,11 @@ iframe {
     background: transparent;
 }
 
-#home-playlist-editor-root input {
+#home-playlist-editor-container input {
     border-bottom: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-#home-playlist-editor-root input:focus {
+#home-playlist-editor-container input:focus {
     border-bottom: 2px solid rgba(255, 255, 255, 0.8);
 }
 
@@ -331,6 +385,15 @@ iframe {
 
 #home-playlist-editor-submit-button:hover {
     background: rgba(255, 255, 255, 0.4);
+}
+
+#home-playlist-editor-back-button {
+    padding: 0.6rem 1.8rem;
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
+    font-size: 1.4rem;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 #home-loading-overlay {

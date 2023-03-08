@@ -40,18 +40,31 @@
             </div>
         </div>
         <div id="home-authenticated-root" hidden>
-            <div id="home-playlist-editor-root">
-                <p>Playlist editor</p>
-                <div id="home-playlist-editor-title">
-                    <p>Title</p>
-                    <input id="home-playlist-editor-title-input">
+            <div id="home-playlist-root" hidden>
+                <div id="home-playlist-container">
+                    <p id="home-playlist-title"></p>
+                    <div id="home-playlist-button-strip">
+                        <button id="home-playlist-edit-button">Edit</button>
+                        <button id="home-playlist-share-button">Share</button>
+                    </div>
+                    <div id="home-playlist-entries-container"></div>
                 </div>
-                <div id="home-playlist-editor-entries-container"></div>
-                <button id="home-playlist-editor-add-button"></button>
-                <div id="home-playlist-editor-button-strip">
-                    <button id="home-playlist-editor-clear-button">Clear</button>
-                    <button id="home-playlist-editor-submit-button">Save</button>
+            </div>
+            <div id="home-playlist-editor-root" hidden>
+                <div id="home-playlist-editor-container">
+                    <p>Playlist editor</p>
+                    <div id="home-playlist-editor-title">
+                        <p>Title</p>
+                        <input id="home-playlist-editor-title-input">
+                    </div>
+                    <div id="home-playlist-editor-entries-container"></div>
+                    <button id="home-playlist-editor-add-button"></button>
+                    <div id="home-playlist-editor-button-strip">
+                        <button id="home-playlist-editor-clear-button">Clear</button>
+                        <button id="home-playlist-editor-submit-button">Save</button>
+                    </div>
                 </div>
+                <button id="home-playlist-editor-back-button">Back</button>
             </div>
         </div>
         <div id="home-loading-overlay" hidden>

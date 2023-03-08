@@ -11,11 +11,18 @@ const topBarLogoutLink = document.getElementById('top-bar-logout-link');
 const homePageRoot = document.getElementById('home-page-root');
 const homeUnauthenticatedRoot = document.getElementById('home-unauthenticated-root');
 const homeAuthenticatedRoot = document.getElementById('home-authenticated-root');
+const homePlaylistRoot = document.getElementById('home-playlist-root');
+const homePlaylistTitle = document.getElementById('home-playlist-title');
+const homePlaylistEditButton = document.getElementById('home-playlist-edit-button');
+const homePlaylistShareButton = document.getElementById('home-playlist-share-button');
+const homePlaylistEntriesContainer = document.getElementById('home-playlist-entries-container');
+const homePlaylistEditorRoot = document.getElementById('home-playlist-editor-root');
 const homePlaylistEditorTitleInput = document.getElementById('home-playlist-editor-title-input');
 const homePlaylistEditorEntriesContainer = document.getElementById('home-playlist-editor-entries-container');
 const homePlaylistEditorAddButton = document.getElementById('home-playlist-editor-add-button');
 const homePlaylistEditorClearButton = document.getElementById('home-playlist-editor-clear-button');
 const homePlaylistEditorSubmitButton = document.getElementById('home-playlist-editor-submit-button');
+const homePlaylistEditorBackButton = document.getElementById('home-playlist-editor-back-button');
 const homeLoadingOverlay = document.getElementById('home-loading-overlay');
 
 const loginPageRoot = document.getElementById('login-page-root');
@@ -64,6 +71,10 @@ const extractInput = (element) => {
 const clearPageContents = () => {
   homeUnauthenticatedRoot.hidden = true;
   homeAuthenticatedRoot.hidden = true;
+  homePlaylistRoot.hidden = true;
+  homePlaylistTitle.innerHTML = '';
+  homePlaylistEntriesContainer.innerHTML = '';
+  homePlaylistEditorRoot.hidden = true;
   homePlaylistEditorTitleInput.value = '';
   homePlaylistEditorEntriesContainer.innerHTML = '';
   loginNameInput.value = '';
@@ -99,8 +110,9 @@ const navigateToHomePage = (pushToHistory) => {
     if (response.ok) {
       updateTopBar(true);
       homeAuthenticatedRoot.hidden = false;
-      populatePlaylistEditor()
+      populateHomePlaylist()
       .finally(() => {
+        homePlaylistRoot.hidden = false;
         homeLoadingOverlay.hidden = true;
       });
     } else {
@@ -251,6 +263,29 @@ const updateTopBar = (signedIn) => {
 // ------------------------------------------------------------
 
 // Functions: Home page
+
+const populateHomePlaylist = async () => {
+  homePlaylistTitle.innerHTML = '';
+  homePlaylistEntriesContainer.innerHTML = '';
+  try {
+    const response = await fetch('http://localhost:8080/api/song-list/session');
+    if (response.ok) {
+      response.json()
+        .then((songList) => {
+          homePlaylistTitle.innerHTML = songList.title;
+          songList.entries.forEach((songListEntry) => {
+            const songListEntryIFrame = document.createElement('iframe');
+            songListEntryIFrame.src = songListEntry.contentUrl;
+            homePlaylistEntriesContainer.appendChild(songListEntryIFrame);
+          });
+        });
+    } else {
+      showSystemMessage('Unable to fetch playlist');
+    }
+  } catch {
+    showSystemMessage('Unable to fetch playlist');
+  }
+};
 
 const appendNewEntryToPlaylistEditor = (contentUrl) => {
   const entryElementUrlInput = document.createElement('input');
@@ -408,6 +443,20 @@ topBarSearchButton.addEventListener('click', () => {
 
 // Event listeners: Home page
 
+homePlaylistEditButton.addEventListener('click', () => {
+  homeLoadingOverlay.hidden = false;
+  homePlaylistRoot.hidden = true;
+  populatePlaylistEditor()
+  .finally(() => {
+    homePlaylistEditorRoot.hidden = false;
+    homeLoadingOverlay.hidden = true;
+  });
+});
+
+homePlaylistShareButton.addEventListener('click', () => {
+  // TODO: Show dialog with link
+});
+
 homePlaylistEditorAddButton.addEventListener('click', () => {
   if (homePlaylistEditorEntriesContainer.children.length < 10) {
     appendNewEntryToPlaylistEditor(null);
@@ -453,6 +502,16 @@ homePlaylistEditorSubmitButton.addEventListener('click', () => {
   })
   .catch(() => {
     showSystemMessage('Unable to save playlist');
+  });
+});
+
+homePlaylistEditorBackButton.addEventListener('click', () => {
+  homeLoadingOverlay.hidden = false;
+  homePlaylistEditorRoot.hidden = true;
+  populateHomePlaylist()
+  .finally(() => {
+    homePlaylistRoot.hidden = false;
+    homeLoadingOverlay.hidden = true;
   });
 });
 
