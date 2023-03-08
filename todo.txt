@@ -3,5 +3,3 @@
 - Redirect for certain paths depending on user's authentication state
 
 - Share button
-
-- Replace "Account" text with user public name

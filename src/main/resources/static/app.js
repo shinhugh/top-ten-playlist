@@ -227,17 +227,19 @@ const showSystemMessage = (message) => {
 
 // Functions: Top bar
 
-const updateTopBar = (signedIn) => {
-  if (signedIn) {
-    topBarLoginLink.hidden = true;
-    topBarSignUpLink.hidden = true;
-    topBarAccountLink.hidden = false;
-    topBarLogoutLink.hidden = false;
-  } else {
+const updateTopBar = (user) => {
+  if (user == null) {
     topBarAccountLink.hidden = true;
     topBarLogoutLink.hidden = true;
     topBarLoginLink.hidden = false;
     topBarSignUpLink.hidden = false;
+    topBarAccountLink.innerHTML = '';
+  } else {
+    topBarLoginLink.hidden = true;
+    topBarSignUpLink.hidden = true;
+    topBarAccountLink.hidden = false;
+    topBarLogoutLink.hidden = false;
+    topBarAccountLink.innerHTML = user.publicName;
   }
 };
 
@@ -361,7 +363,7 @@ topBarLogoutLink.addEventListener('click', () => {
   api.logout()
   .then((result) => {
     if (result.status == 200) {
-      updateTopBar(false);
+      updateTopBar(null);
       navigateToHomePage(true);
     } else {
       showSystemMessage('Unable to logout');
@@ -499,11 +501,14 @@ loginButton.addEventListener('click', () => {
     name: name,
     password: password
   })
-  .then((result) => {
-    switch (result.status) {
+  .then((loginResult) => {
+    switch (loginResult.status) {
       case 200:
-        updateTopBar(true);
-        navigateToHomePage(true);
+        api.readUserBySession()
+        .then((readUserBySessionResult) => {
+          updateTopBar(readUserBySessionResult.data);
+          navigateToHomePage(true);
+        });
         break;
       case 400, 403:
         showSystemMessage('Invalid credentials');
@@ -556,22 +561,25 @@ signUpButton.addEventListener('click', () => {
     password: password,
     publicName: publicName
   })
-  .then((result) => {
-    if (result.status == 200) {
+  .then((createUserResult) => {
+    if (createUserResult.status == 200) {
       api.login({
         name: loginName,
         password: password
       })
-      .then((result) => {
-        if (result.status == 200) {
+      .then((loginResult) => {
+        if (loginResult.status == 200) {
           api.createSongList({
             title: 'Top Ten',
             entries: []
           })
-          .then((result) => {
-            if (result.status == 200) {
-              updateTopBar(true);
-              navigateToHomePage(true);
+          .then((createSongListResult) => {
+            if (createSongListResult.status == 200) {
+              api.readUserBySession()
+              .then((readUserBySessionResult) => {
+                updateTopBar(readUserBySessionResult.data);
+                navigateToHomePage(true);
+              });
             } else {
               showSystemMessage('Unable to create song list');
             }
@@ -585,7 +593,7 @@ signUpButton.addEventListener('click', () => {
         }
       });
     } else {
-      switch(result.status) {
+      switch(createUserResult.status) {
         case 400:
           showSystemMessage('Invalid characters provided or length requirements not met');
           break;
@@ -638,15 +646,15 @@ accountUpdateButton.addEventListener('click', () => {
     password: password,
     publicName: publicName
   })
-  .then((result) => {
-    if (result.status == 200) {
+  .then((updateUserBySessionResult) => {
+    if (updateUserBySessionResult.status == 200) {
       api.readUserBySession()
-      .then((result) => {
-        if (result.status == 200) {
+      .then((readUserBySessionResult) => {
+        if (readUserBySessionResult.status == 200) {
           showSystemMessage('Account successfully updated');
           clearPageContents();
-          accountLoginNameInput.value = result.data.loginName;
-          accountPublicNameInput.value = result.data.publicName;
+          accountLoginNameInput.value = readUserBySessionResult.data.loginName;
+          accountPublicNameInput.value = readUserBySessionResult.data.publicName;
         } else {
           showSystemMessage('Account successfully updated but unable to get account data');
         }
@@ -655,7 +663,7 @@ accountUpdateButton.addEventListener('click', () => {
         accountLoadingOverlay.hidden = true;
       });
     } else {
-      switch (result.status) {
+      switch (updateUserBySessionResult.status) {
         case 400:
           showSystemMessage('Invalid characters provided or length requirements not met');
           break;
@@ -682,7 +690,7 @@ accountDeleteButton.addEventListener('click', () => {
       api.logout()
       .finally(() => {
         showSystemMessage('Successfully deleted account');
-        updateTopBar(false);
+        updateTopBar(null);
         navigateToHomePage(true);
         accountUpdateButton.disabled = false;
         accountDeleteButton.disabled = false;
@@ -704,9 +712,9 @@ accountDeleteButton.addEventListener('click', () => {
 api.readUserBySession()
 .then((result) => {
   if (result.status == 200) {
-    updateTopBar(true);
+    updateTopBar(result.data);
   } else {
-    updateTopBar(false);
+    updateTopBar(null);
   }
 });
 history.replaceState({
