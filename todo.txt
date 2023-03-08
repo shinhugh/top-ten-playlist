@@ -1,4 +1,1 @@
-- Clear session cookie when user deletes self (perhaps unnecessary, since next request with invalid session cookie will
-  receive response that clears cookie)
-
 - Potential state corruption due to concurrency
