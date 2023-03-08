@@ -1,5 +1,7 @@
 - Potential state corruption due to concurrency
 
-- User and SongList creation - String min/max lengths
-
 - Redirect for certain paths depending on user's authentication state
+
+- Share button
+
+- Replace "Account" text with user public name

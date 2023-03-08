@@ -109,21 +109,16 @@ const navigateToHomePage = (pushToHistory) => {
   homeLoadingOverlay.hidden = false;
   api.readUserBySession()
   .then((result) => {
-    switch (result.status) {
-      case 200:
-        updateTopBar(true);
-        homeAuthenticatedRoot.hidden = false;
-        populateHomePlaylist()
-        .finally(() => {
-          homePlaylistRoot.hidden = false;
-          homeLoadingOverlay.hidden = true;
-        });
-        break;
-      case 403:
-        updateTopBar(false);
-      default:
-        homeUnauthenticatedRoot.hidden = false;
+    if (result.status == 200) {
+      homeAuthenticatedRoot.hidden = false;
+      populateHomePlaylist()
+      .finally(() => {
+        homePlaylistRoot.hidden = false;
         homeLoadingOverlay.hidden = true;
+      });
+    } else {
+      homeUnauthenticatedRoot.hidden = false;
+      homeLoadingOverlay.hidden = true;
     }
   });
 };
@@ -178,17 +173,11 @@ const navigateToAccountPage = (pushToHistory) => {
   accountLoadingOverlay.hidden = false;
   api.readUserBySession()
   .then((result) =>  {
-    switch (result.status) {
-      case 200:
-        updateTopBar(true);
-        accountLoginNameInput.value = result.data.loginName;
-        accountPublicNameInput.value = result.data.publicName;
-        break;
-      case 403:
-        updateTopBar(false);
-        // TODO: Handle expired authentication
-      default:
-        showSystemMessage('Unable to get account data');
+    if (result.status == 200) {
+      accountLoginNameInput.value = result.data.loginName;
+      accountPublicNameInput.value = result.data.publicName;
+    } else {
+      showSystemMessage('Unable to get account data');
     }
     accountUpdateButton.disabled = false;
     accountLoadingOverlay.hidden = true;
@@ -260,21 +249,15 @@ const populateHomePlaylist = async () => {
   homePlaylistTitle.innerHTML = '';
   homePlaylistEntriesContainer.innerHTML = '';
   const result = await api.readSongListBySession();
-  switch (result.status) {
-    case 200:
-      updateTopBar(true);
-      homePlaylistTitle.innerHTML = result.data.title;
-      result.data.entries.forEach((songListEntry) => {
-        const songListEntryIFrame = document.createElement('iframe');
-        songListEntryIFrame.src = songListEntry.contentUrl;
-        homePlaylistEntriesContainer.appendChild(songListEntryIFrame);
-      });
-      break;
-    case 403:
-      updateTopBar(false);
-      // TODO: Handle expired authentication
-    default:
-      showSystemMessage('Unable to get playlist');
+  if (result.status == 200) {
+    homePlaylistTitle.innerHTML = result.data.title;
+    result.data.entries.forEach((songListEntry) => {
+      const songListEntryIFrame = document.createElement('iframe');
+      songListEntryIFrame.src = songListEntry.contentUrl;
+      homePlaylistEntriesContainer.appendChild(songListEntryIFrame);
+    });
+  } else {
+    showSystemMessage('Unable to get playlist');
   }
 };
 
@@ -312,19 +295,13 @@ const populatePlaylistEditor = async () => {
   homePlaylistEditorTitleInput.value = '';
   homePlaylistEditorEntriesContainer.innerHTML = '';
   const result = await api.readSongListBySession();
-  switch (result.status) {
-    case 200:
-      updateTopBar(true);
-      homePlaylistEditorTitleInput.value = result.data.title;
-      result.data.entries.forEach((entry) => {
-        appendNewEntryToPlaylistEditor(entry.contentUrl);
-      });
-      break;
-    case 403:
-      updateTopBar(false);
-      // TODO: Handle expired authentication
-    default:
-      showSystemMessage('Unable to get playlist');
+  if (result.status == 200) {
+    homePlaylistEditorTitleInput.value = result.data.title;
+    result.data.entries.forEach((entry) => {
+      appendNewEntryToPlaylistEditor(entry.contentUrl);
+    });
+  } else {
+    showSystemMessage('Unable to get playlist');
   }
 };
 
@@ -469,16 +446,12 @@ homePlaylistEditorSubmitButton.addEventListener('click', () => {
   .then((result) => {
     switch (result.status) {
       case 200:
-        updateTopBar(true);
         showSystemMessage('Successfully saved playlist');
         populatePlaylistEditor();
         break;
       case 400:
-        showSystemMessage('Invalid fields provided');
+        showSystemMessage('Invalid fields provided or title too long');
         break;
-      case 403:
-        updateTopBar(false);
-        // TODO: Handle expired authentication
       default:
         showSystemMessage('Unable to save playlist');
     }
@@ -614,7 +587,7 @@ signUpButton.addEventListener('click', () => {
     } else {
       switch(result.status) {
         case 400:
-          showSystemMessage('Invalid characters provided');
+          showSystemMessage('Invalid characters provided or length requirements not met');
           break;
         case 409:
           showSystemMessage('Provided login ID or public name is already taken');
@@ -667,22 +640,15 @@ accountUpdateButton.addEventListener('click', () => {
   })
   .then((result) => {
     if (result.status == 200) {
-      updateTopBar(true);
       api.readUserBySession()
       .then((result) => {
-        switch (result.status) {
-          case 200:
-            updateTopBar(true);
-            showSystemMessage('Account successfully updated');
-            clearPageContents();
-            accountLoginNameInput.value = result.data.loginName;
-            accountPublicNameInput.value = result.data.publicName;
-            break;
-          case 403:
-            updateTopBar(false);
-            // TODO: Handle expired authentication
-          default:
-            showSystemMessage('Account successfully updated but unable to get account data');
+        if (result.status == 200) {
+          showSystemMessage('Account successfully updated');
+          clearPageContents();
+          accountLoginNameInput.value = result.data.loginName;
+          accountPublicNameInput.value = result.data.publicName;
+        } else {
+          showSystemMessage('Account successfully updated but unable to get account data');
         }
         accountUpdateButton.disabled = false;
         accountDeleteButton.disabled = false;
@@ -691,14 +657,11 @@ accountUpdateButton.addEventListener('click', () => {
     } else {
       switch (result.status) {
         case 400:
-          showSystemMessage('Invalid characters provided');
+          showSystemMessage('Invalid characters provided or length requirements not met');
           break;
         case 409:
           showSystemMessage('The provided login ID or public name already exists');
           break;
-        case 403:
-          updateTopBar(false);
-          // TODO: Handle expired authentication
         default:
           showSystemMessage('Unable to update account');
       }
@@ -715,26 +678,21 @@ accountDeleteButton.addEventListener('click', () => {
   accountLoadingOverlay.hidden = false;
   api.deleteUserBySession()
   .then((result) => {
-    switch (result.status) {
-      case 200:
-        api.logout()
-        .finally(() => {
-          showSystemMessage('Successfully deleted account');
-          updateTopBar(false);
-          navigateToHomePage(true);
-          accountUpdateButton.disabled = false;
-          accountDeleteButton.disabled = false;
-          accountLoadingOverlay.hidden = true;
-        });
-        break;
-      case 403:
+    if (result.status == 200) {
+      api.logout()
+      .finally(() => {
+        showSystemMessage('Successfully deleted account');
         updateTopBar(false);
-        // TODO: Handle expired authentication
-      default:
-        showSystemMessage('Unable to delete account');
+        navigateToHomePage(true);
         accountUpdateButton.disabled = false;
         accountDeleteButton.disabled = false;
         accountLoadingOverlay.hidden = true;
+      });
+    } else {
+      showSystemMessage('Unable to delete account');
+      accountUpdateButton.disabled = false;
+      accountDeleteButton.disabled = false;
+      accountLoadingOverlay.hidden = true;
     }
   });
 });

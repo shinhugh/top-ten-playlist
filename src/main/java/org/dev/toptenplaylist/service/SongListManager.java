@@ -23,6 +23,7 @@ public class SongListManager implements SongListService {
     private final SongListContainerRepository songListContainerRepository;
     private final SongListEntryRepository songListEntryRepository;
     private final UserProfileRepository userProfileRepository;
+    private static final int titleMaxLength = 32;
 
     public SongListManager(SongListContainerRepository songListContainerRepository, SongListEntryRepository songListEntryRepository, UserProfileRepository userProfileRepository) {
         this.songListContainerRepository = songListContainerRepository;
@@ -68,17 +69,9 @@ public class SongListManager implements SongListService {
             throw new ElementAlreadyExistsException();
         }
         catch (NoSuchElementException ignored) { }
-        if (songList == null) {
-            throw new IllegalArgumentException();
-        }
+        verifyLegalInput(songList);
         SongList.Entry[] songListEntries = songList.getEntries();
-        if (songListEntries == null || songListEntries.length > 10) {
-            throw new IllegalArgumentException();
-        }
         for (SongList.Entry entry : songListEntries) {
-            if (entry == null || entry.getContentUrl() == null) {
-                throw new IllegalArgumentException();
-            }
             entry.setContentUrl(transformContentUrl(entry.getContentUrl()));
         }
         SongListContainer songListContainer = new SongListContainer(userProfile.getId(), songList.getTitle(), System.currentTimeMillis());
@@ -100,17 +93,9 @@ public class SongListManager implements SongListService {
         if (!songListContainer.getUserProfileId().equals(userProfile.getId())) {
             throw new AccessDeniedException();
         }
-        if (songList == null) {
-            throw new IllegalArgumentException();
-        }
+        verifyLegalInput(songList);
         SongList.Entry[] songListEntries = songList.getEntries();
-        if (songListEntries == null || songListEntries.length > 10) {
-            throw new IllegalArgumentException();
-        }
         for (SongList.Entry entry : songListEntries) {
-            if (entry == null || entry.getContentUrl() == null) {
-                throw new IllegalArgumentException();
-            }
             entry.setContentUrl(transformContentUrl(entry.getContentUrl()));
         }
         songListContainer.setTitle(songList.getTitle());
@@ -132,17 +117,9 @@ public class SongListManager implements SongListService {
         }
         UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
         SongListContainer songListContainer = songListContainerRepository.readByUserProfileId(userProfile.getId());
-        if (songList == null) {
-            throw new IllegalArgumentException();
-        }
+        verifyLegalInput(songList);
         SongList.Entry[] songListEntries = songList.getEntries();
-        if (songListEntries == null || songListEntries.length > 10) {
-            throw new IllegalArgumentException();
-        }
         for (SongList.Entry entry : songListEntries) {
-            if (entry == null || entry.getContentUrl() == null) {
-                throw new IllegalArgumentException();
-            }
             entry.setContentUrl(transformContentUrl(entry.getContentUrl()));
         }
         songListContainer.setTitle(songList.getTitle());
@@ -230,5 +207,26 @@ public class SongListManager implements SongListService {
             return "https://w.soundcloud.com/player/?url=https://soundcloud.com" + path + "&visual=true&show_comments=false&show_teaser=false&hide_related=true";
         }
         throw new IllegalArgumentException();
+    }
+
+    private void verifyLegalInput(SongList songList) {
+        if (songList == null) {
+            throw new IllegalArgumentException();
+        }
+        String title = songList.getTitle();
+        SongList.Entry[] songListEntries = songList.getEntries();
+        if (title != null) {
+            if (title.length() > titleMaxLength) {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (songListEntries == null || songListEntries.length > 10) {
+            throw new IllegalArgumentException();
+        }
+        for (SongList.Entry entry : songListEntries) {
+            if (entry == null || entry.getContentUrl() == null) {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 }

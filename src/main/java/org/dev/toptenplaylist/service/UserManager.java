@@ -22,6 +22,12 @@ public class UserManager implements UserService {
     private static final String loginNameAllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-";
     private static final String passwordAllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-!?";
     private static final String publicNameAllowedChars = loginNameAllowedChars;
+    private static final int loginNameMinLength = 4;
+    private static final int loginNameMaxLength = 16;
+    private static final int passwordMinLength = 8;
+    private static final int passwordMaxLength = 20;
+    private static final int publicNameMinLength = 2;
+    private static final int publicNameMaxLength = 16;
 
     public UserManager(UserAccountRepository userAccountRepository, UserProfileRepository userProfileRepository, SessionRepository sessionRepository, SongListContainerRepository songListContainerRepository, SongListEntryRepository songListEntryRepository, SecureHashService secureHashService) {
         this.userAccountRepository = userAccountRepository;
@@ -69,21 +75,7 @@ public class UserManager implements UserService {
         if (user == null || user.getLoginName() == null || user.getPassword() == null || user.getPublicName() == null) {
             throw new IllegalArgumentException();
         }
-        for (char c : user.getLoginName().toCharArray()) {
-            if (!loginNameAllowedChars.contains(String.valueOf(c))) {
-                throw new IllegalArgumentException();
-            }
-        }
-        for (char c : user.getPassword().toCharArray()) {
-            if (!passwordAllowedChars.contains(String.valueOf(c))) {
-                throw new IllegalArgumentException();
-            }
-        }
-        for (char c : user.getPublicName().toCharArray()) {
-            if (!publicNameAllowedChars.contains(String.valueOf(c))) {
-                throw new IllegalArgumentException();
-            }
-        }
+        verifyLegalInput(user);
         try {
             userAccountRepository.readByName(user.getLoginName());
             throw new ElementAlreadyExistsException();
@@ -109,27 +101,7 @@ public class UserManager implements UserService {
         if (user == null || (user.getLoginName() == null && user.getPassword() == null && user.getPublicName() == null)) {
             throw new IllegalArgumentException();
         }
-        if (user.getLoginName() != null) {
-            for (char c : user.getLoginName().toCharArray()) {
-                if (!loginNameAllowedChars.contains(String.valueOf(c))) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
-        if (user.getPassword() != null) {
-            for (char c : user.getPassword().toCharArray()) {
-                if (!passwordAllowedChars.contains(String.valueOf(c))) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
-        if (user.getPublicName() != null) {
-            for (char c : user.getPublicName().toCharArray()) {
-                if (!publicNameAllowedChars.contains(String.valueOf(c))) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
+        verifyLegalInput(user);
         UserAccount userAccount = userAccountRepository.readById(userProfile.getUserAccountId());
         if (user.getLoginName() != null) {
             try {
@@ -166,27 +138,7 @@ public class UserManager implements UserService {
         if (user == null || (user.getLoginName() == null && user.getPassword() == null && user.getPublicName() == null)) {
             throw new IllegalArgumentException();
         }
-        if (user.getLoginName() != null) {
-            for (char c : user.getLoginName().toCharArray()) {
-                if (!loginNameAllowedChars.contains(String.valueOf(c))) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
-        if (user.getPassword() != null) {
-            for (char c : user.getPassword().toCharArray()) {
-                if (!passwordAllowedChars.contains(String.valueOf(c))) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
-        if (user.getPublicName() != null) {
-            for (char c : user.getPublicName().toCharArray()) {
-                if (!publicNameAllowedChars.contains(String.valueOf(c))) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
+        verifyLegalInput(user);
         UserAccount userAccount = userAccountRepository.readById(activeUserAccountId);
         UserProfile userProfile = userProfileRepository.readByUserAccountId(activeUserAccountId);
         if (user.getLoginName() != null) {
@@ -248,5 +200,44 @@ public class UserManager implements UserService {
             songListEntryRepository.deleteBySongListContainerId(songListContainer.getId());
         }
         catch (NoSuchElementException ignored) { }
+    }
+
+    private void verifyLegalInput(User user) {
+        if (user == null)  {
+            throw new IllegalArgumentException();
+        }
+        String loginName = user.getLoginName();
+        String password = user.getPassword();
+        String publicName = user.getPublicName();
+        if (loginName != null) {
+            if (loginName.length() < loginNameMinLength || loginName.length() > loginNameMaxLength) {
+                throw new IllegalArgumentException();
+            }
+            for (char c : loginName.toCharArray()) {
+                if (!loginNameAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (password != null) {
+            if (password.length() < passwordMinLength || password.length() > passwordMaxLength) {
+                throw new IllegalArgumentException();
+            }
+            for (char c : password.toCharArray()) {
+                if (!passwordAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (publicName != null) {
+            if (publicName.length() < publicNameMinLength || publicName.length() > publicNameMaxLength) {
+                throw new IllegalArgumentException();
+            }
+            for (char c : publicName.toCharArray()) {
+                if (!publicNameAllowedChars.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
     }
 }
