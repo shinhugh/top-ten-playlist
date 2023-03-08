@@ -186,6 +186,7 @@ const navigateToAccountPage = (pushToHistory) => {
         break;
       case 403:
         updateTopBar(false);
+        // TODO: Handle expired authentication
       default:
         showSystemMessage('Unable to get account data');
     }
@@ -271,6 +272,7 @@ const populateHomePlaylist = async () => {
       break;
     case 403:
       updateTopBar(false);
+      // TODO: Handle expired authentication
     default:
       showSystemMessage('Unable to get playlist');
   }
@@ -320,6 +322,7 @@ const populatePlaylistEditor = async () => {
       break;
     case 403:
       updateTopBar(false);
+      // TODO: Handle expired authentication
     default:
       showSystemMessage('Unable to get playlist');
   }
@@ -475,6 +478,7 @@ homePlaylistEditorSubmitButton.addEventListener('click', () => {
         break;
       case 403:
         updateTopBar(false);
+        // TODO: Handle expired authentication
       default:
         showSystemMessage('Unable to save playlist');
     }
@@ -676,7 +680,7 @@ accountUpdateButton.addEventListener('click', () => {
             break;
           case 403:
             updateTopBar(false);
-            // TODO: Not authenticated anymore; navigate home?
+            // TODO: Handle expired authentication
           default:
             showSystemMessage('Account successfully updated but unable to get account data');
         }
@@ -694,7 +698,7 @@ accountUpdateButton.addEventListener('click', () => {
           break;
         case 403:
           updateTopBar(false);
-          // TODO: Not authenticated anymore; navigate home?
+          // TODO: Handle expired authentication
         default:
           showSystemMessage('Unable to update account');
       }
@@ -725,6 +729,7 @@ accountDeleteButton.addEventListener('click', () => {
         break;
       case 403:
         updateTopBar(false);
+        // TODO: Handle expired authentication
       default:
         showSystemMessage('Unable to delete account');
         accountUpdateButton.disabled = false;

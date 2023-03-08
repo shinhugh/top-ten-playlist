@@ -2,4 +2,4 @@
 
 - User and SongList creation - String min/max lengths
 
-- Verify that no breaks are missing
+- Redirect for certain paths depending on user's authentication state
