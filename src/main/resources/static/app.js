@@ -59,8 +59,10 @@ const systemMessageDialogContent = document.getElementById('system-message-dialo
 
 // Functions: Utility
 
-const extractInput = (element) => {
-  const inputValue = element.value;
+const nullIfEmpty = (string) => {
+  if (string == null) {
+    return null;
+  }
   return inputValue.length == 0 ? null : inputValue;
 };
 
@@ -416,7 +418,7 @@ topBarSearchInput.addEventListener('keypress', (event) => {
 });
 
 topBarSearchButton.addEventListener('click', () => {
-  const userName = extractInput(topBarSearchInput);
+  const userName = nullIfEmpty(topBarSearchInput.value);
   if (userName == null) {
     return;
   }
@@ -471,12 +473,12 @@ homePlaylistEditorClearButton.addEventListener('click', () => {
 
 homePlaylistEditorSubmitButton.addEventListener('click', () => {
   let songList = {
-    title: extractInput(homePlaylistEditorTitleInput),
+    title: nullIfEmpty(homePlaylistEditorTitleInput.value),
     entries: []
   };
   const entries = homePlaylistEditorEntriesContainer.children;
   for (let i = 0; i < entries.length; i++) {
-    const contentUrl = extractInput(entries[i].firstElementChild);
+    const contentUrl = nullIfEmpty(entries[i].firstElementChild.value);
     if (contentUrl != null) {
       songList.entries.push({
         contentUrl: contentUrl
@@ -534,8 +536,8 @@ loginPasswordInput.addEventListener('keypress', (event) => {
 });
 
 loginButton.addEventListener('click', () => {
-  const name = extractInput(loginNameInput);
-  const password = extractInput(loginPasswordInput);
+  const name = nullIfEmpty(loginNameInput.value);
+  const password = nullIfEmpty(loginPasswordInput.value);
   if (name == null || password == null) {
     showSystemMessage('Missing required fields');
     return;
@@ -597,9 +599,9 @@ signUpPublicNameInput.addEventListener('keypress', (event) => {
 });
 
 signUpButton.addEventListener('click', () => {
-  const loginName = extractInput(signUpLoginNameInput);
-  const password = extractInput(signUpPasswordInput);
-  const publicName = extractInput(signUpPublicNameInput);
+  const loginName = nullIfEmpty(signUpLoginNameInput.value);
+  const password = nullIfEmpty(signUpPasswordInput.value);
+  const publicName = nullIfEmpty(signUpPublicNameInput.value);
   if (loginName == null || password == null || publicName == null) {
     showSystemMessage('Missing required fields');
     return;
@@ -705,9 +707,9 @@ accountUpdateButton.addEventListener('click', () => {
   accountUpdateButton.disabled = true;
   accountDeleteButton.disabled = true;
   accountLoadingOverlay.hidden = false;
-  const loginName = extractInput(accountLoginNameInput);
-  const password = extractInput(accountPasswordInput);
-  const publicName = extractInput(accountPublicNameInput);
+  const loginName = nullIfEmpty(accountLoginNameInput.value);
+  const password = nullIfEmpty(accountPasswordInput.value);
+  const publicName = nullIfEmpty(accountPublicNameInput.value);
   fetch('http://localhost:8080/api/user/session', {
     method: 'PUT',
     headers: {
