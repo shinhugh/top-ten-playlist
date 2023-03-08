@@ -738,7 +738,7 @@ accountDeleteButton.addEventListener('click', () => {
 
 // ------------------------------------------------------------
 
-// Initialize
+// Initialization
 
 fetch('http://localhost:8080/api/user/session')
 .then((response) => {
@@ -753,6 +753,24 @@ fetch('http://localhost:8080/api/user/session')
 });
 
 history.replaceState({
-  path: '/'
-}, '', '/');
-navigateToHomePage(false);
+  path: initialPath
+}, '', initialPath);
+switch (initialPath) {
+  case '/':
+    navigateToHomePage(false);
+    break;
+  case '/login':
+    navigateToLoginPage(false);
+    break;
+  case '/signup':
+    navigateToSignUpPage(false);
+    break;
+  case '/account':
+    navigateToAccountPage(false);
+    break;
+  default:
+    if (initialPath.startsWith('/playlist/')) {
+      const userPublicName = initialPath.substring(10);
+      navigateToPlaylistPage(false, userPublicName);
+    }
+}

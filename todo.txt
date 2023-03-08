@@ -5,4 +5,4 @@
 
 - Periodically purge expired sessions by calling deleteByLessThanOrEqualToExpiration()
 
-- Handle native browser navigation (back button, rewriting URLs, navigating to specific pages, etc.)
+- Handle requests for specific pages
