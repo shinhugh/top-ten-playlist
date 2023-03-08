@@ -4,5 +4,3 @@
 - Potential state corruption due to concurrency
 
 - Periodically purge expired sessions by calling deleteByLessThanOrEqualToExpiration()
-
-- Handle requests for specific pages
