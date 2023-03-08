@@ -37,7 +37,7 @@ a:hover, button:hover {
     cursor: pointer;
 }
 
-input {
+input, textarea {
     border: none;
     outline: none;
 }
@@ -155,15 +155,15 @@ iframe {
     height: calc(100% - 3.2rem);
     width: 100%;
     position: relative;
-    overflow: auto;
     background: #181818;
     color: #ffffff;
 }
 
 .page-root {
-    min-height: 100%;
+    height: 100%;
     width: 100%;
     position: relative;
+    overflow-y: auto;
 }
 
 #home-unauthenticated-root {
@@ -211,17 +211,26 @@ iframe {
     background: rgba(255, 255, 255, 0.2);
 }
 
-#home-playlist-root {
+#home-authenticated-root {
+    height: 100%;
     width: 100%;
+    position: relative;
+}
+
+#home-playlist-root {
+    height: 100%;
+    width: 100%;
+    position: relative;
 }
 
 #home-playlist-container {
     width: 100%;
     padding: 3rem 0;
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     gap: 2rem;
+    overflow-y: auto;
 }
 
 #home-playlist-title {
@@ -258,9 +267,50 @@ iframe {
     width: 64vw;
 }
 
+#home-playlist-overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+#home-playlist-share-container {
+    padding: 1.5rem 2rem 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#home-playlist-share-container>p:first-child {
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.6rem;
+}
+
+#home-playlist-share-container>textarea {
+    width: 22rem;
+    padding: 1rem;
+    font-size: 1.5rem;
+    resize: none;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+#home-playlist-share-close-button {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    font-size: 1.2rem;
+    font-family: 'icons';
+}
+
 #home-playlist-editor-root {
     width: 100%;
     position: relative;
+    overflow-y: auto;
 }
 
 #home-playlist-editor-back-button:hover {

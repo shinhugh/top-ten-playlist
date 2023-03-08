@@ -16,6 +16,10 @@ const homePlaylistTitle = document.getElementById('home-playlist-title');
 const homePlaylistEditButton = document.getElementById('home-playlist-edit-button');
 const homePlaylistShareButton = document.getElementById('home-playlist-share-button');
 const homePlaylistEntriesContainer = document.getElementById('home-playlist-entries-container');
+const homePlaylistOverlay = document.getElementById('home-playlist-overlay');
+const homePlaylistShareContainer = document.getElementById('home-playlist-share-container');
+const homePlaylistShareLink = document.getElementById('home-playlist-share-link');
+const homePlaylistShareCloseButton = document.getElementById('home-playlist-share-close-button');
 const homePlaylistEditorRoot = document.getElementById('home-playlist-editor-root');
 const homePlaylistEditorTitleInput = document.getElementById('home-playlist-editor-title-input');
 const homePlaylistEditorEntriesContainer = document.getElementById('home-playlist-editor-entries-container');
@@ -76,6 +80,9 @@ const clearPageContents = () => {
   homePlaylistRoot.hidden = true;
   homePlaylistTitle.innerHTML = '';
   homePlaylistEntriesContainer.innerHTML = '';
+  homePlaylistOverlay.hidden = true;
+  homePlaylistShareContainer.hidden = true;
+  homePlaylistShareLink.innerHTML = '';
   homePlaylistEditorRoot.hidden = true;
   homePlaylistEditorTitleInput.value = '';
   homePlaylistEditorEntriesContainer.innerHTML = '';
@@ -415,7 +422,32 @@ homePlaylistEditButton.addEventListener('click', () => {
 });
 
 homePlaylistShareButton.addEventListener('click', () => {
-  // TODO: Show dialog with link
+  homePlaylistOverlay.hidden = false;
+  homePlaylistShareLink.innerHTML = 'Loading..';
+  homePlaylistShareContainer.hidden = false;
+  api.readUserBySession()
+  .then((result) => {
+    if (result.status == 200) {
+      homePlaylistShareLink.innerHTML = api.origin + '/playlist/' + result.data.publicName.toLowerCase();
+    } else {
+      homePlaylistShareLink.innerHTML = 'Unable to load share link';
+    }
+  });
+});
+
+homePlaylistOverlay.addEventListener('click', (event) => {
+  if (event.target != homePlaylistOverlay) {
+    return;
+  }
+  homePlaylistOverlay.hidden = true;
+  homePlaylistShareContainer.hidden = true;
+  homePlaylistShareLink.innerHTML = '';
+});
+
+homePlaylistShareCloseButton.addEventListener('click', () => {
+  homePlaylistOverlay.hidden = true;
+  homePlaylistShareContainer.hidden = true;
+  homePlaylistShareLink.innerHTML = '';
 });
 
 homePlaylistEditorAddButton.addEventListener('click', () => {

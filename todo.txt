@@ -1,5 +1,3 @@
 - Potential state corruption due to concurrency
 
 - Redirect for certain paths depending on user's authentication state
-
-- Share button
