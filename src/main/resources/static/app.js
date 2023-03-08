@@ -414,6 +414,8 @@ topBarSearchButton.addEventListener('click', () => {
 homePlaylistEditButton.addEventListener('click', () => {
   homeLoadingOverlay.hidden = false;
   homePlaylistRoot.hidden = true;
+  homePlaylistTitle.innerHTML = '';
+  homePlaylistEntriesContainer.innerHTML = '';
   populatePlaylistEditor()
   .finally(() => {
     homePlaylistEditorRoot.hidden = false;

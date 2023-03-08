@@ -224,7 +224,7 @@ iframe {
 }
 
 #home-playlist-container {
-    height: 100%;
+    height: calc(100% - 6rem);
     width: 100%;
     padding: 3rem 0;
     display: flex;
@@ -283,7 +283,8 @@ iframe {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-color-primary);
+    border-radius: 10px;
 }
 
 #home-playlist-share-container>p:first-child {
@@ -299,6 +300,7 @@ iframe {
     resize: none;
     background: rgba(0, 0, 0, 0.6);
     color: #ffffff;
+    border-radius: 5px;
 }
 
 #home-playlist-share-container>textarea::selection {
