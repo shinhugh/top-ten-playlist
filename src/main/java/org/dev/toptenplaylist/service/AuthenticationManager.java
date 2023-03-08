@@ -9,6 +9,7 @@ import org.dev.toptenplaylist.model.Session;
 import org.dev.toptenplaylist.model.UserAccount;
 import org.dev.toptenplaylist.repository.SessionRepository;
 import org.dev.toptenplaylist.repository.UserAccountRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -83,6 +84,11 @@ public class AuthenticationManager implements AuthenticationService {
             return new AuthenticationResult(false, null, 0, null);
         }
         return new AuthenticationResult(true, null, 0, null);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void purgeExpiredSessions() {
+        sessionRepository.deleteByLessThanOrEqualToExpiration(System.currentTimeMillis());
     }
 
     private String generateToken() {

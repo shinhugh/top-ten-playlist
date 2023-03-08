@@ -2,5 +2,3 @@
   receive response that clears cookie)
 
 - Potential state corruption due to concurrency
-
-- Periodically purge expired sessions by calling deleteByLessThanOrEqualToExpiration()
