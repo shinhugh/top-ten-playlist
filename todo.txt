@@ -1,1 +1,5 @@
 - Potential state corruption due to concurrency
+
+- User and SongList creation - String min/max lengths
+
+- Verify that no breaks are missing

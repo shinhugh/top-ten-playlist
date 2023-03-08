@@ -63,7 +63,7 @@ const nullIfEmpty = (string) => {
   if (string == null) {
     return null;
   }
-  return inputValue.length == 0 ? null : inputValue;
+  return string.length == 0 ? null : string;
 };
 
 // ------------------------------------------------------------
@@ -107,26 +107,24 @@ const navigateToHomePage = (pushToHistory) => {
   accountPageRoot.hidden = true;
   homePageRoot.hidden = false;
   homeLoadingOverlay.hidden = false;
-  fetch('http://localhost:8080/api/user/session')
-  .then((response) => {
-    if (response.ok) {
-      updateTopBar(true);
-      homeAuthenticatedRoot.hidden = false;
-      populateHomePlaylist()
-      .finally(() => {
-        homePlaylistRoot.hidden = false;
+  api.readUserBySession()
+  .then((result) => {
+    switch (result.status) {
+      case 200:
+        updateTopBar(true);
+        homeAuthenticatedRoot.hidden = false;
+        populateHomePlaylist()
+        .finally(() => {
+          homePlaylistRoot.hidden = false;
+          homeLoadingOverlay.hidden = true;
+        });
+        break;
+      case 403:
+        updateTopBar(false);
+      default:
+        homeUnauthenticatedRoot.hidden = false;
         homeLoadingOverlay.hidden = true;
-      });
-    } else {
-      updateTopBar(false);
-      homeUnauthenticatedRoot.hidden = false;
-      homeLoadingOverlay.hidden = true;
     }
-  })
-  .catch(() => {
-    updateTopBar(false);
-    homeUnauthenticatedRoot.hidden = false;
-    homeLoadingOverlay.hidden = true;
   });
 };
 
@@ -178,22 +176,19 @@ const navigateToAccountPage = (pushToHistory) => {
   accountPageRoot.hidden = false;
   accountUpdateButton.disabled = true;
   accountLoadingOverlay.hidden = false;
-  fetch('http://localhost:8080/api/user/session')
-  .then((response) => {
-    if (response.ok) {
-      response.json()
-      .then((data) => {
-        accountLoginNameInput.value = data.loginName;
-        accountPublicNameInput.value = data.publicName;
-      });
-    } else {
-      showSystemMessage('Unable to fetch account data');
+  api.readUserBySession()
+  .then((result) =>  {
+    switch (result.status) {
+      case 200:
+        updateTopBar(true);
+        accountLoginNameInput.value = result.data.loginName;
+        accountPublicNameInput.value = result.data.publicName;
+        break;
+      case 403:
+        updateTopBar(false);
+      default:
+        showSystemMessage('Unable to get account data');
     }
-  })
-  .catch(() =>  {
-    showSystemMessage('Unable to fetch account data');
-  })
-  .finally(() => {
     accountUpdateButton.disabled = false;
     accountLoadingOverlay.hidden = true;
   });
@@ -212,25 +207,19 @@ const navigateToPlaylistPage = (pushToHistory, userName) => {
   signUpPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   playlistPageRoot.hidden = false;
-  fetch('http://localhost:8080/api/song-list/user-public-name/' + userName)
-  .then((response) => {
-    if (response.ok) {
-      response.json()
-      .then((songList) => {
-        playlistTitle.innerHTML = songList.title;
-        playlistUserPublicName.innerHTML = userName;
-        songList.entries.forEach((songListEntry) => {
-          const songListEntryIFrame = document.createElement('iframe');
-          songListEntryIFrame.src = songListEntry.contentUrl;
-          playlistList.appendChild(songListEntryIFrame);
-        });
+  api.readSongListByUserPublicName(userName)
+  .then((result) => {
+    if (result.status == 200) {
+      playlistTitle.innerHTML = result.data.title;
+      playlistUserPublicName.innerHTML = userName;
+      result.data.entries.forEach((songListEntry) => {
+        const songListEntryIFrame = document.createElement('iframe');
+        songListEntryIFrame.src = songListEntry.contentUrl;
+        playlistList.appendChild(songListEntryIFrame);
       });
     } else {
-      showSystemMessage('Unable to fetch playlist data');
+      showSystemMessage('Unable to get playlist data');
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to fetch playlist data');
   });
 };
 
@@ -269,23 +258,21 @@ const updateTopBar = (signedIn) => {
 const populateHomePlaylist = async () => {
   homePlaylistTitle.innerHTML = '';
   homePlaylistEntriesContainer.innerHTML = '';
-  try {
-    const response = await fetch('http://localhost:8080/api/song-list/session');
-    if (response.ok) {
-      response.json()
-        .then((songList) => {
-          homePlaylistTitle.innerHTML = songList.title;
-          songList.entries.forEach((songListEntry) => {
-            const songListEntryIFrame = document.createElement('iframe');
-            songListEntryIFrame.src = songListEntry.contentUrl;
-            homePlaylistEntriesContainer.appendChild(songListEntryIFrame);
-          });
-        });
-    } else {
-      showSystemMessage('Unable to fetch playlist');
-    }
-  } catch {
-    showSystemMessage('Unable to fetch playlist');
+  const result = await api.readSongListBySession();
+  switch (result.status) {
+    case 200:
+      updateTopBar(true);
+      homePlaylistTitle.innerHTML = result.data.title;
+      result.data.entries.forEach((songListEntry) => {
+        const songListEntryIFrame = document.createElement('iframe');
+        songListEntryIFrame.src = songListEntry.contentUrl;
+        homePlaylistEntriesContainer.appendChild(songListEntryIFrame);
+      });
+      break;
+    case 403:
+      updateTopBar(false);
+    default:
+      showSystemMessage('Unable to get playlist');
   }
 };
 
@@ -322,22 +309,19 @@ const appendNewEntryToPlaylistEditor = (contentUrl) => {
 const populatePlaylistEditor = async () => {
   homePlaylistEditorTitleInput.value = '';
   homePlaylistEditorEntriesContainer.innerHTML = '';
-  try {
-    const response = await fetch('http://localhost:8080/api/song-list/session');
-    if (response.ok) {
-      response.json()
-      .then((songList) => {
-        homePlaylistEditorTitleInput.value = songList.title;
-        const entries = songList.entries;
-        entries.forEach((entry) => {
-          appendNewEntryToPlaylistEditor(entry.contentUrl);
-        });
+  const result = await api.readSongListBySession();
+  switch (result.status) {
+    case 200:
+      updateTopBar(true);
+      homePlaylistEditorTitleInput.value = result.data.title;
+      result.data.forEach((entry) => {
+        appendNewEntryToPlaylistEditor(entry.contentUrl);
       });
-    } else {
-      showSystemMessage('Unable to fetch playlist');
-    }
-  } catch {
-    showSystemMessage('Unable to fetch playlist');
+      break;
+    case 403:
+      updateTopBar(false);
+    default:
+      showSystemMessage('Unable to get playlist');
   }
 };
 
@@ -394,19 +378,14 @@ topBarAccountLink.addEventListener('click', () => {
 });
 
 topBarLogoutLink.addEventListener('click', () => {
-  fetch('http://localhost:8080/api/auth', {
-    method: 'DELETE'
-  })
-  .then((response) => {
-    if (response.ok) {
+  api.logout()
+  .then((result) => {
+    if (result.status == 200) {
       updateTopBar(false);
       navigateToHomePage(true);
     } else {
       showSystemMessage('Unable to logout');
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to logout');
   });
 });
 
@@ -423,20 +402,18 @@ topBarSearchButton.addEventListener('click', () => {
     return;
   }
   topBarSearchButton.disabled = true;
-  fetch('http://localhost:8080/api/user/public-name/' + userName)
-  .then((response) => {
-    if (response.status == 200) {
-      navigateToPlaylistPage(true, userName);
-    } else if (response.status == 404) {
-      showSystemMessage('No such user');
-    } else {
-      showSystemMessage('Unable to fetch user data');
+  api.readUserByPublicName(userName)
+  .then((result) => {
+    switch (result.status) {
+      case 200:
+        navigateToPlaylistPage(true, userName);
+        break;
+      case 404:
+        showSystemMessage('No such user');
+        break;
+      default:
+        showSystemMessage('Unable to search for user');
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to fetch user data');
-  })
-  .finally(() => {
     topBarSearchButton.disabled = false;
   });
 });
@@ -485,25 +462,22 @@ homePlaylistEditorSubmitButton.addEventListener('click', () => {
       });
     }
   }
-  fetch('http://localhost:8080/api/song-list/session', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(songList)
-  })
-  .then((response) => {
-    if (response.status == 200) {
-      showSystemMessage('Successfully saved playlist');
-      populatePlaylistEditor();
-    } else if (response.status == 400) {
-      showSystemMessage('Invalid fields provided');
-    } else {
-      showSystemMessage('Unable to save playlist');
+  api.updateSongListBySession(songList)
+  .then((result) => {
+    switch (result.status) {
+      case 200:
+        updateTopBar(true);
+        showSystemMessage('Successfully saved playlist');
+        populatePlaylistEditor();
+        break;
+      case 400:
+        showSystemMessage('Invalid fields provided');
+        break;
+      case 403:
+        updateTopBar(false);
+      default:
+        showSystemMessage('Unable to save playlist');
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to save playlist');
   });
 });
 
@@ -544,30 +518,22 @@ loginButton.addEventListener('click', () => {
   }
   loginButton.disabled = true;
   loginLoadingOverlay.hidden = false;
-  fetch('http://localhost:8080/api/auth', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: name,
-      password: password
-    })
+  api.login({
+    name: name,
+    password: password
   })
-  .then((response) => {
-    if (response.status == 200) {
-      updateTopBar(true);
-      navigateToHomePage(true);
-    } else if (response.status == 400 || response.status == 403) {
-      showSystemMessage('Invalid credentials');
-    } else {
-      showSystemMessage('Unable to login');
+  .then((result) => {
+    switch (result.status) {
+      case 200:
+        updateTopBar(true);
+        navigateToHomePage(true);
+        break;
+      case 400, 403:
+        showSystemMessage('Invalid credentials');
+        break;
+      default:
+        showSystemMessage('Unable to login');
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to login');
-  })
-  .finally(() => {
     loginButton.disabled = false;
     loginLoadingOverlay.hidden = true;
   });
@@ -608,73 +574,53 @@ signUpButton.addEventListener('click', () => {
   }
   signUpButton.disabled = true;
   signUpLoadingOverlay.hidden = false;
-  fetch('http://localhost:8080/api/user', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      loginName: loginName,
-      password: password,
-      publicName: publicName
-    })
+  api.createUser({
+    loginName: loginName,
+    password: password,
+    publicName: publicName
   })
-  .then((response) => {
-    if (response.status == 200) {
-      fetch('http://localhost:8080/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: loginName,
-          password: password
-        })
+  .then((result) => {
+    if (result.status == 200) {
+      api.login({
+        name: loginName,
+        password: password
       })
-      .then((response) => {
-        if (response.ok) {
-          fetch('http://localhost:8080/api/song-list', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              title: 'Top Ten',
-              entries: []
-            })
+      .then((result) => {
+        if (result.status == 200) {
+          api.createSongList({
+            title: 'Top Ten',
+            entries: []
           })
-          .then((response) => {
-            if (response.ok) {
+          .then((result) => {
+            if (result.status == 200) {
               updateTopBar(true);
               navigateToHomePage(true);
             } else {
               showSystemMessage('Unable to create song list');
             }
-          })
-          .catch(() => {
-            showSystemMessage('Unable to create song list');
+            signUpButton.disabled = false;
+            signUpLoadingOverlay.hidden = true;
           });
         } else {
           showSystemMessage('Account has been created but unable to login');
+          signUpButton.disabled = false;
+          signUpLoadingOverlay.hidden = true;
         }
-      })
-      .catch (() => {
-        showSystemMessage('Account has been created but unable to login');
       });
-    } else if (response.status == 400) {
-      showSystemMessage('Invalid characters provided');
-    } else if (response.status == 409) {
-      showSystemMessage('Provided login ID or public name is already taken');
     } else {
-      showSystemMessage('Unable to sign up');
+      switch(result.status) {
+        case 400:
+          showSystemMessage('Invalid characters provided');
+          break;
+        case 409:
+          showSystemMessage('Provided login ID or public name is already taken');
+          break;
+        default:
+          showSystemMessage('Unable to sign up');
+      }
+      signUpButton.disabled = false;
+      signUpLoadingOverlay.hidden = true;
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to sign up');
-  })
-  .finally(() => {
-    signUpButton.disabled = false;
-    signUpLoadingOverlay.hidden = true;
   });
 });
 
@@ -710,59 +656,52 @@ accountUpdateButton.addEventListener('click', () => {
   const loginName = nullIfEmpty(accountLoginNameInput.value);
   const password = nullIfEmpty(accountPasswordInput.value);
   const publicName = nullIfEmpty(accountPublicNameInput.value);
-  fetch('http://localhost:8080/api/user/session', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      loginName: loginName,
-      password: password,
-      publicName: publicName
-    })
+  api.updateUserBySession({
+    loginName: loginName,
+    password: password,
+    publicName: publicName
   })
-  .then((response) => {
-    if (response.ok) {
-      clearPageContents();
-      fetch('http://localhost:8080/api/user/session')
-      .then((response) => {
-        if (response.ok) {
-          response.json()
-          .then((data) => {
-            accountLoginNameInput.value = data.loginName;
-            accountPublicNameInput.value = data.publicName;
-          });
-        } else {
-          showSystemMessage('Account successfully updated but unable to fetch account data');
+  .then((result) => {
+    if (result.status == 200) {
+      updateTopBar(true);
+      api.readUserBySession()
+      .then((result) => {
+        switch (result.status) {
+          case 200:
+            updateTopBar(true);
+            showSystemMessage('Account successfully updated');
+            clearPageContents();
+            accountLoginNameInput.value = result.data.loginName;
+            accountPublicNameInput.value = result.data.publicName;
+            break;
+          case 403:
+            updateTopBar(false);
+            // TODO: Not authenticated anymore; navigate home?
+          default:
+            showSystemMessage('Account successfully updated but unable to get account data');
         }
-      })
-      .catch(() =>  {
-        showSystemMessage('Account successfully updated but unable to fetch account data');
-      })
-      .finally(() => {
-        showSystemMessage('Account successfully updated');
         accountUpdateButton.disabled = false;
         accountDeleteButton.disabled = false;
         accountLoadingOverlay.hidden = true;
       });
     } else {
-      if (response.status == 400) {
-        showSystemMessage('Invalid characters provided');
-      } else if (response.status == 409) {
-        showSystemMessage('The provided login ID or public name already exists');
-      } else {
-        showSystemMessage('Unable to update account');
+      switch (result.status) {
+        case 400:
+          showSystemMessage('Invalid characters provided');
+          break;
+        case 409:
+          showSystemMessage('The provided login ID or public name already exists');
+          break;
+        case 403:
+          updateTopBar(false);
+          // TODO: Not authenticated anymore; navigate home?
+        default:
+          showSystemMessage('Unable to update account');
       }
       accountUpdateButton.disabled = false;
       accountDeleteButton.disabled = false;
       accountLoadingOverlay.hidden = true;
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to update account');
-    accountUpdateButton.disabled = false;
-    accountDeleteButton.disabled = false;
-    accountLoadingOverlay.hidden = true;
   });
 });
 
@@ -770,30 +709,28 @@ accountDeleteButton.addEventListener('click', () => {
   accountUpdateButton.disabled = true;
   accountDeleteButton.disabled = true;
   accountLoadingOverlay.hidden = false;
-  fetch('http://localhost:8080/api/user/session', {
-    method: 'DELETE'
-  })
-  .then((response) => {
-    if (response.ok) {
-      fetch('http://localhost:8080/api/auth', {
-        method: 'DELETE'
-      })
-      .finally(() => {
-        showSystemMessage('Successfully deleted account');
+  api.deleteUserBySession()
+  .then((result) => {
+    switch (result.status) {
+      case 200:
+        api.logout()
+        .finally(() => {
+          showSystemMessage('Successfully deleted account');
+          updateTopBar(false);
+          navigateToHomePage(true);
+          accountUpdateButton.disabled = false;
+          accountDeleteButton.disabled = false;
+          accountLoadingOverlay.hidden = true;
+        });
+        break;
+      case 403:
         updateTopBar(false);
-        navigateToHomePage(true);
-      });
-    } else {
-      showSystemMessage('Unable to delete account');
+      default:
+        showSystemMessage('Unable to delete account');
+        accountUpdateButton.disabled = false;
+        accountDeleteButton.disabled = false;
+        accountLoadingOverlay.hidden = true;
     }
-  })
-  .catch(() => {
-    showSystemMessage('Unable to delete account');
-  })
-  .finally(() => {
-    accountUpdateButton.disabled = false;
-    accountDeleteButton.disabled = false;
-    accountLoadingOverlay.hidden = true;
   });
 });
 
@@ -801,18 +738,14 @@ accountDeleteButton.addEventListener('click', () => {
 
 // Initialization
 
-fetch('http://localhost:8080/api/user/session')
-.then((response) => {
-  if (response.ok) {
+api.readUserBySession()
+.then((result) => {
+  if (result.status == 200) {
     updateTopBar(true);
   } else {
     updateTopBar(false);
   }
-})
-.catch(() => {
-  updateTopBar(false);
 });
-
 history.replaceState({
   path: initialPath
 }, '', initialPath);

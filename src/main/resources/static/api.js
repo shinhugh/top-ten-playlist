@@ -57,10 +57,10 @@ const api = {
   readUserById: async (id) => {
     try {
       const response = await fetch(api.origin + '/api/user/id/' + id);
-      const target = await response.json();
+      const data = await response.json();
       return {
         status: response.status,
-        target: target
+        data: data
       };
     } catch {
       return {
@@ -72,10 +72,10 @@ const api = {
   readUserBySession: async () => {
     try {
       const response = await fetch(api.origin + '/api/user/session');
-      const target = await response.json();
+      const data = await response.json();
       return {
         status: response.status,
-        target: target
+        data: data
       };
     } catch {
       return {
@@ -87,10 +87,10 @@ const api = {
   readUserByPublicName: async (publicName) => {
     try {
       const response = await fetch(api.origin + '/api/user/public-name/' + publicName);
-      const target = await response.json();
+      const data = await response.json();
       return {
         status: response.status,
-        target: target
+        data: data
       };
     } catch {
       return {
@@ -189,10 +189,10 @@ const api = {
   readSongListById: async (id) => {
     try {
       const response = await fetch(api.origin + '/api/song-list/id/' + id);
-      const target = await response.json();
+      const data = await response.json();
       return {
         status: response.status,
-        target: target
+        data: data
       };
     } catch {
       return {
@@ -204,10 +204,10 @@ const api = {
   readSongListBySession: async () => {
     try {
       const response = await fetch(api.origin + '/api/song-list/session');
-      const target = await response.json();
+      const data = await response.json();
       return {
         status: response.status,
-        target: target
+        data: data
       };
     } catch {
       return {
@@ -219,10 +219,10 @@ const api = {
   readSongListByUserPublicName: async (userPublicName) => {
     try {
       const response = await fetch(api.origin + '/api/song-list/user-public-name/' + userPublicName);
-      const target = await response.json();
+      const data = await response.json();
       return {
         status: response.status,
-        target: target
+        data: data
       };
     } catch {
       return {
