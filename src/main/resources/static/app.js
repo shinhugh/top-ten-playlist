@@ -444,6 +444,10 @@ homePlaylistOverlay.addEventListener('click', (event) => {
   homePlaylistShareLink.innerHTML = '';
 });
 
+homePlaylistShareLink.addEventListener('click', () => {
+  homePlaylistShareLink.select();
+});
+
 homePlaylistShareCloseButton.addEventListener('click', () => {
   homePlaylistOverlay.hidden = true;
   homePlaylistShareContainer.hidden = true;
