@@ -314,7 +314,7 @@ const populatePlaylistEditor = async () => {
     case 200:
       updateTopBar(true);
       homePlaylistEditorTitleInput.value = result.data.title;
-      result.data.forEach((entry) => {
+      result.data.entries.forEach((entry) => {
         appendNewEntryToPlaylistEditor(entry.contentUrl);
       });
       break;
