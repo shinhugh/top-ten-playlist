@@ -17,7 +17,7 @@ playlist that pulls from different sources.
 - Some people would prefer not to pollute their own personal accounts with
 playlists created just for the sake of sharing.
 - This playlist can be shared as a simple link without exposing any information
-on the userAccount's personal accounts.
+on the user's personal accounts.
 
 YouTube, Spotify, and SoundCloud are supported.
 
