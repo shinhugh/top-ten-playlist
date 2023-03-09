@@ -110,7 +110,7 @@ public class SongList {
     private static class SongListEntryComparator implements Comparator<SongListEntry> {
         @Override
         public int compare(SongListEntry songListEntry, SongListEntry t1) {
-            int difference = songListEntry.getRank() - t1.getRank();
+            int difference = songListEntry.getListIndex() - t1.getListIndex();
             return difference == 0 ? 0 : (difference / Math.abs(difference));
         }
     }

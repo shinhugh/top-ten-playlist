@@ -1,7 +1,5 @@
 const api = {
-  // origin: 'http://localhost:8080',
-  // origin: 'http://192.168.1.23',
-  origin: 'http://ec2-54-176-190-14.us-west-1.compute.amazonaws.com',
+  origin: location.origin,
 
   login: async (credentials) => {
     try {
@@ -59,7 +57,12 @@ const api = {
   readUserById: async (id) => {
     try {
       const response = await fetch(api.origin + '/api/user/id/' + id);
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
       return {
         status: response.status,
         data: data
@@ -74,7 +77,12 @@ const api = {
   readUserBySession: async () => {
     try {
       const response = await fetch(api.origin + '/api/user/session');
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
       return {
         status: response.status,
         data: data
@@ -89,7 +97,12 @@ const api = {
   readUserByPublicName: async (publicName) => {
     try {
       const response = await fetch(api.origin + '/api/user/public-name/' + publicName);
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
       return {
         status: response.status,
         data: data
@@ -191,7 +204,12 @@ const api = {
   readSongListById: async (id) => {
     try {
       const response = await fetch(api.origin + '/api/song-list/id/' + id);
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
       return {
         status: response.status,
         data: data
@@ -206,7 +224,12 @@ const api = {
   readSongListBySession: async () => {
     try {
       const response = await fetch(api.origin + '/api/song-list/session');
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
       return {
         status: response.status,
         data: data
@@ -221,7 +244,12 @@ const api = {
   readSongListByUserPublicName: async (userPublicName) => {
     try {
       const response = await fetch(api.origin + '/api/song-list/user-public-name/' + userPublicName);
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
       return {
         status: response.status,
         data: data
