@@ -1,6 +1,7 @@
 const api = {
   // origin: 'http://localhost:8080',
-  origin: 'http://192.168.1.23',
+  // origin: 'http://192.168.1.23',
+  origin: 'http://ec2-54-176-190-14.us-west-1.compute.amazonaws.com',
 
   login: async (credentials) => {
     try {
