@@ -208,10 +208,10 @@ const navigateToAccountPage = async (pushToHistory) => {
 const navigateToPlaylistPage = async (pushToHistory, userName) => {
   if (pushToHistory) {
     history.pushState({
-      path: '/playlist/' + userName
-    }, '', '/playlist/' + userName);
+      path: '/playlist/' + userName.toLowerCase()
+    }, '', '/playlist/' + userName.toLowerCase());
   }
-  document.title = 'Top Ten - ' + userName;
+  document.title = 'Top Ten';
   clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
@@ -219,11 +219,17 @@ const navigateToPlaylistPage = async (pushToHistory, userName) => {
   accountPageRoot.hidden = true;
   playlistPageRoot.hidden = false;
   playlistLoadingOverlay.hidden = false;
-  const result = await api.readSongListByUserPublicName(userName);
-  if (result.status == 200) {
-    playlistTitle.innerHTML = result.data.title;
-    playlistUserPublicName.innerHTML = userName;
-    result.data.entries.forEach((songListEntry) => {
+  const readSongListByUserPublicNameResult = await api.readSongListByUserPublicName(userName);
+  if (readSongListByUserPublicNameResult.status == 200) {
+    const readUserByPublicNameResult = await api.readUserByPublicName(userName);
+    if (readUserByPublicNameResult.status == 200) {
+      document.title = 'Top Ten - ' + readUserByPublicNameResult.data.publicName;
+      playlistUserPublicName.innerHTML = readUserByPublicNameResult.data.publicName;
+    } else {
+      showSystemMessage('Unable to get user data');
+    }
+    playlistTitle.innerHTML = readSongListByUserPublicNameResult.data.title;
+    readSongListByUserPublicNameResult.data.entries.forEach((songListEntry) => {
       const songListEntryIFrame = document.createElement('iframe');
       songListEntryIFrame.src = songListEntry.contentUrl;
       playlistList.appendChild(songListEntryIFrame);
@@ -689,6 +695,7 @@ accountUpdateButton.addEventListener('click', async () => {
       clearPageContents();
       accountLoginNameInput.value = readUserBySessionResult.data.loginName;
       accountPublicNameInput.value = readUserBySessionResult.data.publicName;
+      updateTopBar(readUserBySessionResult.data);
     } else {
       showSystemMessage('Account successfully updated but unable to get account data');
     }

@@ -3,9 +3,3 @@
 
 - Home -> Account -> other website -> navigate two pages back
   This flow lands me on Account when it should land on Home
-
-Done
-
-- Rename SongListEntry.rank to listIndex
-- Change api.origin to location.origin
-- In JS API read functions, first verify that server gave response code 200 before calling json() to parse body

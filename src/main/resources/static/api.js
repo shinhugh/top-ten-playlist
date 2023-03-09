@@ -56,7 +56,7 @@ const api = {
 
   readUserById: async (id) => {
     try {
-      const response = await fetch(api.origin + '/api/user/id/' + id);
+      const response = await fetch(api.origin + '/api/user/id/' + id.toLowerCase());
       let data;
       try {
         data = await response.json();
@@ -96,7 +96,7 @@ const api = {
 
   readUserByPublicName: async (publicName) => {
     try {
-      const response = await fetch(api.origin + '/api/user/public-name/' + publicName);
+      const response = await fetch(api.origin + '/api/user/public-name/' + publicName.toLowerCase());
       let data;
       try {
         data = await response.json();
@@ -116,7 +116,7 @@ const api = {
 
   updateUserById: async (id, user) => {
     try {
-      const response = await fetch(api.origin + '/api/user/id/' + id, {
+      const response = await fetch(api.origin + '/api/user/id/' + id.toLowerCase(), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -154,7 +154,7 @@ const api = {
 
   deleteUserById: async (id) => {
     try {
-      const response = await fetch(api.origin + '/api/user/id/' + id, {
+      const response = await fetch(api.origin + '/api/user/id/' + id.toLowerCase(), {
         method: 'DELETE'
       });
       return {
@@ -203,7 +203,7 @@ const api = {
 
   readSongListById: async (id) => {
     try {
-      const response = await fetch(api.origin + '/api/song-list/id/' + id);
+      const response = await fetch(api.origin + '/api/song-list/id/' + id.toLowerCase());
       let data;
       try {
         data = await response.json();
@@ -243,7 +243,7 @@ const api = {
 
   readSongListByUserPublicName: async (userPublicName) => {
     try {
-      const response = await fetch(api.origin + '/api/song-list/user-public-name/' + userPublicName);
+      const response = await fetch(api.origin + '/api/song-list/user-public-name/' + userPublicName.toLowerCase());
       let data;
       try {
         data = await response.json();
@@ -263,7 +263,7 @@ const api = {
 
   updateSongListById: async (id, songList) => {
     try {
-      const response = await fetch(api.origin + '/api/song-list/id/' + id, {
+      const response = await fetch(api.origin + '/api/song-list/id/' + id.toLowerCase(), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -301,7 +301,7 @@ const api = {
 
   deleteSongListById: async (id) => {
     try {
-      const response = await fetch(api.origin + '/api/song-list/id/' + id, {
+      const response = await fetch(api.origin + '/api/song-list/id/' + id.toLowerCase(), {
         method: 'DELETE'
       });
       return {
