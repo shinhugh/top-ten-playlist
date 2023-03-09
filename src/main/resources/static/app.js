@@ -100,7 +100,7 @@ const clearPageContents = () => {
   playlistList.innerHTML = '';
 };
 
-const navigateToHomePage = (pushToHistory) => {
+const navigateToHomePage = async (pushToHistory) => {
   if (pushToHistory) {
     history.pushState({
       path: '/'
@@ -114,20 +114,15 @@ const navigateToHomePage = (pushToHistory) => {
   accountPageRoot.hidden = true;
   homePageRoot.hidden = false;
   homeLoadingOverlay.hidden = false;
-  api.readUserBySession()
-  .then((result) => {
-    if (result.status == 200) {
-      homeAuthenticatedRoot.hidden = false;
-      populateHomePlaylist()
-      .finally(() => {
-        homePlaylistRoot.hidden = false;
-        homeLoadingOverlay.hidden = true;
-      });
-    } else {
-      homeUnauthenticatedRoot.hidden = false;
-      homeLoadingOverlay.hidden = true;
-    }
-  });
+  const result = await api.readUserBySession();
+  if (result.status == 200) {
+    homeAuthenticatedRoot.hidden = false;
+    await populateHomePlaylist();
+    homePlaylistRoot.hidden = false;
+  } else {
+    homeUnauthenticatedRoot.hidden = false;
+  }
+  homeLoadingOverlay.hidden = true;
 };
 
 const navigateToLoginPage = (pushToHistory) => {
@@ -163,7 +158,7 @@ const navigateToSignUpPage = (pushToHistory) => {
   signUpLoginNameInput.focus();
 };
 
-const navigateToAccountPage = (pushToHistory) => {
+const navigateToAccountPage = async (pushToHistory) => {
   if (pushToHistory) {
     history.pushState({
       path: '/account'
@@ -176,22 +171,18 @@ const navigateToAccountPage = (pushToHistory) => {
   signUpPageRoot.hidden = true;
   playlistPageRoot.hidden = true;
   accountPageRoot.hidden = false;
-  accountUpdateButton.disabled = true;
   accountLoadingOverlay.hidden = false;
-  api.readUserBySession()
-  .then((result) =>  {
-    if (result.status == 200) {
-      accountLoginNameInput.value = result.data.loginName;
-      accountPublicNameInput.value = result.data.publicName;
-    } else {
-      showSystemMessage('Unable to get account data');
-    }
-    accountUpdateButton.disabled = false;
-    accountLoadingOverlay.hidden = true;
-  });
+  const result = await api.readUserBySession();
+  if (result.status == 200) {
+    accountLoginNameInput.value = result.data.loginName;
+    accountPublicNameInput.value = result.data.publicName;
+  } else {
+    showSystemMessage('Unable to get account data');
+  }
+  accountLoadingOverlay.hidden = true;
 };
 
-const navigateToPlaylistPage = (pushToHistory, userName) => {
+const navigateToPlaylistPage = async (pushToHistory, userName) => {
   if (pushToHistory) {
     history.pushState({
       path: '/playlist/' + userName
@@ -204,20 +195,20 @@ const navigateToPlaylistPage = (pushToHistory, userName) => {
   signUpPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   playlistPageRoot.hidden = false;
-  api.readSongListByUserPublicName(userName)
-  .then((result) => {
-    if (result.status == 200) {
-      playlistTitle.innerHTML = result.data.title;
-      playlistUserPublicName.innerHTML = userName;
-      result.data.entries.forEach((songListEntry) => {
-        const songListEntryIFrame = document.createElement('iframe');
-        songListEntryIFrame.src = songListEntry.contentUrl;
-        playlistList.appendChild(songListEntryIFrame);
-      });
-    } else {
-      showSystemMessage('Unable to get playlist data');
-    }
-  });
+  // TODO: Start indicating that task is processing
+  const result = await api.readSongListByUserPublicName(userName);
+  if (result.status == 200) {
+    playlistTitle.innerHTML = result.data.title;
+    playlistUserPublicName.innerHTML = userName;
+    result.data.entries.forEach((songListEntry) => {
+      const songListEntryIFrame = document.createElement('iframe');
+      songListEntryIFrame.src = songListEntry.contentUrl;
+      playlistList.appendChild(songListEntryIFrame);
+    });
+  } else {
+    showSystemMessage('Unable to get playlist data');
+  }
+  // TODO: Stop indicating that task is processing
 };
 
 let hideSystemMessageDialogTimeout;
@@ -266,7 +257,7 @@ const populateHomePlaylist = async () => {
       homePlaylistEntriesContainer.appendChild(songListEntryIFrame);
     });
   } else {
-    showSystemMessage('Unable to get playlist');
+    showSystemMessage('Unable to get playlist data');
   }
 };
 
@@ -310,7 +301,7 @@ const populatePlaylistEditor = async () => {
       appendNewEntryToPlaylistEditor(entry.contentUrl);
     });
   } else {
-    showSystemMessage('Unable to get playlist');
+    showSystemMessage('Unable to get playlist data');
   }
 };
 
@@ -366,16 +357,16 @@ topBarAccountLink.addEventListener('click', () => {
   navigateToAccountPage(true);
 });
 
-topBarLogoutLink.addEventListener('click', () => {
-  api.logout()
-  .then((result) => {
-    if (result.status == 200) {
-      updateTopBar(null);
-      navigateToHomePage(true);
-    } else {
-      showSystemMessage('Unable to logout');
-    }
-  });
+topBarLogoutLink.addEventListener('click', async () => {
+  // TODO: Start indicating that task is processing
+  const result = await api.logout();
+  if (result.status == 200) {
+    updateTopBar(null);
+    navigateToHomePage(true);
+  } else {
+    showSystemMessage('Unable to logout');
+  }
+  // TODO: Stop indicating that task is processing
 });
 
 topBarSearchInput.addEventListener('keypress', (event) => {
@@ -385,56 +376,56 @@ topBarSearchInput.addEventListener('keypress', (event) => {
   }
 });
 
-topBarSearchButton.addEventListener('click', () => {
+topBarSearchButton.addEventListener('click', async () => {
+  topBarSearchButton.disabled = true;
+  // TODO: Start indicating that task is processing
   const userName = nullIfEmpty(topBarSearchInput.value);
   if (userName == null) {
     return;
   }
-  topBarSearchButton.disabled = true;
-  api.readUserByPublicName(userName)
-  .then((result) => {
-    switch (result.status) {
-      case 200:
-        navigateToPlaylistPage(true, userName);
-        break;
-      case 404:
-        showSystemMessage('No such user');
-        break;
-      default:
-        showSystemMessage('Unable to search for user');
-    }
-    topBarSearchButton.disabled = false;
-  });
+  const result = await api.readUserByPublicName(userName);
+  switch (result.status) {
+    case 200:
+      await navigateToPlaylistPage(true, userName);
+      break;
+    case 404:
+      showSystemMessage('No such user');
+      break;
+    default:
+      showSystemMessage('Unable to search for user');
+  }
+  // TODO: Stop indicating that task is processing
+  topBarSearchButton.disabled = false;
 });
 
 // ------------------------------------------------------------
 
 // Event listeners: Home page
 
-homePlaylistEditButton.addEventListener('click', () => {
+homePlaylistEditButton.addEventListener('click', async () => {
+  homePlaylistEditButton.disabled = true;
   homeLoadingOverlay.hidden = false;
   homePlaylistRoot.hidden = true;
   homePlaylistTitle.innerHTML = '';
   homePlaylistEntriesContainer.innerHTML = '';
-  populatePlaylistEditor()
-  .finally(() => {
-    homePlaylistEditorRoot.hidden = false;
-    homeLoadingOverlay.hidden = true;
-  });
+  await populatePlaylistEditor();
+  homePlaylistEditorRoot.hidden = false;
+  homeLoadingOverlay.hidden = true;
+  homePlaylistEditButton.disabled = false;
 });
 
-homePlaylistShareButton.addEventListener('click', () => {
+homePlaylistShareButton.addEventListener('click', async () => {
+  homePlaylistShareButton.disabled = true;
   homePlaylistOverlay.hidden = false;
   homePlaylistShareLink.innerHTML = 'Loading..';
   homePlaylistShareContainer.hidden = false;
-  api.readUserBySession()
-  .then((result) => {
-    if (result.status == 200) {
-      homePlaylistShareLink.innerHTML = api.origin + '/playlist/' + result.data.publicName.toLowerCase();
-    } else {
-      homePlaylistShareLink.innerHTML = 'Unable to load share link';
-    }
-  });
+  const result = await api.readUserBySession();
+  if (result.status == 200) {
+    homePlaylistShareLink.innerHTML = api.origin + '/playlist/' + result.data.publicName.toLowerCase();
+  } else {
+    homePlaylistShareLink.innerHTML = 'Unable to load share link';
+  }
+  homePlaylistShareButton.disabled = false;
 });
 
 homePlaylistOverlay.addEventListener('click', (event) => {
@@ -468,7 +459,9 @@ homePlaylistEditorClearButton.addEventListener('click', () => {
   homePlaylistEditorEntriesContainer.innerHTML = '';
 });
 
-homePlaylistEditorSubmitButton.addEventListener('click', () => {
+homePlaylistEditorSubmitButton.addEventListener('click', async () => {
+  homePlaylistEditorSubmitButton.disabled = true;
+  // TODO: Start indicating that task is processing
   let songList = {
     title: nullIfEmpty(homePlaylistEditorTitleInput.value),
     entries: []
@@ -482,30 +475,30 @@ homePlaylistEditorSubmitButton.addEventListener('click', () => {
       });
     }
   }
-  api.updateSongListBySession(songList)
-  .then((result) => {
-    switch (result.status) {
-      case 200:
-        showSystemMessage('Successfully saved playlist');
-        populatePlaylistEditor();
-        break;
-      case 400:
-        showSystemMessage('Invalid fields provided or title too long');
-        break;
-      default:
-        showSystemMessage('Unable to save playlist');
-    }
-  });
+  const result = await api.updateSongListBySession(songList);
+  switch (result.status) {
+    case 200:
+      showSystemMessage('Successfully saved playlist');
+      await populatePlaylistEditor();
+      break;
+    case 400:
+      showSystemMessage('Invalid fields provided or title too long');
+      break;
+    default:
+      showSystemMessage('Unable to save playlist');
+  }
+  // TODO: Stop indicating that task is processing
+  homePlaylistEditorSubmitButton.disabled = false;
 });
 
-homePlaylistEditorBackButton.addEventListener('click', () => {
+homePlaylistEditorBackButton.addEventListener('click', async () => {
+  homePlaylistEditorBackButton.disabled = true;
   homeLoadingOverlay.hidden = false;
   homePlaylistEditorRoot.hidden = true;
-  populateHomePlaylist()
-  .finally(() => {
-    homePlaylistRoot.hidden = false;
-    homeLoadingOverlay.hidden = true;
-  });
+  await populateHomePlaylist();
+  homePlaylistRoot.hidden = false;
+  homeLoadingOverlay.hidden = true;
+  homePlaylistEditorBackButton.disabled = false;
 });
 
 // ------------------------------------------------------------
@@ -526,37 +519,33 @@ loginPasswordInput.addEventListener('keypress', (event) => {
   }
 });
 
-loginButton.addEventListener('click', () => {
+loginButton.addEventListener('click', async () => {
+  loginButton.disabled = true;
+  loginLoadingOverlay.hidden = false;
   const name = nullIfEmpty(loginNameInput.value);
   const password = nullIfEmpty(loginPasswordInput.value);
   if (name == null || password == null) {
     showSystemMessage('Missing required fields');
     return;
   }
-  loginButton.disabled = true;
-  loginLoadingOverlay.hidden = false;
-  api.login({
+  const loginResult = await api.login({
     name: name,
     password: password
-  })
-  .then((loginResult) => {
-    switch (loginResult.status) {
-      case 200:
-        api.readUserBySession()
-        .then((readUserBySessionResult) => {
-          updateTopBar(readUserBySessionResult.data);
-          navigateToHomePage(true);
-        });
-        break;
-      case 400, 403:
-        showSystemMessage('Invalid credentials');
-        break;
-      default:
-        showSystemMessage('Unable to login');
-    }
-    loginButton.disabled = false;
-    loginLoadingOverlay.hidden = true;
   });
+  switch (loginResult.status) {
+    case 200:
+      const readUserBySessionResult = await api.readUserBySession();
+      updateTopBar(readUserBySessionResult.data);
+      navigateToHomePage(true);
+      break;
+    case 400, 403:
+      showSystemMessage('Invalid credentials');
+      break;
+    default:
+      showSystemMessage('Unable to login');
+  }
+  loginLoadingOverlay.hidden = true;
+  loginButton.disabled = false;
 });
 
 // ------------------------------------------------------------
@@ -584,7 +573,9 @@ signUpPublicNameInput.addEventListener('keypress', (event) => {
   }
 });
 
-signUpButton.addEventListener('click', () => {
+signUpButton.addEventListener('click', async () => {
+  signUpButton.disabled = true;
+  signUpLoadingOverlay.hidden = false;
   const loginName = nullIfEmpty(signUpLoginNameInput.value);
   const password = nullIfEmpty(signUpPasswordInput.value);
   const publicName = nullIfEmpty(signUpPublicNameInput.value);
@@ -592,59 +583,49 @@ signUpButton.addEventListener('click', () => {
     showSystemMessage('Missing required fields');
     return;
   }
-  signUpButton.disabled = true;
-  signUpLoadingOverlay.hidden = false;
-  api.createUser({
+  const createUserResult = await api.createUser({
     loginName: loginName,
     password: password,
     publicName: publicName
-  })
-  .then((createUserResult) => {
-    if (createUserResult.status == 200) {
-      api.login({
-        name: loginName,
-        password: password
-      })
-      .then((loginResult) => {
-        if (loginResult.status == 200) {
-          api.createSongList({
-            title: 'Top Ten',
-            entries: []
-          })
-          .then((createSongListResult) => {
-            if (createSongListResult.status == 200) {
-              api.readUserBySession()
-              .then((readUserBySessionResult) => {
-                updateTopBar(readUserBySessionResult.data);
-                navigateToHomePage(true);
-              });
-            } else {
-              showSystemMessage('Unable to create song list');
-            }
-            signUpButton.disabled = false;
-            signUpLoadingOverlay.hidden = true;
-          });
-        } else {
-          showSystemMessage('Account has been created but unable to login');
-          signUpButton.disabled = false;
-          signUpLoadingOverlay.hidden = true;
-        }
-      });
-    } else {
-      switch(createUserResult.status) {
-        case 400:
-          showSystemMessage('Invalid characters provided or length requirements not met');
-          break;
-        case 409:
-          showSystemMessage('Provided login ID or public name is already taken');
-          break;
-        default:
-          showSystemMessage('Unable to sign up');
-      }
-      signUpButton.disabled = false;
-      signUpLoadingOverlay.hidden = true;
-    }
   });
+  if (createUserResult.status == 200) {
+    const loginResult = await api.login({
+      name: loginName,
+      password: password
+    });
+    if (loginResult.status == 200) {
+      const readUserBySessionResult = await api.readUserBySession();
+      if (readUserBySessionResult.status == 200) {
+        updateTopBar(readUserBySessionResult.data);
+      } else {
+        showSystemMessage('Unable to get account data');
+      }
+      const createSongListResult = await api.createSongList({
+        title: 'Top Ten',
+        entries: []
+      });
+      if (createSongListResult.status == 200) {
+        navigateToHomePage(true);
+      } else {
+        showSystemMessage('Unable to create song list');
+      }
+    } else {
+      showSystemMessage('Account has been created but unable to login');
+    }
+  } else {
+    switch(createUserResult.status) {
+      case 400:
+        showSystemMessage('Invalid characters provided or length requirements not met');
+        break;
+      case 409:
+        showSystemMessage('Provided login ID or public name is already taken');
+        break;
+      default:
+        showSystemMessage('Unable to sign up');
+    }
+  }
+  signUpLoadingOverlay.hidden = true;
+  signUpButton.disabled = false;
 });
 
 // ------------------------------------------------------------
@@ -672,75 +653,57 @@ accountPublicNameInput.addEventListener('keypress', (event) => {
   }
 });
 
-accountUpdateButton.addEventListener('click', () => {
+accountUpdateButton.addEventListener('click', async () => {
   accountUpdateButton.disabled = true;
-  accountDeleteButton.disabled = true;
   accountLoadingOverlay.hidden = false;
   const loginName = nullIfEmpty(accountLoginNameInput.value);
   const password = nullIfEmpty(accountPasswordInput.value);
   const publicName = nullIfEmpty(accountPublicNameInput.value);
-  api.updateUserBySession({
+  const updateUserBySessionResult = await api.updateUserBySession({
     loginName: loginName,
     password: password,
     publicName: publicName
-  })
-  .then((updateUserBySessionResult) => {
-    if (updateUserBySessionResult.status == 200) {
-      api.readUserBySession()
-      .then((readUserBySessionResult) => {
-        if (readUserBySessionResult.status == 200) {
-          showSystemMessage('Account successfully updated');
-          clearPageContents();
-          accountLoginNameInput.value = readUserBySessionResult.data.loginName;
-          accountPublicNameInput.value = readUserBySessionResult.data.publicName;
-        } else {
-          showSystemMessage('Account successfully updated but unable to get account data');
-        }
-        accountUpdateButton.disabled = false;
-        accountDeleteButton.disabled = false;
-        accountLoadingOverlay.hidden = true;
-      });
-    } else {
-      switch (updateUserBySessionResult.status) {
-        case 400:
-          showSystemMessage('Invalid characters provided or length requirements not met');
-          break;
-        case 409:
-          showSystemMessage('The provided login ID or public name already exists');
-          break;
-        default:
-          showSystemMessage('Unable to update account');
-      }
-      accountUpdateButton.disabled = false;
-      accountDeleteButton.disabled = false;
-      accountLoadingOverlay.hidden = true;
-    }
   });
+  if (updateUserBySessionResult.status == 200) {
+    const readUserBySessionResult = await api.readUserBySession();
+    if (readUserBySessionResult.status == 200) {
+      showSystemMessage('Account successfully updated');
+      clearPageContents();
+      accountLoginNameInput.value = readUserBySessionResult.data.loginName;
+      accountPublicNameInput.value = readUserBySessionResult.data.publicName;
+    } else {
+      showSystemMessage('Account successfully updated but unable to get account data');
+    }
+  } else {
+    switch (updateUserBySessionResult.status) {
+      case 400:
+        showSystemMessage('Invalid characters provided or length requirements not met');
+        break;
+      case 409:
+        showSystemMessage('The provided login ID or public name already exists');
+        break;
+      default:
+        showSystemMessage('Unable to update account');
+    }
+  }
+  accountLoadingOverlay.hidden = true;
+  accountUpdateButton.disabled = false;
 });
 
-accountDeleteButton.addEventListener('click', () => {
-  accountUpdateButton.disabled = true;
+accountDeleteButton.addEventListener('click', async () => {
   accountDeleteButton.disabled = true;
   accountLoadingOverlay.hidden = false;
-  api.deleteUserBySession()
-  .then((result) => {
-    if (result.status == 200) {
-      api.logout()
-      .finally(() => {
-        showSystemMessage('Successfully deleted account');
-        updateTopBar(null);
-        navigateToHomePage(true);
-        accountUpdateButton.disabled = false;
-        accountDeleteButton.disabled = false;
-        accountLoadingOverlay.hidden = true;
-      });
-    } else {
-      showSystemMessage('Unable to delete account');
-      accountUpdateButton.disabled = false;
-      accountDeleteButton.disabled = false;
-      accountLoadingOverlay.hidden = true;
-    }
-  });
+  const result = await api.deleteUserBySession();
+  if (result.status == 200) {
+    await api.logout();
+    showSystemMessage('Successfully deleted account');
+    updateTopBar(null);
+    navigateToHomePage(true);
+  } else {
+    showSystemMessage('Unable to delete account');
+  }
+  accountLoadingOverlay.hidden = true;
+  accountDeleteButton.disabled = false;
 });
 
 // ------------------------------------------------------------

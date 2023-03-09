@@ -1,2 +1,18 @@
 - Potential state corruption due to concurrency
   Protect application logic's state against race conditions
+
+- Home -> Account -> other website -> navigate two pages back
+  This flow lands me on Account when it should land on Home
+
+- Add loading overlays where necessary
+  Indicates to user that task is processing
+  Prevents further user interaction while ongoing task is processing
+
+Done
+
+- Buttons should disable itself before async task and enable itself upon task completion
+- Replace all .then() and .finally() with await
+- Verify that all async functions are used correctly (awaited or not)
+- Eliminate redundant code (from .then() -> await)
+- All things should be in stack order
+  Disable button -> Show indication -> Task -> Hide indication -> Enable button

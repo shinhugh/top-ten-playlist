@@ -1,5 +1,6 @@
 const api = {
-  origin: 'http://localhost:8080',
+  // origin: 'http://localhost:8080',
+  origin: 'http://192.168.1.23',
 
   login: async (credentials) => {
     try {
