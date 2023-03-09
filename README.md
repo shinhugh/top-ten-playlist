@@ -21,7 +21,7 @@ on the userAccount's personal accounts.
 
 YouTube, Spotify, and SoundCloud are supported.
 
-This service is hosted on an AWS EC2 instance. The link is here: *Coming soon!*
+This service is hosted on an AWS EC2 instance. The link is [here](http://ec2-54-176-190-14.us-west-1.compute.amazonaws.com/).
 
 ## Models
 
