@@ -3,15 +3,3 @@
 
 - Home -> Account -> other website -> navigate two pages back
   This flow lands me on Account when it should land on Home
-
-Done
-
-- Buttons should disable itself before async task and enable itself upon task completion
-- Replace all .then() and .finally() with await
-- Verify that all async functions are used correctly (awaited or not)
-- Eliminate redundant code (from .then() -> await)
-- All things should be in stack order
-  Disable button -> Show indication -> Task -> Hide indication -> Enable button
-- Add loading overlays where necessary
-  Indicates to user that task is processing
-  Prevents further user interaction while ongoing task is processing
