@@ -11,7 +11,7 @@ public class SongListEntry implements Identifiable {
     @Column(nullable = false)
     private String songListContainerId;
     @Column(nullable = false)
-    private int rank;
+    private int listIndex;
     private String title;
     private String artist;
     @Column(nullable = false)
@@ -19,9 +19,9 @@ public class SongListEntry implements Identifiable {
 
     public SongListEntry() { }
 
-    public SongListEntry(String songListContainerId, int rank, String title, String artist, String contentUrl) {
+    public SongListEntry(String songListContainerId, int listIndex, String title, String artist, String contentUrl) {
         this.songListContainerId = songListContainerId;
-        this.rank = rank;
+        this.listIndex = listIndex;
         this.title = title;
         this.artist = artist;
         this.contentUrl = contentUrl;
@@ -45,12 +45,12 @@ public class SongListEntry implements Identifiable {
         this.songListContainerId = songListContainerId;
     }
 
-    public int getRank() {
-        return rank;
+    public int getListIndex() {
+        return listIndex;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setListIndex(int listIndex) {
+        this.listIndex = listIndex;
     }
 
     public String getTitle() {
