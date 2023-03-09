@@ -27,6 +27,7 @@ const homePlaylistEditorAddButton = document.getElementById('home-playlist-edito
 const homePlaylistEditorClearButton = document.getElementById('home-playlist-editor-clear-button');
 const homePlaylistEditorSubmitButton = document.getElementById('home-playlist-editor-submit-button');
 const homePlaylistEditorBackButton = document.getElementById('home-playlist-editor-back-button');
+const homePlaylistEditorLoadingOverlay = document.getElementById('home-playlist-editor-loading-overlay');
 const homeLoadingOverlay = document.getElementById('home-loading-overlay');
 
 const loginPageRoot = document.getElementById('login-page-root');
@@ -55,6 +56,7 @@ const playlistPageRoot = document.getElementById('playlist-page-root');
 const playlistTitle = document.getElementById('playlist-title');
 const playlistUserPublicName = document.getElementById('playlist-user-public-name');
 const playlistList = document.getElementById('playlist-list');
+const playlistLoadingOverlay = document.getElementById('playlist-loading-overlay');
 
 const systemMessageDialog = document.getElementById('system-message-dialog');
 const systemMessageDialogContent = document.getElementById('system-message-dialog-content');
@@ -62,6 +64,21 @@ const systemMessageDialogContent = document.getElementById('system-message-dialo
 // ------------------------------------------------------------
 
 // Functions: Utility
+
+const getSessionToken = () => {
+  const cookies = document.cookie.split(';');
+  cookies.forEach(cookie => {
+    const trimmedCookie = cookie.trim();
+    if (trimmedCookie.startsWith('session=')) {
+      return trimmedCookie.substring(8);
+    }
+  });
+  return null;
+};
+
+const clearSession = () => {
+  document.cookie = 'session=; Max-Age=0';
+};
 
 const nullIfEmpty = (string) => {
   if (string == null) {
@@ -86,18 +103,24 @@ const clearPageContents = () => {
   homePlaylistEditorRoot.hidden = true;
   homePlaylistEditorTitleInput.value = '';
   homePlaylistEditorEntriesContainer.innerHTML = '';
+  homePlaylistEditorLoadingOverlay.hidden = true;
+  homeLoadingOverlay.hidden = true;
   loginNameInput.value = '';
   loginPasswordInput.value = '';
+  loginLoadingOverlay.hidden = true;
   signUpLoginNameInput.value = '';
   signUpPasswordInput.value = '';
   signUpPublicNameInput.value = '';
+  signUpLoadingOverlay.hidden = true;
   signUpPasswordWarning.hidden = true;
   accountLoginNameInput.value = '';
   accountPasswordInput.value = '';
   accountPublicNameInput.value = '';
+  accountLoadingOverlay.hidden = true;
   playlistTitle.innerHTML = '';
   playlistUserPublicName.innerHTML = '';
   playlistList.innerHTML = '';
+  playlistLoadingOverlay.hidden = true;
 };
 
 const navigateToHomePage = async (pushToHistory) => {
@@ -188,14 +211,14 @@ const navigateToPlaylistPage = async (pushToHistory, userName) => {
       path: '/playlist/' + userName
     }, '', '/playlist/' + userName);
   }
-  document.title = 'Playlist - ' + userName;
+  document.title = 'Top Ten - ' + userName;
   clearPageContents();
   homePageRoot.hidden = true;
   loginPageRoot.hidden = true;
   signUpPageRoot.hidden = true;
   accountPageRoot.hidden = true;
   playlistPageRoot.hidden = false;
-  // TODO: Start indicating that task is processing
+  playlistLoadingOverlay.hidden = false;
   const result = await api.readSongListByUserPublicName(userName);
   if (result.status == 200) {
     playlistTitle.innerHTML = result.data.title;
@@ -208,7 +231,7 @@ const navigateToPlaylistPage = async (pushToHistory, userName) => {
   } else {
     showSystemMessage('Unable to get playlist data');
   }
-  // TODO: Stop indicating that task is processing
+  playlistLoadingOverlay.hidden = true;
 };
 
 let hideSystemMessageDialogTimeout;
@@ -358,15 +381,10 @@ topBarAccountLink.addEventListener('click', () => {
 });
 
 topBarLogoutLink.addEventListener('click', async () => {
-  // TODO: Start indicating that task is processing
-  const result = await api.logout();
-  if (result.status == 200) {
-    updateTopBar(null);
-    navigateToHomePage(true);
-  } else {
-    showSystemMessage('Unable to logout');
-  }
-  // TODO: Stop indicating that task is processing
+  api.logout();
+  clearSession();
+  updateTopBar(null);
+  navigateToHomePage(true);
 });
 
 topBarSearchInput.addEventListener('keypress', (event) => {
@@ -461,7 +479,7 @@ homePlaylistEditorClearButton.addEventListener('click', () => {
 
 homePlaylistEditorSubmitButton.addEventListener('click', async () => {
   homePlaylistEditorSubmitButton.disabled = true;
-  // TODO: Start indicating that task is processing
+  homePlaylistEditorLoadingOverlay.hidden = false;
   let songList = {
     title: nullIfEmpty(homePlaylistEditorTitleInput.value),
     entries: []
@@ -487,7 +505,7 @@ homePlaylistEditorSubmitButton.addEventListener('click', async () => {
     default:
       showSystemMessage('Unable to save playlist');
   }
-  // TODO: Stop indicating that task is processing
+  homePlaylistEditorLoadingOverlay.hidden = true;
   homePlaylistEditorSubmitButton.disabled = false;
 });
 
@@ -695,8 +713,9 @@ accountDeleteButton.addEventListener('click', async () => {
   accountLoadingOverlay.hidden = false;
   const result = await api.deleteUserBySession();
   if (result.status == 200) {
-    await api.logout();
     showSystemMessage('Successfully deleted account');
+    api.logout();
+    clearSession();
     updateTopBar(null);
     navigateToHomePage(true);
   } else {

@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Phudu:wght@600&display=swap');
 
 @font-face {
@@ -323,10 +322,6 @@ iframe {
     overflow-y: auto;
 }
 
-#home-playlist-editor-back-button:hover {
-    background: rgba(255, 255, 255, 0.4);
-}
-
 #home-playlist-editor-container {
     width: 80%;
     padding: 4rem 0 2rem;
@@ -454,6 +449,29 @@ iframe {
     left: 3rem;
     font-size: 1.4rem;
     background: rgba(255, 255, 255, 0.2);
+}
+
+#home-playlist-editor-back-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+#home-playlist-editor-loading-overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+#home-playlist-editor-loading-overlay>p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    letter-spacing: 0.2rem;
+    color: #ffffff;
 }
 
 #home-loading-overlay {
@@ -739,6 +757,25 @@ iframe {
 #playlist-list>iframe {
     height: 36vw;
     width: 64vw;
+}
+
+#playlist-loading-overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+#playlist-loading-overlay>p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    letter-spacing: 0.2rem;
+    color: #ffffff;
 }
 
 #system-message-dialog {
