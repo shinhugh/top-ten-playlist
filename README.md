@@ -1,8 +1,13 @@
 # Top 10 Playlist
 
-*This project is a work-in-progress.*
+A REST API and website for creating and sharing a playlist of your top 10 songs.
 
-A web API and website for creating and sharing a playlist of your top 10 songs.
+This service is hosted on an AWS EC2 instance. The link is
+[here](http://ec2-54-176-190-14.us-west-1.compute.amazonaws.com/).
+
+![Home page](/readme_assets/screenshot_home.png)
+![Editor page](/readme_assets/screenshot_editor.png)
+![Login page](/readme_assets/screenshot_login.png)
 
 Sharing music is an excellent way to get to know others more deeply and to
 diversify one's own palette. An extremely difficult yet fun task is to narrow
@@ -19,44 +24,45 @@ playlists created just for the sake of sharing.
 - This playlist can be shared as a simple link without exposing any information
 on the user's personal accounts.
 
-YouTube, Spotify, and SoundCloud are supported.
+YouTube and SoundCloud are currently supported. Paste any link from these
+platforms into the playlist editor!
 
-This service is hosted on an AWS EC2 instance. The link is [here](http://ec2-54-176-190-14.us-west-1.compute.amazonaws.com/).
+## Implementation details
 
-## Models
+### Models
 
 ![Models](/readme_assets/models.png)
 
-## Architecture
+### Architecture
 
 ![Architecture](/readme_assets/architecture.png)
 
 The Spring framework is used to simplify and build this system. Instead of
-deploying a dedicated machine for each endpoint and installing an actual reverse
-proxy, everything is done via code on a single server. A controller is written
-for each endpoint, and Spring's built-in mechanisms handle the routing to the
-correct controllers. This is more than enough for the expected amount of traffic
-(essentially none) for this project. Needless to say, load balancers are not
-necessary.
+deploying a dedicated machine for each node and installing an actual reverse
+proxy, everything is done in a monolithic fashion. This is perfectly fine for
+the expected scale of this project. Should there ever be a need to shift to
+proper microservices, the changes would be relatively straightforward; the
+services can be broken out into separate code bases and deployed individually,
+with the addition of network communication to and from the services.
 
-For the database, MySQL is used, but this can easily be changed. For
-simplicity's sake, the two databases are merged into one. There is no functional
-difference, as each model exists in each own table.
+MySQL is used as the database, but this can easily be changed. For simplicity's
+sake, the two databases are merged into one. There is no functional difference,
+as each model exists in each own table.
 
-## Flows
+### Flows
 
 Not all flows are covered; only those for application-specific functionality
 are shown. Flows for more generic functionality (e.g. account creation, login,
 etc.) are not shown here.
 
-### Create new song list
+#### Create new song list
 
 ![Flow: Create new song list](/readme_assets/flow_create_song_list.png)
 
-### Modify existing song list
+#### Modify existing song list
 
 ![Flow: Modify existing song list](/readme_assets/flow_modify_song_list.png)
 
-### View existing song list
+#### View existing song list
 
 ![Flow: View existing song list](/readme_assets/flow_view_song_list.png)
