@@ -2,8 +2,8 @@
 
 A REST API and website for creating and sharing a playlist of your top 10 songs.
 
-This service is hosted on an AWS EC2 instance. The link is
-[here](http://ec2-54-176-190-14.us-west-1.compute.amazonaws.com/).
+This service is currently down. Cloud computing isn't cheap and I am currently
+working on other projects.
 
 ![Home page](/readme_assets/screenshot_home.png)
 ![Editor page](/readme_assets/screenshot_editor.png)
